@@ -139,9 +139,16 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Vertical Marquee Prototype */
+  @keyframes vertical-marquee {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
 }
 
 @theme inline {
+  --animate-vertical-marquee: vertical-marquee 60s linear infinite;
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);

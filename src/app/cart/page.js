@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
  * High-fidelity requisition management for elite collectors.
  */
 export default function CartPage() {
-    const { items, removeItem, updateQuantity, getTotalPrice } = useCartStore();
+    const { items, removeItem, updateQuantity, getSubtotal } = useCartStore();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -21,9 +21,9 @@ export default function CartPage() {
 
     if (!mounted) return null;
 
-    const totalPrice = getTotalPrice();
+    const totalPrice = getSubtotal();
     const shipping = 0; // Global Luxury complimentary shipping
-    const tax = totalPrice * 0.12; 
+    const tax = totalPrice * 0.12;
     const finalTotal = totalPrice + shipping + tax;
 
     return (

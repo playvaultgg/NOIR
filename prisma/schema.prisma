@@ -53,6 +53,8 @@ model Order {
   items       OrderItem[]
   totalAmount Float
   status      OrderStatus @default(PENDING)
+  transaction Transaction?
+  couponCode  String?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
@@ -133,6 +135,42 @@ model UserAvatar {
   skinTone  String   @default("#E0AC69") // Hex or enum
   height    Float    @default(1.8) // Meters
   weight    Float    @default(75) // Kilograms
+  chest     Float?   // Measurements in cm
+  waist     Float?
+  hips      Float?
+  shoulders Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Coupon {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  discountPercent Int
+  expiryDate      DateTime
+  isActive        Boolean  @default(true)
+  usageLimit      Int      @default(100)
+  usedCount       Int      @default(0)
+  createdAt       DateTime @default(now())
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  orderId       String   @unique
+  order         Order    @relation(fields: [orderId], references: [id])
+  paymentId     String   // Stripe/Razorpay ID
+  provider      String   // "STRIPE", "RAZORPAY", "PAYPAL"
+  amount        Float
+  currency      String   @default("INR")
+  status        String   // "SUCCESS", "FAILED"
+  createdAt     DateTime @default(now())
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  type      String   // "VISIT", "SALE", "TRY_ON"
+  productId String?
+  value     Float?
+  metadata  Json?
+  createdAt DateTime @default(now())
 }

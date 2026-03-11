@@ -10,7 +10,8 @@ import { useState } from "react";
 import StickyPurchaseBar from "./StickyPurchaseBar";
 import GarmentTryOn from "@/components/avatar/GarmentTryOn";
 import ARTryOn from "@/components/ar/ARTryOn";
-import { Camera } from "lucide-react";
+import OutfitBuilder from "./OutfitBuilder";
+import { Camera, Layers } from "lucide-react";
 
 export default function ProductViewClient({ product }) {
     const { addItem } = useCart();
@@ -18,6 +19,7 @@ export default function ProductViewClient({ product }) {
     const [isAdding, setIsAdding] = useState(false);
     const [isTryOnOpen, setIsTryOnOpen] = useState(false);
     const [isArOpen, setIsArOpen] = useState(false);
+    const [isOutfitBuilderOpen, setIsOutfitBuilderOpen] = useState(false);
 
     const isBookmarked = isInWishlist(product.id);
 
@@ -137,6 +139,14 @@ export default function ProductViewClient({ product }) {
                             Try in AR
                         </button>
                     </div>
+
+                    <button 
+                        onClick={() => setIsOutfitBuilderOpen(true)}
+                        className="mt-4 group relative w-full h-16 bg-noir-surface/20 border border-white/5 hover:border-noir-gold rounded-2xl text-[10px] uppercase tracking-[0.5em] font-black text-white/40 hover:text-white flex items-center justify-center gap-4 transition-all duration-700"
+                    >
+                        <Layers size={16} className="text-noir-gold/40 group-hover:text-noir-gold transition-colors" />
+                        Synthesize Complete Look
+                    </button>
                 </div>
 
                 {/* Confidence Markers */}
@@ -175,6 +185,12 @@ export default function ProductViewClient({ product }) {
                     <ARTryOn product={product} onClose={() => setIsArOpen(false)} />
                 )}
             </AnimatePresence>
+            {/* Phase 10: Outfit Synthesis Engine */}
+            <OutfitBuilder 
+                isOpen={isOutfitBuilderOpen} 
+                onClose={() => setIsOutfitBuilderOpen(false)} 
+                initialProduct={product}
+            />
         </div>
     );
 }

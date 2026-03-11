@@ -16,6 +16,8 @@
   --color-noir-text: #F5F5F5;
   --color-noir-gold: #C6A972;
   --color-noir-gold-soft: #E5D3A1;
+  --color-noir-platinum: #E5E5E5;
+  --color-noir-midnight: #0F172A;
   /* Used for borders/hovers */
 
   --font-playfair: var(--font-playfair);

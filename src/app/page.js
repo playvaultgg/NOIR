@@ -9,24 +9,19 @@ import BrandStory from "@/components/home/BrandStory";
 import CustomerReviews from "@/components/home/CustomerReviews";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
-import { getPersonalizedRecommendations } from "@/modules/ai/ai.service";
 
 /**
- * Maison NOIR - Enhanced Global Homepage
- * Flow: 1. Hero, 2. AI Recs, 3. Collections, 4. Showroom, 5. Runway, 6. Avatar, 7. Product Grid, 8. Brand Story, 9. Reviews, 10. FAQ, 11. Contact.
+ * Maison NOIR - Ultra-Luxury Global Homepage
+ * Orchestrates 11 distinct interaction layers for a ₹1 Crore digital experience.
  */
-export default async function Home() {
-  const recommended = await getPersonalizedRecommendations();
-
+export default function Home() {
   return (
-    <div className="relative w-full overflow-hidden bg-noir-black selection:bg-noir-gold selection:text-noir-black">
+    <main className="relative w-full overflow-hidden bg-noir-black selection:bg-noir-gold selection:text-noir-black">
       {/* 1. Cinematic Hero Section */}
       <HeroSection />
 
-      {/* 2. AI Personalized Section */}
-      <div className="px-6 lg:px-24">
-        <RecommendedForYou products={recommended} title="Tailored for Your Silhouette" />
-      </div>
+      {/* 2. AI Personalized Section (Neural Curation) */}
+      <RecommendedForYou />
 
       {/* 3. Featured Collections Showcase */}
       <CollectionShowcase />
@@ -41,7 +36,7 @@ export default async function Home() {
       <AvatarTryOnPreview />
 
       {/* 7. Luxury Product Grid Catalogue */}
-      <ProductGrid products={recommended} />
+      <ProductGrid />
 
       {/* 8. Brand Narrative (Brand Story) */}
       <BrandStory />
@@ -54,6 +49,6 @@ export default async function Home() {
 
       {/* 11. Concierge Contact Section */}
       <ContactSection />
-    </div>
+    </main>
   );
 }

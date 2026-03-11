@@ -71,9 +71,7 @@ export default function BrandStory() {
                         </div>
 
                         <motion.button 
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="bg-white text-noir-black py-6 px-16 rounded-2xl text-[10px] uppercase tracking-[0.5em] font-black shadow-xl shadow-white/5 transition-all"
+                            className="bg-[#C6A972] text-[#0A0A0A] py-5 px-10 rounded-lg text-sm font-inter font-semibold tracking-wide shadow-xl shadow-[#C6A972]/5 transition-all duration-300 hover:bg-white hover:text-[#0A0A0A] hover:scale-105"
                         >
                             Explore the Archive
                         </motion.button>

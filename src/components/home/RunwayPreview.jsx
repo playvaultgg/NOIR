@@ -52,10 +52,31 @@ export default function RunwayPreview() {
                      </div>
 
                      {/* Visual Indicators: Viewport Markers */}
-                     <div className="absolute top-8 left-8 flex gap-4 opacity-20">
+                     <div className="absolute top-8 left-8 flex gap-4 opacity-20 z-30">
                         <div className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse" />
                         <span className="text-[8px] uppercase tracking-[0.3em] text-white">Live Projection Protocol</span>
                      </div>
+                </div>
+
+                {/* Animated Silhouette Marquee */}
+                <div className="relative mt-24 mb-12 flex overflow-hidden border-y border-white/5 bg-[#0A0A0A] py-12">
+                    <motion.div
+                        className="flex whitespace-nowrap gap-16 lg:gap-32 items-center"
+                        animate={{ x: ["0%", "-50%"] }}
+                        transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
+                    >
+                        {/* 10 Silhouettes replicated to form loop */}
+                        {[...Array(10)].map((_, i) => (
+                            <div key={i} className="flex flex-col items-center gap-4 shrink-0 px-8 group">
+                                <img
+                                    src={`https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=200&h=400&fit=crop`}
+                                    alt="Model Silhouette"
+                                    className="w-24 h-48 lg:w-32 lg:h-64 object-cover object-top grayscale opacity-30 contrast-[200%] brightness-0 filter group-hover:opacity-100 group-hover:brightness-100 group-hover:contrast-100 transition-all duration-700 pointer-events-none drop-shadow-2xl"
+                                />
+                                <span className="text-[8px] uppercase tracking-[0.4em] text-[#C6A972]/40 font-black italic">Look 0{i + 1}</span>
+                            </div>
+                        ))}
+                    </motion.div>
                 </div>
 
                 <div className="mt-12 flex justify-center">

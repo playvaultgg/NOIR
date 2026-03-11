@@ -26,17 +26,22 @@ export default function CheckoutPage() {
     const handleCheckout = async () => {
         setIsProcessing(true);
         try {
-            const res = await fetch("/api/checkout", {
+            const res = await fetch("/api/checkout/create-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ items, totalAmount: total }),
             });
 
             if (res.ok) {
-                clearCart();
-                router.push("/checkout/success");
+                const session = await res.json();
+                if (session.url) {
+                    window.location.href = session.url;
+                } else {
+                    console.error("Invalid Stripe Session ID returned.");
+                    setIsProcessing(false);
+                }
             } else {
-                console.error("Checkout Failed");
+                console.error("Payment Gateway Initialization Failed");
                 setIsProcessing(false);
             }
         } catch (error) {
@@ -103,7 +108,7 @@ export default function CheckoutPage() {
                             <div className="col-span-2 pt-6">
                                 <button
                                     type="submit"
-                                    className="w-full h-16 bg-white text-black text-[12px] uppercase tracking-[0.4em] font-bold hover:bg-gold transition-all duration-500 shadow-xl"
+                                    className="w-full h-16 bg-[#C6A972] text-[#0A0A0A] text-sm uppercase font-inter font-semibold tracking-wide rounded-lg hover:bg-white hover:text-[#0A0A0A] hover:scale-105 transition-all duration-300 shadow-xl"
                                 >
                                     Continue to Delivery
                                 </button>
@@ -128,7 +133,7 @@ export default function CheckoutPage() {
                             />
                             <button
                                 onClick={() => setStep(3)}
-                                className="w-full h-16 bg-white text-black text-[12px] uppercase tracking-[0.4em] font-bold hover:bg-gold transition-all duration-500 shadow-xl mt-8"
+                                className="w-full h-16 bg-[#C6A972] text-[#0A0A0A] text-sm uppercase font-inter font-semibold tracking-wide rounded-lg hover:bg-white hover:text-[#0A0A0A] hover:scale-105 transition-all duration-300 shadow-xl mt-8"
                             >
                                 Continue to Payment
                             </button>
@@ -170,7 +175,7 @@ export default function CheckoutPage() {
                                 <button
                                     onClick={handleCheckout}
                                     disabled={isProcessing}
-                                    className="w-full h-16 bg-gold text-black text-[12px] uppercase tracking-[0.4em] font-bold flex items-center justify-center gap-4 hover:bg-white transition-all duration-500 shadow-2xl shadow-gold/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full h-16 bg-[#C6A972] text-[#0A0A0A] text-sm uppercase font-inter font-semibold tracking-wide rounded-lg flex items-center justify-center gap-4 hover:bg-white hover:text-[#0A0A0A] hover:scale-105 transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isProcessing ? "Processing..." : "Complete Luxury Order"}
                                 </button>

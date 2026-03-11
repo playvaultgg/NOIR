@@ -153,52 +153,47 @@ export default function Navbar() {
     // ── Render ───────────────────────────────────────────────────────────────
     return (
         <>
-            {/* ── Desktop-only Floating PillNav ── */}
+            {/* ── Desktop-only Main Navigation ── */}
             <motion.header
                 initial={{ y: -80, opacity: 0 }}
                 animate={{ y: 0,   opacity: 1  }}
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-                className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] hidden lg:block"
+                className={`fixed top-0 left-0 right-0 z-[100] hidden lg:block transition-all duration-500 ${
+                    scrolled 
+                    ? "bg-[#0A0A0A]/90 border-b border-white/10 backdrop-blur-none" 
+                    : "bg-transparent backdrop-blur-md border-b border-transparent"
+                }`}
             >
-                {/*
-                  Outer pill container — same design as ReactBits PillNav:
-                  dark glass, border, subtle shadow, rounded-full, flex row
-                */}
-                <div
-                    className="flex items-center rounded-full border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl transition-colors duration-500"
-                    style={{ 
-                        background: scrolled ? "rgba(10,10,10,0.9)" : "rgba(10,10,10,0.4)", 
-                        padding: "6px" 
-                    }}
-                >
-                    {/* ── Logo pill (same square-pill as ReactBits) ── */}
-                    <Link
-                        href="/"
-                        ref={logoRef}
-                        className="rounded-full flex items-center justify-center shrink-0 mr-1 group"
-                        style={{
-                            background: BASE_COLOR,
-                            width: 44,
-                            height: 44,
-                            border: "1px solid rgba(255,255,255,0.08)",
-                        }}
-                        aria-label="NOIR home"
-                    >
-                        <span className="font-playfair text-[11px] tracking-[0.22em] text-white/80 group-hover:text-[#C6A972] transition-colors duration-400 select-none">
-                            N
-                        </span>
-                    </Link>
+                <div className="max-w-screen-2xl mx-auto flex items-center justify-between px-12 py-6">
+                    {/* Left: Logo */}
+                    <div className="flex-1 flex items-center justify-start">
+                        <Link
+                            href="/"
+                            ref={logoRef}
+                            className="rounded-full flex items-center justify-center shrink-0 mr-1 group"
+                            style={{
+                                background: BASE_COLOR,
+                                width: 44,
+                                height: 44,
+                                border: "1px solid rgba(255,255,255,0.08)",
+                            }}
+                            aria-label="NOIR home"
+                        >
+                            <span className="font-playfair text-[11px] tracking-[0.22em] text-white/80 group-hover:text-[#C6A972] transition-colors duration-400 select-none">
+                                N
+                            </span>
+                        </Link>
+                    </div>
 
-                    {/* ── Nav items with GSAP sliding pill ── */}
+                    {/* Center: Sliding Navigation */}
                     <nav
                         ref={navRef}
-                        className="relative flex items-center"
+                        className="relative flex items-center bg-[#0F0F0F] rounded-full p-1.5 border border-white/5"
                         onMouseLeave={handleLeave}
                     >
-                        {/* The GSAP-controlled pill (sits behind items via z-index) */}
                         <div
                             ref={pillRef}
-                            className="absolute top-0 left-0 rounded-full pointer-events-none"
+                            className="absolute top-0 left-0 rounded-full pointer-events-none mt-1.5 ml-1.5"
                             style={{
                                 background: PILL_COLOR,
                                 opacity: 0,
@@ -225,12 +220,8 @@ export default function Navbar() {
                         ))}
                     </nav>
 
-                    {/* ── Divider ── */}
-                    <div className="w-px h-6 mx-2 shrink-0" style={{ background: "rgba(255,255,255,0.08)" }} />
-
-                    {/* ── Icon actions (Search, Account, Cart) ── */}
-                    <div className="flex items-center gap-1 pr-1">
-                        {/* Search */}
+                    {/* Right: Actions */}
+                    <div className="flex-1 flex items-center justify-end gap-1">
                         <button
                             onClick={() => setIsSearchOpen(true)}
                             className="w-[38px] h-[38px] rounded-full flex items-center justify-center text-white/40 hover:bg-white/5 hover:text-[#C6A972] transition-all duration-300"
@@ -239,7 +230,6 @@ export default function Navbar() {
                             <Search className="w-[16px] h-[16px]" strokeWidth={1.5} />
                         </button>
 
-                        {/* Account */}
                         <Link
                             href={session ? "/account" : "/login"}
                             className={`w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-white/5 transition-all duration-300 ${session ? "text-[#C6A972]" : "text-white/40 hover:text-[#C6A972]"}`}
@@ -248,7 +238,6 @@ export default function Navbar() {
                             <User className="w-[16px] h-[16px]" strokeWidth={1.5} />
                         </Link>
 
-                        {/* Cart */}
                         <button
                             onClick={toggleCart}
                             className="relative w-[38px] h-[38px] rounded-full flex items-center justify-center text-white/40 hover:bg-white/5 hover:text-[#C6A972] transition-all duration-300"
@@ -262,7 +251,8 @@ export default function Navbar() {
                             )}
                         </button>
 
-                        {/* Let's talk — ReactBits style CTA pill */}
+                        <div className="w-px h-6 mx-2 shrink-0 bg-white/10" />
+
                         <Link
                             href="/contact"
                             className="ml-1 px-5 h-[38px] rounded-full flex items-center text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-300 group"

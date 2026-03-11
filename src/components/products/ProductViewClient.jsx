@@ -88,32 +88,32 @@ export default function ProductViewClient({ product }) {
                         <button
                             onClick={handleAddToCart}
                             disabled={isAdding}
-                            className={`flex-1 h-20 bg-white text-noir-black text-[12px] uppercase tracking-[0.4em] font-black rounded-2xl flex items-center justify-center gap-4 hover:bg-noir-gold transition-all duration-500 shadow-2xl relative overflow-hidden group ${isAdding ? 'scale-95 opacity-80' : ''}`}
+                            className={`flex-1 h-16 bg-[#C6A972] text-[#0A0A0A] text-sm uppercase font-inter font-semibold tracking-wide rounded-lg flex items-center justify-center gap-4 hover:bg-white hover:scale-105 transition-all duration-300 shadow-xl relative overflow-hidden group ${isAdding ? 'scale-95 opacity-80' : ''}`}
                         >
                             <motion.div
                                 animate={isAdding ? { y: -20, opacity: 0 } : { y: 0, opacity: 1 }}
                                 className="flex items-center gap-4"
                             >
                                 <ShoppingBag size={20} />
-                                Add to Selection
+                                Add to Cart
                             </motion.div>
 
                             {isAdding && (
                                 <motion.div
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
-                                    className="absolute inset-0 flex items-center justify-center text-noir-black bg-noir-gold"
+                                    className="absolute inset-0 flex items-center justify-center text-noir-black bg-white"
                                 >
-                                    Curated to Bag
+                                    Added
                                 </motion.div>
                             )}
                         </button>
 
                         <button
                             onClick={toggleWishlist}
-                            className={`w-20 h-20 rounded-2xl border flex items-center justify-center transition-all duration-500 group ${isBookmarked
+                            className={`w-16 h-16 rounded-lg border flex items-center justify-center transition-all duration-300 group ${isBookmarked
                                 ? "bg-red-500/10 border-red-500/20 text-red-500"
-                                : "border-white/10 text-white/40 hover:border-white/30 hover:text-white"
+                                : "border-[#C6A972]/30 text-white/40 hover:border-[#C6A972] hover:text-[#C6A972]"
                                 }`}
                         >
                             <Heart size={24} className={isBookmarked ? "fill-current" : "group-hover:scale-110 transition-transform"} />
@@ -121,31 +121,30 @@ export default function ProductViewClient({ product }) {
                     </div>
 
                     {/* Phase 8.6 & 8.8: Immersive Try-On Action Cluster */}
-                    <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex flex-col md:flex-row gap-4 mt-2">
                         <button 
                             onClick={() => setIsTryOnOpen(true)}
-                            className="group relative flex-1 h-20 bg-noir-surface/40 border border-white/5 hover:border-noir-gold rounded-2xl text-[10px] uppercase tracking-[0.5em] font-black text-white flex items-center justify-center gap-4 transition-all duration-700 shadow-2xl overflow-hidden hover:shadow-[0_0_40px_rgba(197,160,89,0.1)]"
+                            className="group relative flex-1 h-16 bg-[#0A0A0A] border border-[#C6A972]/30 hover:border-[#C6A972] hover:bg-[#111111] rounded-lg text-[10px] uppercase tracking-[0.2em] font-inter font-semibold text-white/80 flex items-center justify-center gap-3 transition-all duration-300"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-noir-gold/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                            <Sparkles size={18} className="text-noir-gold group-hover:animate-pulse" />
-                            Virtual Persona
+                            <Sparkles size={16} className="text-[#C6A972] group-hover:scale-110 transition-transform" />
+                            Virtual Try-On
                         </button>
 
                         <button 
                             onClick={() => setIsArOpen(true)}
-                            className="group relative flex-1 h-20 bg-noir-surface/20 border border-white/10 hover:border-white rounded-2xl text-[10px] uppercase tracking-[0.5em] font-black text-white/60 hover:text-white flex items-center justify-center gap-4 transition-all duration-700"
+                            className="group relative flex-1 h-16 bg-[#0A0A0A] border border-white/20 hover:border-white hover:bg-[#111111] rounded-lg text-[10px] uppercase tracking-[0.2em] font-inter font-semibold text-white/60 hover:text-white flex items-center justify-center gap-3 transition-all duration-300"
                         >
-                            <Camera size={18} className="text-noir-gold/50 group-hover:text-noir-gold transition-colors" />
-                            Try in AR
+                            <Camera size={16} className="text-white/50 group-hover:text-white transition-colors" />
+                            Use AR Camera
                         </button>
                     </div>
 
                     <button 
                         onClick={() => setIsOutfitBuilderOpen(true)}
-                        className="mt-4 group relative w-full h-16 bg-noir-surface/20 border border-white/5 hover:border-noir-gold rounded-2xl text-[10px] uppercase tracking-[0.5em] font-black text-white/40 hover:text-white flex items-center justify-center gap-4 transition-all duration-700"
+                        className="mt-2 group relative w-full h-16 bg-[#0F172A]/50 border border-white/10 hover:border-white/30 rounded-lg text-[10px] uppercase tracking-[0.2em] font-inter font-semibold text-white/60 hover:text-white flex items-center justify-center gap-3 transition-all duration-300"
                     >
-                        <Layers size={16} className="text-noir-gold/40 group-hover:text-noir-gold transition-colors" />
-                        Synthesize Complete Look
+                        <Layers size={16} className="text-white/40 group-hover:text-white transition-colors" />
+                        Complete The Look
                     </button>
                 </div>
 

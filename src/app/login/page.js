@@ -124,7 +124,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-[#C6A972] text-black font-semibold py-3.5 rounded-xl hover:bg-[#d4b97e] transition-all flex items-center justify-center gap-2 group mt-2"
+                            className="w-full bg-[#C6A972] text-[#0A0A0A] text-sm uppercase font-inter font-semibold tracking-wide rounded-lg py-3.5 hover:bg-white hover:text-[#0A0A0A] hover:scale-105 transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group mt-2"
                         >
                             {isLoading ? "Signing in..." : "Sign in"}
                             {!isLoading && <LogIn size={16} className="group-hover:translate-x-1 transition-transform" />}
@@ -142,7 +142,7 @@ export default function LoginPage() {
 
                     <button
                         onClick={handleGoogleSignIn}
-                        className="w-full bg-white/5 border border-white/10 text-white-[#C6A972] hover:text-black hover:border-[#C6A972]/10 transition-all flex items-center justify-center gap-3"
+                        className="w-full bg-[#0A0A0A] border border-[#C6A972]/30 text-[#C6A972] hover:bg-white hover:text-[#0A0A0A] hover:border-white py-3.5 rounded-lg text-sm uppercase font-inter font-semibold tracking-wide hover:scale-105 transition-all duration-300 shadow-xl flex items-center justify-center gap-3"
                     >
                         <Chrome size={18} />
                         Google

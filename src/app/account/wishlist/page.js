@@ -34,7 +34,7 @@ export default function WishlistPage() {
                     </div>
                     <div className="flex gap-4">
                         <Link href="/collections">
-                            <button className="glass-effect bg-noir-gold/10 border border-noir-gold/20 text-noir-gold px-6 py-4 rounded-xl text-[10px] uppercase tracking-widest hover:bg-noir-gold hover:text-noir-black transition-all flex items-center gap-2">
+                            <button className="bg-[#C6A972] text-[#0A0A0A] text-[10px] md:text-sm uppercase font-inter font-semibold tracking-wide rounded-lg px-6 py-4 hover:bg-white hover:text-[#0A0A0A] hover:scale-105 transition-all duration-300 shadow-xl flex items-center gap-2">
                                 Add more to Collection
                                 <ArrowUpRight size={14} />
                             </button>
@@ -73,7 +73,7 @@ export default function WishlistPage() {
                                     <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                                         <button
                                             onClick={() => handleMoveToCart(product)}
-                                            className="flex-1 glass-effect bg-white/5 border border-white/5 p-3 rounded-lg text-white/50 hover:text-white hover:bg-noir-gold/10 hover:border-noir-gold/20 transition-all text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 font-bold"
+                                            className="flex-1 bg-[#C6A972] text-[#0A0A0A] font-inter font-semibold p-3 rounded-lg hover:bg-white hover:text-[#0A0A0A] hover:scale-105 transition-all duration-300 shadow-xl text-[9px] uppercase tracking-widest flex items-center justify-center gap-2"
                                         >
                                             <ShoppingBag size={12} />
                                             Move to Selection

@@ -1,11 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Environment, PointerLockControls, PositionalAudio, Sky, Sparkles } from "@react-three/drei";
+import { Environment, PointerLockControls, PositionalAudio, Sky, Sparkles, Html, useProgress } from "@react-three/drei";
 import Player from "./Player";
 import Architecture from "./Architecture";
 import ProductDisplay from "./ProductDisplay";
+
+function Loader() {
+    const { progress } = useProgress();
+    return (
+        <Html center>
+            <div className="text-[#C6A972] font-inter text-xs uppercase tracking-[0.4em] whitespace-nowrap bg-[#0A0A0A]/80 backdrop-blur-md px-6 py-3 rounded-full border border-[#C6A972]/20">
+                Loading Environment {Math.round(progress)}%
+            </div>
+        </Html>
+    );
+}
 
 /**
  * Maison NOIR - Virtual Showroom Application
@@ -41,59 +52,61 @@ export default function BoutiqueScene() {
                 {/* Environment Settings */}
                 <color attach="background" args={["#0A0A0A"]} />
                 <fog attach="fog" args={["#0A0A0A", 10, 40]} />
-                <Environment preset="city" />
+                
+                <Suspense fallback={<Loader />}>
+                    <Environment preset="city" />
 
-                {/* Lighting */}
-                <ambientLight intensity={0.2} />
-                <directionalLight 
-                    position={[10, 20, 10]} 
-                    intensity={1.5} 
-                    castShadow 
-                    shadow-mapSize={[2048, 2048]} 
-                />
+                    {/* Lighting */}
+                    <ambientLight intensity={0.2} />
+                    <directionalLight 
+                        position={[10, 20, 10]} 
+                        intensity={1.5} 
+                        castShadow 
+                        shadow-mapSize={[2048, 2048]} 
+                    />
 
-                {/* Player Controls */}
-                <PointerLockControls />
-                <Player />
+                    {/* Player Controls */}
+                    <PointerLockControls />
+                    <Player />
 
-                {/* Level Architecture */}
-                <Architecture />
+                    {/* Level Architecture */}
+                    <Architecture />
 
-                {/* Atmospheric Dust */}
-                <Sparkles count={500} scale={30} size={1} speed={0.4} opacity={0.2} color="#C6A972" />
+                    {/* Atmospheric Dust */}
+                    <Sparkles count={500} scale={30} size={1} speed={0.4} opacity={0.2} color="#C6A972" />
 
-                {/* Product Placements in Zones */}
-                {/* Zone 1: Entrance Lobby */}
-                <ProductDisplay 
-                    position={[0, 1.2, -5]} 
-                    product={{ id: "m1", name: "Onyx Silk Trench", price: "₹85,000", category: "Runway" }} 
-                />
+                    {/* Product Placements in Zones */}
+                    {/* Zone 1: Entrance Lobby */}
+                    <ProductDisplay 
+                        position={[0, 1.2, -5]} 
+                        product={{ id: "m1", name: "Onyx Silk Trench", price: "₹85,000", category: "Runway" }} 
+                    />
 
-                {/* Zone 2: Designer Gallery */}
-                <ProductDisplay 
-                    position={[-8, 1.2, -10]} 
-                    rotation={[0, Math.PI / 4, 0]}
-                    product={{ id: "m2", name: "Midnight Velvet Gown", price: "₹1,25,000", category: "Couture" }} 
-                />
-                 <ProductDisplay 
-                    position={[8, 1.2, -10]} 
-                    rotation={[0, -Math.PI / 4, 0]}
-                    product={{ id: "m3", name: "Maison Noir Blazer", price: "₹65,000", category: "Tailored" }} 
-                />
+                    {/* Zone 2: Designer Gallery */}
+                    <ProductDisplay 
+                        position={[-8, 1.2, -10]} 
+                        rotation={[0, Math.PI / 4, 0]}
+                        product={{ id: "m2", name: "Midnight Velvet Gown", price: "₹1,25,000", category: "Couture" }} 
+                    />
+                     <ProductDisplay 
+                        position={[8, 1.2, -10]} 
+                        rotation={[0, -Math.PI / 4, 0]}
+                        product={{ id: "m3", name: "Maison Noir Blazer", price: "₹65,000", category: "Tailored" }} 
+                    />
 
-                {/* Zone 3: Luxury Jacket Section */}
-                <ProductDisplay 
-                    position={[-15, 1.2, -20]} 
-                    rotation={[0, Math.PI / 2, 0]}
-                    product={{ id: "m4", name: "Archive Leather Mono", price: "₹1,45,000", category: "Archive" }} 
-                />
+                    {/* Zone 3: Luxury Jacket Section */}
+                    <ProductDisplay 
+                        position={[-15, 1.2, -20]} 
+                        rotation={[0, Math.PI / 2, 0]}
+                        product={{ id: "m4", name: "Archive Leather Mono", price: "₹1,45,000", category: "Archive" }} 
+                    />
 
-                {/* Zone 4: VIP Collection Room */}
-                <ProductDisplay 
-                    position={[0, 1.2, -30]} 
-                    product={{ id: "m5", name: "Sovereign Masterpiece", price: "₹3,50,000", category: "Bespoke" }} 
-                />
-
+                    {/* Zone 4: VIP Collection Room */}
+                    <ProductDisplay 
+                        position={[0, 1.2, -30]} 
+                        product={{ id: "m5", name: "Sovereign Masterpiece", price: "₹3,50,000", category: "Bespoke" }} 
+                    />
+                </Suspense>
             </Canvas>
 
             {/* UI Overlay */}

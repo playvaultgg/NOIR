@@ -1,0 +1,18 @@
+{
+    "git.ignoreLimitWarning": true,
+
+    // ─── Tailwind v4 CSS Linter Fixes ────────────────────────────────────────
+    // Suppress "Unknown at rule" warnings for @custom-variant, @theme, @apply
+    // These are valid Tailwind CSS v4 directives, not errors.
+    "css.lint.unknownAtRules": "ignore",
+    "scss.lint.unknownAtRules": "ignore",
+
+    // ─── Tailwind IntelliSense ────────────────────────────────────────────────
+    "editor.quickSuggestions": {
+        "strings": "on"
+    },
+    "tailwindCSS.includeLanguages": {
+        "javascript": "javascript",
+        "javascriptreact": "javascriptreact"
+    }
+}

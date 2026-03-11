@@ -14,84 +14,97 @@ import { ArrowRight, Sparkles } from "lucide-react";
  */
 export default function HeroSection() {
     return (
-        <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-black">
-            {/* Cinematic Background Layer */}
-            <div className="absolute inset-0 z-0">
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black z-10" />
-                <video 
-                    autoPlay 
-                    muted 
-                    loop 
-                    playsInline
-                    className="w-full h-full object-cover opacity-50 scale-105 animate-ken-burns"
-                    poster="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1974&auto=format&fit=crop"
-                >
-                    <source src="https://v3.v-line.v-media.vimeo.com/exp=1741635600~acl=%2Fv%2F*~hmac=6666.../video.mp4" type="video/mp4" />
-                </video>
+        <section className="relative h-screen w-full bg-[#0A0A0A] overflow-hidden">
+            {/* Base Background Layer (The Canvas) */}
+            <div className="absolute inset-0 z-0 scale-105 animate-ken-burns">
+                <img 
+                    src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1974&auto=format&fit=crop"
+                    className="w-full h-full object-cover opacity-60"
+                    alt="Maison NOIR Heritage"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-transparent to-black/20" />
             </div>
 
-            {/* Grain & Depth Overlay */}
-            <div className="absolute inset-0 z-10 opacity-10 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-            
-            {/* Content Layer */}
-            <div className="relative z-20 text-center px-6 max-w-5xl space-y-12">
-                <header className="space-y-6">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 1.2, ease: "easeOut" }}
-                        className="flex items-center justify-center gap-4 text-noir-gold text-[10px] md:text-xs uppercase tracking-[0.6em] font-black italic"
-                    >
-                        <Sparkles size={14} className="animate-pulse" />
-                        The Future of Luxury Fashion
-                    </motion.div>
+            {/* Inverted Curve Overlays (Hero-12 Style) */}
+            <div className="relative z-10 w-full h-full flex flex-col justify-between p-6 lg:p-12">
+                {/* Top-Left Modular Block */}
+                <motion.div 
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="w-full lg:w-[600px] bg-[#0A0A0A] rounded-[40px] rounded-tl-[100px] rounded-br-[120px] p-12 lg:p-20 space-y-8 relative overflow-hidden group border border-white/5"
+                >
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-noir-gold/5 blur-[60px] rounded-full group-hover:bg-noir-gold/10 transition-colors" />
                     
-                    <motion.h1 
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-3 text-noir-gold text-[10px] uppercase tracking-[0.5em] font-black italic">
+                            <Sparkles size={14} className="animate-pulse" />
+                            Est. 1995 / Sovereign Archive
+                        </div>
+                        <h1 className="text-6xl lg:text-8xl font-playfair text-white tracking-tighter leading-none italic">
+                            Maison <br /> NOIR
+                        </h1>
+                    </div>
+
+                    <p className="text-white/40 text-sm md:text-md font-inter max-w-sm leading-relaxed italic">
+                        The ultimate synthesis of digital haute couture and artisanal precision. Explore the future of luxury.
+                    </p>
+
+                    <div className="pt-8">
+                        <Link href="/collections" className="group relative inline-flex items-center gap-6 px-10 py-5 bg-white rounded-full overflow-hidden transition-all hover:pr-14">
+                            <span className="absolute inset-0 bg-noir-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                            <span className="relative z-10 text-noir-black font-black text-[10px] uppercase tracking-[0.3em]">Explore collection</span>
+                            <ArrowRight size={14} className="relative z-10 text-noir-black group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </div>
+                </motion.div>
+
+                {/* Bottom Action Cluster & Discovery Cards */}
+                <div className="flex flex-col lg:flex-row items-end justify-between gap-12">
+                    {/* Floating Product Teaser Card */}
+                    <motion.div 
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-7xl md:text-9xl lg:text-[12rem] font-playfair text-white tracking-widest italic"
+                        transition={{ duration: 1.2, delay: 0.4 }}
+                        className="bg-black/60 backdrop-blur-2xl p-6 rounded-[40px] border border-white/10 flex items-center gap-6 max-w-sm group hover:border-noir-gold/30 transition-all"
                     >
-                        Maison <br /> NOIR
-                    </motion.h1>
+                        <div className="w-20 h-28 bg-white/5 rounded-2xl overflow-hidden border border-white/5">
+                            <img 
+                                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1920&auto=format&fit=crop" 
+                                className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                             <div className="text-noir-gold text-[8px] uppercase tracking-[0.4em] font-black">Featured Drop</div>
+                             <h3 className="text-white font-playfair text-xl italic leading-tight">Elite Trench <br /> Silhouette</h3>
+                             <p className="text-white/20 text-[9px] uppercase tracking-widest">Limited Acquisition</p>
+                        </div>
+                    </motion.div>
 
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 2, delay: 0.8 }}
-                        className="text-white/40 text-lg md:text-xl font-inter max-w-2xl mx-auto leading-relaxed italic"
+                    {/* Secondary Navigation (Bento Pill) */}
+                    <motion.div 
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 1.2, delay: 0.6 }}
+                        className="flex flex-col md:flex-row gap-4 w-full md:w-auto"
                     >
-                        Explore immersive couture experiences with AI styling, <br className="hidden md:block" />
-                        3D showrooms and cinematic fashion storytelling.
-                    </motion.p>
-                </header>
-
-                <motion.div 
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 1.2 }}
-                    className="flex flex-col md:flex-row items-center justify-center gap-8"
-                >
-                    <Link href="/collections" className="group relative px-12 py-5 bg-white overflow-hidden rounded-full">
-                        <span className="absolute inset-0 bg-noir-gold translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-                        <span className="relative z-10 text-noir-black font-black text-[10px] uppercase tracking-[0.3em] flex items-center gap-3">
-                            Explore Collection
-                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                        </span>
-                    </Link>
-
-                    <Link href="/showroom" className="group px-12 py-5 border border-white/20 hover:border-noir-gold backdrop-blur-md rounded-full transition-all duration-500">
-                        <span className="text-white group-hover:text-noir-gold font-black text-[10px] uppercase tracking-[0.3em] flex items-center gap-3">
-                            Enter Showroom
-                        </span>
-                    </Link>
-                </motion.div>
+                        <Link href="/showroom" className="h-20 px-12 bg-[#0A0A0A] rounded-full border border-white/5 flex items-center justify-center gap-4 text-[10px] uppercase tracking-[0.4em] text-white font-black hover:border-noir-gold transition-all group">
+                             <span className="w-1.5 h-1.5 rounded-full bg-noir-gold group-hover:animate-ping" />
+                             Enter 3D Showroom
+                        </Link>
+                        <Link href="/runway" className="h-20 px-12 bg-white/5 backdrop-blur-3xl rounded-full border border-white/5 flex items-center justify-center gap-4 text-[10px] uppercase tracking-[0.4em] text-white/40 font-black hover:text-white hover:border-white/20 transition-all">
+                             Runway Experience
+                        </Link>
+                    </motion.div>
+                </div>
             </div>
 
-            {/* Visual Indicator: Scroll Protocol */}
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-4 animate-bounce">
-                <span className="text-[8px] uppercase tracking-[0.4em] text-white/20 font-black">Scroll to Discover</span>
-                <div className="w-[1px] h-12 bg-gradient-to-b from-white/20 to-transparent" />
+            {/* Cinematic Noise Layer */}
+            <div className="absolute inset-0 z-20 opacity-10 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+            
+            {/* Scroll Indicator Protocol */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none flex flex-col items-center gap-4">
+                <div className="w-px h-16 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
             </div>
         </section>
     );

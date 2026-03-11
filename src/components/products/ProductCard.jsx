@@ -75,10 +75,10 @@ export default function ProductCard({
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={handleMouseLeave}
-            className="relative group w-full flex flex-col cursor-pointer perspective-[1000px] mb-12"
+            className="relative group w-full flex flex-col cursor-pointer perspective-[1000px] mb-12 transition-all duration-500 hover:scale-[1.02]"
         >
             {/* Visual Product Box */}
-            <Link href={`/product/${product.id}`} className="block relative aspect-[3/4] overflow-hidden bg-noir-surface rounded-sm shadow-2xl transition-shadow duration-500 group-hover:shadow-noir-gold/5">
+            <Link href={`/product/${product.id}`} className="block relative aspect-[3/4] overflow-hidden bg-noir-surface rounded-sm shadow-xl transition-all duration-500 hover:shadow-2xl group-hover:shadow-noir-gold/10">
 
                 {/* Main Image */}
                 <Image

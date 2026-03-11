@@ -40,6 +40,7 @@ export default function Navbar() {
 
     const [mounted,      setMounted]      = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
 
     // Text color per item (controlled imperatively like the original)
     const [textColors, setTextColors] = useState(
@@ -53,7 +54,20 @@ export default function Navbar() {
     const logoRef   = useRef(null);
     const tweenRef  = useRef(null);
 
-    useEffect(() => { setMounted(true); }, []);
+    useEffect(() => { 
+        setMounted(true); 
+
+        const handleScroll = () => {
+            if (window.scrollY > 50) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     const totalItemsCount = mounted ? getTotalItems() : 0;
 
@@ -151,8 +165,11 @@ export default function Navbar() {
                   dark glass, border, subtle shadow, rounded-full, flex row
                 */}
                 <div
-                    className="flex items-center rounded-full border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl"
-                    style={{ background: "rgba(10,10,10,0.75)", padding: "6px" }}
+                    className="flex items-center rounded-full border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl transition-colors duration-500"
+                    style={{ 
+                        background: scrolled ? "rgba(10,10,10,0.9)" : "rgba(10,10,10,0.4)", 
+                        padding: "6px" 
+                    }}
                 >
                     {/* ── Logo pill (same square-pill as ReactBits) ── */}
                     <Link

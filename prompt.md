@@ -77,3 +77,33 @@ The Executive Dashboard provides:
 - **Phase 12**: NFT Digital Ownership (On-chain authenticity for archival pieces).
 
 **© 2026 MAISON NOIR. Engineered for the 1%.**
+
+---
+
+## 🛠️ 7. UI Polish & Future Architecture Spec
+### 🔘 Button Design (Luxury Metric)
+- Base: `bg-[#C6A972] text-[#0A0A0A] rounded-lg font-semibold tracking-wide transition-all duration-300`
+- Hover: `hover:bg-white hover:text-[#0A0A0A] hover:scale-105`
+
+### ✒️ Font System
+- Headline/Product Titles: **Playfair Display**
+- Body/Buttons: **Inter**
+- Rule: Max 2 fonts globally to prevent cheapening the UI.
+
+### 🧭 Navbar Behavior
+- Position: Fixed overlay
+- Base State: `bg-black/40 backdrop-blur-md`
+- Scroll State: morphs to `bg-[#0A0A0A]/90` on scroll.
+
+### 📦 Product Card Hover
+- Animations: `hover:scale-[1.02] hover:shadow-2xl` with image swap bounds.
+
+### 🤖 Missing / Future E-commerce Features
+- **AI Recommendations**: `Recommended For You`, `Inspired By Your Style` logic in `lib/ai/recommendationEngine.js`
+- **Smart Semantic Search**: Not just keyword matches (e.g., "minimalist" searches features/materials) in `/search` -> `SmartSearch.jsx`.
+- **Outfit Builder Expansion**: Add entire "Black Silk Dress + Maison Boots + Jacket" to cart at once.
+- **Avatar Upgrade**: Physical measurements in `UserAvatar` schema (height, weight, chest, waist, hips, shoulder). 
+- **AR Try-On**: Native Mobile `WebXR` / `Three.js` camera overlay.
+- **Global Commerce**: Multi-currency (USD, EUR, INR) and language routing.
+- **Expanded Checkout**: Stripe / Razorpay bindings, order history routing, tax logic.
+- **Admin Analytics Dashboard**: Live Chart.js / Recharts injections for daily revenue and alerts.

@@ -14,14 +14,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCart } from "@/store/useCart";
+import { useCartStore } from "@/store/cartStore";
 
 export default function CheckoutPage() {
     const [step, setStep] = useState(1); // 1: Shipping, 2: Delivery, 3: Payment
     const [isProcessing, setIsProcessing] = useState(false);
     const router = useRouter();
-    const { items, getTotal, clearCart } = useCart();
-    const subtotal = getTotal();
+    const { items, getSubtotal, clearCart } = useCartStore();
+    const subtotal = getSubtotal();
 
     const handleCheckout = async () => {
         setIsProcessing(true);
@@ -205,7 +205,7 @@ export default function CheckoutPage() {
                                         <h5 className="text-[12px] font-playfair text-white">{item.name}</h5>
                                         <p className="text-[9px] uppercase tracking-widest text-white/30 mt-1">{item.brand || "NOIR COLLECTION"}</p>
                                     </div>
-                                    <span className="text-[10px] font-bold text-white italic">${(item.price * item.quantity).toLocaleString()}.00</span>
+                                    <span className="text-[10px] font-bold text-white italic">₹{(item.priceAmount * item.quantity).toLocaleString()}</span>
                                 </div>
                             ))}
                         </div>
@@ -213,7 +213,7 @@ export default function CheckoutPage() {
                         <div className="space-y-4 pt-12 border-t border-white/5">
                             <div className="flex justify-between text-[11px] uppercase tracking-widest text-white/40">
                                 <span>Subtotal</span>
-                                <span className="text-white">${subtotal.toLocaleString()}.00</span>
+                                <span className="text-white">₹{subtotal.toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between text-[11px] uppercase tracking-widest text-white/40">
                                 <span>Shipping</span>
@@ -221,7 +221,7 @@ export default function CheckoutPage() {
                             </div>
                             <div className="flex justify-between items-center pt-8">
                                 <span className="text-[12px] uppercase tracking-[0.4em] text-white font-bold">Total</span>
-                                <span className="text-3xl font-playfair font-bold text-gold italic">${total.toLocaleString()}.00</span>
+                                <span className="text-3xl font-playfair font-bold text-gold italic">₹{total.toLocaleString()}</span>
                             </div>
                         </div>
 

@@ -26,6 +26,7 @@ export const metadata = {
 
 import CartDrawer from "@/components/cart/CartDrawer";
 import CartReminderPopup from "@/components/cro/CartReminderPopup";
+import AIStylistChat from "@/components/ai/AIStylistChat";
 
 export default function RootLayout({ children }) {
   return (
@@ -46,9 +47,10 @@ export default function RootLayout({ children }) {
             <MobileNavbar />
             <Footer />
 
-            {/* Phase 3: Ultra Conversion Engine Add-ons */}
+            {/* Phase 3 & 9: Ultra Conversion & AI Assistant */}
             <CartDrawer />
             <CartReminderPopup />
+            <AIStylistChat />
           </SmoothScrollProvider>
         </AuthProvider>
       </body>

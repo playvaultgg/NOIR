@@ -9,12 +9,15 @@ import { useWishlistStore } from "@/store/wishlistStore";
 import { useState } from "react";
 import StickyPurchaseBar from "./StickyPurchaseBar";
 import GarmentTryOn from "@/components/avatar/GarmentTryOn";
+import ARTryOn from "@/components/ar/ARTryOn";
+import { Camera } from "lucide-react";
 
 export default function ProductViewClient({ product }) {
     const { addItem } = useCart();
     const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
     const [isAdding, setIsAdding] = useState(false);
     const [isTryOnOpen, setIsTryOnOpen] = useState(false);
+    const [isArOpen, setIsArOpen] = useState(false);
 
     const isBookmarked = isInWishlist(product.id);
 
@@ -115,16 +118,25 @@ export default function ProductViewClient({ product }) {
                         </button>
                     </div>
 
-                    {/* Phase 8.6: Virtual Try-On Action Cluster */}
-                    <button 
-                        onClick={() => setIsTryOnOpen(true)}
-                        className="group relative w-full h-20 bg-noir-surface/40 border border-white/5 hover:border-noir-gold rounded-2xl text-[10px] uppercase tracking-[0.5em] font-black text-white flex items-center justify-center gap-4 transition-all duration-700 shadow-2xl overflow-hidden hover:shadow-[0_0_40px_rgba(197,160,89,0.1)]"
-                    >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-noir-gold/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                        <Sparkles size={18} className="text-noir-gold group-hover:animate-pulse" />
-                        Virtual Persona Try-On
-                        <span className="text-[8px] opacity-40 italic lowercase tracking-normal font-light ml-2">Phase 8.6 Protocol Enabled</span>
-                    </button>
+                    {/* Phase 8.6 & 8.8: Immersive Try-On Action Cluster */}
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <button 
+                            onClick={() => setIsTryOnOpen(true)}
+                            className="group relative flex-1 h-20 bg-noir-surface/40 border border-white/5 hover:border-noir-gold rounded-2xl text-[10px] uppercase tracking-[0.5em] font-black text-white flex items-center justify-center gap-4 transition-all duration-700 shadow-2xl overflow-hidden hover:shadow-[0_0_40px_rgba(197,160,89,0.1)]"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-noir-gold/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                            <Sparkles size={18} className="text-noir-gold group-hover:animate-pulse" />
+                            Virtual Persona
+                        </button>
+
+                        <button 
+                            onClick={() => setIsArOpen(true)}
+                            className="group relative flex-1 h-20 bg-noir-surface/20 border border-white/10 hover:border-white rounded-2xl text-[10px] uppercase tracking-[0.5em] font-black text-white/60 hover:text-white flex items-center justify-center gap-4 transition-all duration-700"
+                        >
+                            <Camera size={18} className="text-noir-gold/50 group-hover:text-noir-gold transition-colors" />
+                            Try in AR
+                        </button>
+                    </div>
                 </div>
 
                 {/* Confidence Markers */}
@@ -155,6 +167,12 @@ export default function ProductViewClient({ product }) {
             <AnimatePresence>
                 {isTryOnOpen && (
                     <GarmentTryOn product={product} onClose={() => setIsTryOnOpen(false)} />
+                )}
+            </AnimatePresence>
+            {/* Phase 8.8: Immersive AR Portal */}
+            <AnimatePresence>
+                {isArOpen && (
+                    <ARTryOn product={product} onClose={() => setIsArOpen(false)} />
                 )}
             </AnimatePresence>
         </div>

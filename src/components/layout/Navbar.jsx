@@ -33,56 +33,54 @@ export default function Navbar() {
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 hidden lg:block ${isScrolled ? "bg-noir-black/95 backdrop-blur-xl border-b border-white/5" : "bg-black/40 backdrop-blur-md"
+                className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 hidden lg:block ${isScrolled ? "bg-[#0A0A0A]/95 backdrop-blur-xl border-b border-white/5 shadow-2xl" : "bg-black/40 backdrop-blur-md"
                     }`}
             >
                 <div className="max-w-[1600px] mx-auto px-12 h-20 flex items-center justify-between">
                     {/* Navigation Links (Left) */}
-                    <nav className="flex items-center gap-8 w-1/3">
+                    <nav className="flex items-center gap-10 w-1/3">
                         {[
-                            { name: "Home", href: "/" },
-                            { name: "Collections", href: "/collections" },
+                            { name: "Archive", href: "/collections" },
                             { name: "Showroom", href: "/showroom" },
                             { name: "Runway", href: "/runway" },
-                            { name: "Contact", href: "/contact" },
-                            { name: "Account", href: "/account" }
                         ].map((item) => (
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className="text-[11px] uppercase tracking-[0.2em] text-white/80 hover:text-noir-gold transition-colors duration-300 relative group"
+                                className="text-[10px] uppercase tracking-[0.4em] text-white/50 hover:text-[#C6A972] transition-colors duration-500 relative group font-black italic"
                             >
                                 {item.name}
-                                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-noir-gold transition-all duration-300 group-hover:w-full" />
+                                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#C6A972] transition-all duration-500 group-hover:w-full" />
                             </Link>
                         ))}
                     </nav>
 
                     {/* Noir Logo (Center) */}
                     <div className="flex justify-center w-1/3">
-                        <Link href="/" className="font-playfair text-3xl tracking-[0.15em] text-white">
-                            NOIR
+                        <Link href="/" className="font-playfair text-4xl tracking-[0.2em] text-white group relative">
+                            N O I R
+                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-px bg-[#C6A972]/50 group-hover:w-12 transition-all duration-700" />
                         </Link>
                     </div>
 
                     {/* Action Icons (Right) */}
-                    <div className="flex items-center justify-end gap-6 w-1/3 text-white/80">
+                    <div className="flex items-center justify-end gap-8 w-1/3 text-white/40">
                         <button
                             onClick={() => setIsSearchOpen(true)}
-                            className="hover:text-noir-gold transition-colors"
+                            className="hover:text-[#C6A972] transition-colors duration-500"
                         >
-                            <Search className="w-4 h-4" strokeWidth={1.5} />
+                            <Search className="w-4 h-4" strokeWidth={1} />
                         </button>
-                        <Link href={session ? "/account" : "/login"} className="hover:text-noir-gold transition-colors">
-                            <User className={`w-4 h-4 ${session ? "text-noir-gold" : ""}`} strokeWidth={1.5} />
+                        <Link href={session ? "/account" : "/login"} className="hover:text-[#C6A972] transition-colors duration-500">
+                            <User className={`w-4 h-4 ${session ? "text-[#C6A972]" : ""}`} strokeWidth={1} />
                         </Link>
                         <button
                             onClick={toggleCart}
-                            className="hover:text-noir-gold transition-colors relative"
+                            className="hover:text-[#C6A972] transition-colors duration-500 relative"
                         >
-                            <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
+                            <ShoppingBag className="w-4 h-4" strokeWidth={1} />
                             {totalItemsCount > 0 && (
-                                <span className="absolute -top-1.5 -right-2 w-4 h-4 bg-noir-gold rounded-full text-noir-black text-[9px] flex items-center justify-center font-bold shadow-lg shadow-noir-gold/20">
+                                <span className="absolute -top-2 -right-2.5 w-4 h-4 bg-[#C6A972] rounded-full text-[#0A0A0A] text-[8px] flex items-center justify-center font-black shadow-lg shadow-[#C6A972]/30">
                                     {totalItemsCount}
                                 </span>
                             )}

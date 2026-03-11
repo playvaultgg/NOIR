@@ -8,13 +8,11 @@ import Link from "next/link";
 import { Mail, Lock, LogIn, Chrome, Sparkles } from "lucide-react";
 
 /**
- * Maison NOIR Login Page
- * Powered by ReactBits auth-2 block logic.
+ * Maison NOIR Login Page - ReactBits Auth-2 adaptation
  * Features:
- * - Ultra-Luxury Glassmorphism UI
- * - Neural Identity Verification Flow
- * - Google OAuth Integration
- * - Cinematic Dark Noir Aesthetics
+ * - Split layout (Form on left, Animated visual/testimonial on right)
+ * - Gradient backgrounds and animated elements
+ * - Clean, modern glassmorphism UI
  */
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -53,69 +51,70 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-black px-6 relative overflow-hidden">
-            {/* Visual Grain & Depth Decoration */}
-            <div className="absolute inset-0 opacity-20 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-noir-gold/5 via-transparent to-noir-gold/2" />
-            
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full max-w-md relative z-10"
-            >
-                <div className="text-center mb-12 space-y-4">
-                    <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center justify-center gap-4 text-noir-gold text-[10px] uppercase tracking-[0.5em] font-black italic"
-                    >
-                        <Sparkles size={14} />
-                        Identity Verification
-                    </motion.div>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-playfair text-white tracking-tighter italic">
-                        Maison NOIR
-                    </h1>
-                </div>
+        <main className="min-h-screen flex bg-black">
+            {/* ── Left Side: Auth Form (ReactBits Auth-2 style) ── */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative z-10">
+                <motion.div
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="w-full max-w-md"
+                >
+                    <div className="mb-10 lg:mb-16">
+                        <Link href="/" className="inline-block mb-12 group">
+                            <h2 className="font-playfair text-2xl tracking-[0.2em] text-white group-hover:text-[#C6A972] transition-colors">
+                                N O I R
+                            </h2>
+                        </Link>
+                        
+                        <h1 className="text-3xl lg:text-4xl font-semibold text-white mb-3">
+                            Welcome back
+                        </h1>
+                        <p className="text-white/40 text-sm">
+                            Enter your credentials to access your account.
+                        </p>
+                    </div>
 
-                <div className="glass-effect bg-noir-surface/40 rounded-[2.5rem] p-8 md:p-12 border border-white/5 shadow-[0_0_80px_rgba(0,0,0,0.5)] relative overflow-hidden backdrop-blur-3xl">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-noir-gold/20 to-transparent" />
-                    
                     {error && (
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="mb-8 p-4 bg-red-500/10 border border-red-500/20 text-red-500 text-[9px] uppercase tracking-widest text-center italic"
+                            className="mb-8 p-4 bg-red-500/10 border border-red-500/20 text-red-500 text-sm rounded-xl"
                         >
                             {error}
                         </motion.div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-8">
-                        <div className="space-y-3">
-                            <label className="text-[10px] uppercase tracking-[0.3em] text-white/40 ml-1">Email Identifier</label>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/80">Email address</label>
                             <div className="relative group">
-                                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-noir-gold transition-colors" size={16} />
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-[#C6A972] transition-colors" size={18} />
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-noir-black/40 border border-white/5 focus:border-noir-gold outline-none text-white text-sm px-14 py-5 rounded-2xl transition-all font-inter"
-                                    placeholder="name@exclusive.com"
+                                    className="w-full bg-white/5 border border-white/10 focus:border-[#C6A972] outline-none text-white text-sm px-12 py-3.5 rounded-xl transition-all"
+                                    placeholder="Enter your email"
                                     required
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-3">
-                            <label className="text-[10px] uppercase tracking-[0.3em] text-white/40 ml-1">Secret Key</label>
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                                <label className="text-sm font-medium text-white/80">Password</label>
+                                <Link href="/forgot-password" className="text-xs text-[#C6A972] hover:text-white transition-colors">
+                                    Forgot password?
+                                </Link>
+                            </div>
                             <div className="relative group">
-                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-noir-gold transition-colors" size={16} />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-[#C6A972] transition-colors" size={18} />
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-noir-black/40 border border-white/5 focus:border-noir-gold outline-none text-white text-sm px-14 py-5 rounded-2xl transition-all font-inter"
+                                    className="w-full bg-white/5 border border-white/10 focus:border-[#C6A972] outline-none text-white text-sm px-12 py-3.5 rounded-xl transition-all"
                                     placeholder="••••••••"
                                     required
                                 />
@@ -125,42 +124,78 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-white text-noir-black py-5 font-black uppercase text-[10px] tracking-[0.4em] rounded-2xl hover:bg-noir-gold transition-all shadow-xl shadow-white/5 relative group overflow-hidden"
+                            className="w-full bg-[#C6A972] text-black font-semibold py-3.5 rounded-xl hover:bg-[#d4b97e] transition-all flex items-center justify-center gap-2 group mt-2"
                         >
-                            <span className="relative z-10 flex items-center justify-center gap-3">
-                                {isLoading ? "Synchronizing..." : "Initialize Entry"}
-                                {!isLoading && <LogIn size={14} className="group-hover:translate-x-1 transition-transform" />}
-                            </span>
+                            {isLoading ? "Signing in..." : "Sign in"}
+                            {!isLoading && <LogIn size={16} className="group-hover:translate-x-1 transition-transform" />}
                         </button>
                     </form>
 
-                    <div className="relative my-12">
+                    <div className="relative my-8">
                         <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-white/5"></div>
+                            <div className="w-full border-t border-white/10"></div>
                         </div>
-                        <div className="relative flex justify-center text-[8px] uppercase tracking-[0.4em]">
-                            <span className="bg-transparent px-4 text-white/20">External Node</span>
+                        <div className="relative flex justify-center text-xs">
+                            <span className="bg-black px-4 text-white/40">Or continue with</span>
                         </div>
                     </div>
 
                     <button
                         onClick={handleGoogleSignIn}
-                        className="w-full bg-noir-black/40 border border-white/5 text-white/70 py-4 font-bold uppercase text-[9px] tracking-[0.3em] rounded-2xl hover:bg-white/5 hover:text-white transition-all flex items-center justify-center gap-3 group"
+                        className="w-full bg-white/5 border border-white/10 text-white-[#C6A972] hover:text-black hover:border-[#C6A972]/10 transition-all flex items-center justify-center gap-3"
                     >
-                        <Chrome size={14} className="text-noir-gold group-hover:rotate-12 transition-transform" />
-                        Continue with Google
+                        <Chrome size={18} />
+                        Google
                     </button>
 
-                    <div className="mt-12 text-center">
-                        <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] italic">
-                            New to the Maison?{" "}
-                            <Link href="/register" className="text-noir-gold hover:text-white transition-colors underline underline-offset-8 decoration-noir-gold/30">
-                                Apply for Access
-                            </Link>
+                    <p className="mt-10 text-center text-sm text-white/40">
+                        Don't have an account?{" "}
+                        <Link href="/register" className="text-white hover:text-[#C6A972] transition-colors font-medium">
+                            Sign up
+                        </Link>
+                    </p>
+                </motion.div>
+            </div>
+
+            {/* ── Right Side: Visual/Animated Area (ReactBits Auth-2 style) ── */}
+            <div className="hidden lg:flex w-1/2 relative overflow-hidden bg-[#0A0A0A] items-center justify-center p-12">
+                {/* Gradient Backgrounds */}
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#C6A972]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3" />
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#C6A972]/5 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3" />
+                
+                {/* Noise texture */}
+                <div className="absolute inset-0 opacity-20 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+
+                {/* Animated Testimonial Card */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative z-10 max-w-lg"
+                >
+                    <div className="glass-effect bg-white/5 border border-white/10 p-10 rounded-3xl backdrop-blur-xl relative overflow-hidden">
+                        <Sparkles className="text-[#C6A972] mb-6 w-8 h-8" />
+                        
+                        <p className="text-2xl font-playfair text-white leading-relaxed mb-8 italic">
+                            "Maison NOIR has completely redefined my understanding of luxury fashion. The curated selections and the seamless digital experience are truly unparalleled."
                         </p>
+                        
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-white/10 overflow-hidden">
+                                {/* Placeholder avatar */}
+                                <div className="w-full h-full bg-gradient-to-br from-[#C6A972] to-black/50" />
+                            </div>
+                            <div>
+                                <h4 className="text-white font-medium">Eleanor Vance</h4>
+                                <p className="text-white/40 text-sm">Vogue Contributing Editor</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </motion.div>
+
+                    {/* Decorative blurred card behind */}
+                    <div className="absolute -inset-4 bg-gradient-to-br from-[#C6A972]/20 to-transparent blur-2xl -z-10 rounded-[3rem] opacity-50" />
+                </motion.div>
+            </div>
         </main>
     );
 }

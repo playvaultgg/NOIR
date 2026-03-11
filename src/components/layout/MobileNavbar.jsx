@@ -28,6 +28,10 @@ export default function MobileNavbar() {
         { icon: ShoppingBag, label: "Cart", href: "/cart" },
     ];
 
+    if (["/login", "/register", "/forgot-password"].includes(pathname) || pathname.startsWith("/admin")) {
+        return null;
+    }
+
     return (
         <motion.div
             initial={{ y: 150 }}

@@ -57,7 +57,7 @@ export default function ARTryOn({ product, onClose }) {
                     </div>
                     <h3 className="text-white font-playfair text-2xl italic tracking-tight">{product.name}</h3>
                 </div>
-                <button onClick={onClose} className="p-4 bg-white/10 backdrop-blur-md rounded-full text-white hover:bg-white/20 transition-all">
+                <button onClick={onClose} className="p-4 bg-white/10 backdrop-blur-md rounded-full text-white-[#C6A972] hover:text-black hover:border-[#C6A972]/20 transition-all">
                     <X size={20} />
                 </button>
             </div>

@@ -95,7 +95,7 @@ export default function GarmentTryOn({ product, products, onClose }) {
                                     </div>
                                 )}
                              </div>
-                             <button onClick={onClose} className="p-4 bg-white/5 border border-white/5 rounded-full text-white/40 hover:text-white transition-all hover:bg-white/10">
+                             <button onClick={onClose} className="p-4 bg-white/5 border border-white/5 rounded-full text-white-[#C6A972] hover:text-black hover:border-[#C6A972]/10">
                                 <X size={20} />
                              </button>
                         </div>

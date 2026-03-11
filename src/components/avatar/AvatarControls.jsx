@@ -27,7 +27,7 @@ export default function AvatarControls({ onRotate, onZoom, onSnapshot }) {
                         key={i}
                         onClick={ctrl.action}
                         title={ctrl.label}
-                        className="p-4 bg-white/5 border border-white/5 rounded-xl text-white/40 hover:text-noir-gold hover:bg-white/10 transition-all hover:scale-110 active:scale-95 group"
+                        className="p-4 bg-white/5 border border-white/5 rounded-xl text-white-[#C6A972] hover:text-black hover:border-[#C6A972]/10 transition-all hover:scale-110 active:scale-95 group"
                     >
                          <ctrl.icon size={18} strokeWidth={1.5} />
                     </button>

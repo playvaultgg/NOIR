@@ -173,7 +173,7 @@ export default function AuthModal({ isOpen, onClose }) {
                             <button
                                 type="button"
                                 onClick={handleGoogleLogin}
-                                className="w-full bg-white/5 border border-white/10 py-4 flex items-center justify-center gap-3 text-[11px] uppercase tracking-[0.3em] font-medium text-white hover:bg-white/10 transition-all"
+                                className="w-full bg-white/5 border border-white/10 py-4 flex items-center justify-center gap-3 text-[11px] uppercase tracking-[0.3em] font-medium text-white-[#C6A972] hover:text-black hover:border-[#C6A972]/10 transition-all"
                             >
                                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-4 h-4" alt="G" />
                                 Sign in with Google

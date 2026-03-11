@@ -7,10 +7,11 @@ const nextConfig = {
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
       { protocol: 'https', hostname: 'grainy-gradients.vercel.app' },
       { protocol: 'https', hostname: 'plus.unsplash.com' },
+      { protocol: 'https', hostname: 'loremflickr.com' },
     ],
   },
   // High-performance compiler settings
-  swcMinify: true,
+  // High-performance compiler settings
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },

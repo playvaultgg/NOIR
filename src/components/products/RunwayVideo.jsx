@@ -40,7 +40,7 @@ export default function RunwayVideo() {
                         initial={{ scale: 0.8, opacity: 0 }}
                         whileInView={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.5, duration: 1.2 }}
-                        className="w-24 h-24 rounded-full border border-white/20 flex items-center justify-center text-white backdrop-blur-md group-hover:bg-white group-hover:text-noir-black transition-all cursor-pointer shadow-2xl"
+                        className="w-24 h-24 rounded-full border border-white/20 flex items-center justify-center text-white-[#C6A972] hover:text-black hover:border-[#C6A972] group-hover:text-noir-black transition-all cursor-pointer shadow-2xl"
                     >
                         <Play size={32} className="ml-1" />
                     </motion.div>

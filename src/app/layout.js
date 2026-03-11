@@ -26,6 +26,7 @@ export const metadata = {
 
 import CartDrawer from "@/components/cart/CartDrawer";
 import CartReminderPopup from "@/components/cro/CartReminderPopup";
+import PageWrapper from "@/components/layout/PageWrapper";
 import AIStylistChat from "@/components/ai/AIStylistChat";
 
 export default function RootLayout({ children }) {
@@ -40,9 +41,10 @@ export default function RootLayout({ children }) {
             {/* Universal Navbar Persistence */}
             <Navbar />
 
-            <main className="min-h-screen pt-20 pb-32 lg:pb-0">
+            {/* Smart Wrapper for edge-to-edge screens like Auth */}
+            <PageWrapper>
               {children}
-            </main>
+            </PageWrapper>
 
             <MobileNavbar />
             <Footer />

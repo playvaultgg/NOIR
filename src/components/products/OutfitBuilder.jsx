@@ -49,7 +49,7 @@ export default function OutfitBuilder({ isOpen, onClose, initialProduct }) {
                             </div>
                             <h2 className="text-3xl font-playfair text-white italic">Curate the Ensemble</h2>
                         </div>
-                        <button onClick={onClose} className="p-4 hover:bg-white/5 rounded-full transition-colors text-white/40">
+                        <button onClick={onClose} className="p-4 hover:bg-white">
                             <X size={24} />
                         </button>
                     </div>

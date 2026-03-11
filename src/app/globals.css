@@ -145,10 +145,21 @@
     0% { transform: translateY(0); }
     100% { transform: translateY(-50%); }
   }
+  /* Atmospheric Noor Motion Protocol */
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+  }
 }
 
 @theme inline {
   --animate-vertical-marquee: vertical-marquee 60s linear infinite;
+  --animate-float-slow: float-slow 15s ease-in-out infinite;
+  --animate-pulse-slow: pulse-slow 10s ease-in-out infinite;
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);

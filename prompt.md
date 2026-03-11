@@ -41,6 +41,19 @@ MAISON NOIR is an elite, ₹1 Crore ultra-luxury fashion e-commerce ecosystem. I
   - `Soft Platinum`: `#E5E5E5` (High-fidelity texture)
 - **Glassmorphism**: 32px Gaussian blur on all navigation and modal layers for a "frosted obsidian" effect.
 
+### 💫 UI Interactions & Animations
+- **Navbar & Header**: 
+  - *Liquid Wobble*: Glassmorphic tabs (`backdrop-blur-md`) utilize Framer Motion spring variants to create a subtle wobble/pop off the Z-axis when hovered. 
+  - *State Shift*: Elements morph from `text-white/40` transparency to solid `text-[#C6A972]` (Maison Gold).
+- **Hero & DZ (Display Zone) Section**: 
+  - *Primary Buttons*: Solid Maison Gold (`bg-[#C6A972]`) boxes.
+  - *Hover Pop*: Transition into Luxury White (`hover:bg-white`) creating an immediate visual contrast flash and `scale-105` 3D structural expansion.
+- **Product Modules & 3D Interactive Panels**:
+  - *Quick Purchase Rings*: Dark transparent glass cards (`bg-black/80`). 
+  - *Golden Lighting Effect*: Upon hover, the background aggressively switches to solid `#C6A972`, the text turns pitch-black, and borders illuminate. This fixes the optical illusion of text disappearing into a white background.
+- **Footer Section**:
+  - *Minimalist Fades*: Muted links (`text-white/40`) that gracefully fade into bright white or pure gold upon interaction with a slow `<div />` bottom-border expansion curve.
+
 ---
 
 ## 👤 4. Advanced Avatar System

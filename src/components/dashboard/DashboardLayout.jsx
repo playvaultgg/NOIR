@@ -55,7 +55,7 @@ export default function DashboardLayout({ children }) {
                                 href={item.href}
                                 className={`flex items-center gap-4 px-4 py-3.5 rounded-xl text-[10px] uppercase tracking-[0.2em] font-medium transition-all group ${isActive
                                         ? "bg-noir-gold text-noir-black shadow-lg shadow-noir-gold/20"
-                                        : "text-white/40 hover:text-white hover:bg-white/5"
+                                        : "text-white-[#C6A972] hover:text-black hover:border-[#C6A972]/5"
                                     }`}
                             >
                                 <item.icon size={16} strokeWidth={isActive ? 2.5 : 1.5} className={isActive ? "text-noir-black" : "group-hover:text-noir-gold transition-colors"} />

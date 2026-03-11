@@ -75,7 +75,7 @@ export default function PersonalizedHero() {
                                 <p className="text-[9px] uppercase tracking-widest text-white/30">Maison Tier</p>
                                 <p className="text-[10px] text-noir-gold font-black uppercase tracking-widest mt-1">{profile.loyaltyTier}</p>
                             </div>
-                            <Link href="/account" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-noir-black transition-all">
+                            <Link href="/account" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white-[#C6A972] hover:text-black hover:border-[#C6A972] hover:text-noir-black transition-all">
                                 <ArrowRight size={16} />
                             </Link>
                         </div>

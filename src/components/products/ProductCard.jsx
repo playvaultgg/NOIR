@@ -75,7 +75,7 @@ export default function ProductCard({
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={handleMouseLeave}
-            className="relative group w-full flex flex-col cursor-pointer perspective-[1000px] mb-8"
+            className="relative group w-full flex flex-col cursor-pointer perspective-[1000px] mb-12"
         >
             {/* Visual Product Box */}
             <Link href={`/product/${product.id}`} className="block relative aspect-[3/4] overflow-hidden bg-noir-surface rounded-sm shadow-2xl transition-shadow duration-500 group-hover:shadow-noir-gold/5">
@@ -136,7 +136,7 @@ export default function ProductCard({
                                 size: "M"
                             });
                         }}
-                        className="w-full glass-effect bg-black/60 hover:bg-white hover:text-black hover:border-white transition-all duration-300 text-white text-[9px] uppercase tracking-[0.3em] py-3.5 flex items-center justify-center gap-2 font-bold"
+                        className="w-full glass-effect bg-black/60 hover:bg-[#C6A972] hover:text-black hover:border-transparent transition-colors duration-300 text-white text-[9px] uppercase tracking-[0.3em] py-3.5 flex items-center justify-center gap-2 font-black border border-white/10 rounded-sm"
                     >
                         <ShoppingBag className="w-3.5 h-3.5" />
                         Quick Purchase
@@ -145,7 +145,7 @@ export default function ProductCard({
             </Link>
 
             {/* Product Metadata */}
-            <div className="mt-5 flex flex-col text-left px-1">
+            <div className="mt-6 flex flex-col text-left px-1">
                 <h3 className="font-playfair text-xl text-white group-hover:text-noir-gold transition-colors duration-500 tracking-tight">
                     {product.name}
                 </h3>

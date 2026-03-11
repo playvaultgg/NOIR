@@ -42,11 +42,9 @@ export default function ShowroomPreview() {
                      </header>
 
                      <div className="flex flex-col md:flex-row gap-8">
-                        <Link href="/showroom" className="group/btn relative px-12 py-5 bg-noir-gold overflow-hidden rounded-full transition-shadow hover:shadow-[0_0_50px_rgba(197,160,89,0.3)]">
-                            <span className="relative z-10 text-noir-black font-black text-[10px] uppercase tracking-[0.3em] flex items-center gap-3">
-                                Enter Showroom
-                                <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                            </span>
+                        <Link href="/showroom" className="group flex items-center justify-center gap-3 px-10 py-5 bg-[#C6A972] rounded-lg transition-all duration-300 hover:scale-105 hover:bg-white text-[#0A0A0A] font-inter font-semibold tracking-wide uppercase shadow-xl shadow-[#C6A972]/5">
+                            Enter Showroom
+                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                      </div>
                 </div>

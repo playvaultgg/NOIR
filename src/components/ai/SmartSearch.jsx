@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Sparkles, X, ArrowRight } from "lucide-react";
-import { RecommendationEngine } from "@/lib/ai/recommendationEngine";
+import { semanticSearch } from "@/lib/ai/recommendationEngine";
 import Link from "next/link";
 
 /**
@@ -22,7 +22,7 @@ export default function SmartSearch({ isOpen, onClose }) {
                 return;
             }
             setIsSearching(true);
-            const data = await RecommendationEngine.semanticSearch(query);
+            const data = await semanticSearch(query);
             setResults(data);
             setIsSearching(false);
         };

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, ArrowRight } from "lucide-react";
-import { RecommendationEngine } from "@/lib/ai/recommendationEngine";
+import { getPersonalizedCuration } from "@/lib/ai/recommendationEngine";
 import ProductCard from "../products/ProductCard";
 
 /**
@@ -19,7 +19,7 @@ export default function RecommendedForYou() {
 
     useEffect(() => {
         async function fetchRecs() {
-            const data = await RecommendationEngine.getPersonalizedCuration("current-user");
+            const data = await getPersonalizedCuration("current-user");
             setRecommendations(data);
         }
         fetchRecs();

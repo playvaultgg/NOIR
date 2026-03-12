@@ -26,14 +26,18 @@ export async function POST(req) {
                 data: {
                     name: "NOIR Guest Client",
                     email: `guest_${Date.now()}@noir.local`,
-                    role: "CUSTOMER"
+                    role: "USER"
                 }
             });
             userId = guestUser.id;
         }
 
+        // Detect Simulation Mode (if no valid Stripe key is provided)
+        const isSimulation = !process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY.startsWith("sk_test_mock");
+
         // Create Stripe line items
         const lineItems = items.map((item) => {
+            const amount = item.priceAmount || (typeof item.price === 'string' ? parseFloat(item.price.replace(/[^0-9.]/g, '')) : 0);
             return {
                 price_data: {
                     currency: "eur",
@@ -44,13 +48,23 @@ export async function POST(req) {
                             productId: item.id,
                         }
                     },
-                    unit_amount: Math.round(item.priceAmount * 100), // Stripe expects cents
+                    unit_amount: Math.round(amount * 100), // Stripe expects cents
                 },
                 quantity: item.quantity || 1,
             };
         });
 
         const origin = req.headers.get('origin') || "http://localhost:3000";
+
+        if (isSimulation) {
+            console.log("SIMULATION MODE ACTIVE: Bypassing Stripe Gateway");
+            // Return a simulated success URL for development/demo purposes
+            return NextResponse.json({ 
+                url: `${origin}/checkout/success?session_id=SIM_SESSION_${Date.now()}`,
+                sessionId: `SIM_ID_${Date.now()}`,
+                simulated: true
+            });
+        }
 
         // Create Stripe checkout session
         const checkoutSession = await stripe.checkout.sessions.create({
@@ -67,7 +81,15 @@ export async function POST(req) {
 
         return NextResponse.json({ url: checkoutSession.url, sessionId: checkoutSession.id });
     } catch (error) {
-        console.error("Stripe Checkout Error:", error);
-        return NextResponse.json({ error: "Failed to initialize payment gateway." }, { status: 500 });
+        console.error("DETAILED STRIPE ERROR:", {
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+            type: error.type
+        });
+        return NextResponse.json({ 
+            error: "Failed to initialize payment gateway.", 
+            details: error.message 
+        }, { status: 500 });
     }
 }

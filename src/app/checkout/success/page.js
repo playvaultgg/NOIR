@@ -1,144 +1,224 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import {
-    CheckCircle2,
-    Package,
-    Mail,
-    ArrowRight,
-    ShieldCheck,
-    Award,
-    Compass
-} from "lucide-react";
+import { ShieldCheck, ArrowRight, Download, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { gsap } from "gsap";
-import { useCart } from "@/store/useCart";
+import { useEffect } from "react";
+import confetti from "canvas-confetti";
+import { jsPDF } from "jspdf";
+import { useSearchParams } from "next/navigation";
 
-export default function SuccessPage() {
-    const { clearCart } = useCart();
-    const containerRef = useRef(null);
+/**
+ * Maison NOIR - Acquisition Success Page
+ * Features cinematic animations and a digital certificate reveal.
+ */
+export default function CheckoutSuccessPage() {
+    const searchParams = useSearchParams();
+    const sessionId = searchParams.get("session_id") || "MN-INTERNAL-AUTH";
+    const orderNumber = `MN-${Math.floor(100000 + Math.random() * 900000)}`;
 
     useEffect(() => {
-        // Clear the cart upon successful order landing
-        clearCart();
+        // Subtle golden confetti for a luxury feel
+        const duration = 3 * 1000;
+        const end = Date.now() + duration;
 
-        // GSAP Cinematic Activation
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline();
+        const frame = () => {
+            confetti({
+                particleCount: 2,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: ["#C6A972", "#ffffff"]
+            });
+            confetti({
+                particleCount: 2,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: ["#C6A972", "#ffffff"]
+            });
 
-            tl.from(".success-icon", {
-                scale: 0.2,
-                opacity: 0,
-                duration: 1.2,
-                ease: "back.out(1.7)"
-            })
-                .from(".success-text", {
-                    y: 30,
-                    opacity: 0,
-                    stagger: 0.2,
-                    duration: 1,
-                    ease: "power3.out"
-                }, "-=0.5")
-                .from(".success-card", {
-                    y: 40,
-                    opacity: 0,
-                    stagger: 0.15,
-                    duration: 0.8,
-                    ease: "power2.out"
-                }, "-=0.4")
-                .from(".success-cta", {
-                    y: 20,
-                    opacity: 0,
-                    duration: 0.8,
-                    ease: "power2.out"
-                }, "-=0.2");
-        }, containerRef);
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        };
+        frame();
+    }, []);
 
-        return () => ctx.revert();
-    }, [clearCart]);
+    const handleDownloadPDF = () => {
+        const doc = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4"
+        });
+
+        const goldColor = "#C6A972";
+        const blackColor = "#0A0A0A";
+
+        // Background
+        doc.setFillColor(blackColor);
+        doc.rect(0, 0, 210, 297, "F");
+
+        // Border
+        doc.setDrawColor(goldColor);
+        doc.setLineWidth(0.5);
+        doc.rect(10, 10, 190, 277);
+        doc.rect(12, 12, 186, 273);
+
+        // Content
+        doc.setTextColor(goldColor);
+        doc.setFontSize(24);
+        doc.text("MAISON NOIR", 105, 40, { align: "center" });
+
+        doc.setTextColor("#FFFFFF");
+        doc.setFontSize(32);
+        doc.text("CERTIFICATE OF AUTHENTICITY", 105, 70, { align: "center" });
+
+        doc.setFontSize(10);
+        doc.setTextColor(goldColor);
+        doc.text("DIGITAL ASSET ARCHIVE / SOVEREIGN TIER", 105, 80, { align: "center" });
+
+        doc.setDrawColor(goldColor);
+        doc.setLineWidth(0.2);
+        doc.line(40, 90, 170, 90);
+
+        doc.setTextColor("#FFFFFF");
+        doc.setFontSize(14);
+        doc.text("This document certifies the permanent registration of", 105, 110, { align: "center" });
+        
+        doc.setFontSize(18);
+        doc.setTextColor(goldColor);
+        doc.text(orderNumber, 105, 125, { align: "center" });
+
+        doc.setFontSize(12);
+        doc.setTextColor("#FFFFFF");
+        doc.text("within the Maison NOIR Private Registry.", 105, 140, { align: "center" });
+
+        // Metadata
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100); // Gray for labels
+        doc.text("REGISTRY TIER:", 40, 170);
+        doc.setTextColor(255, 255, 255);
+        doc.text("ARCHIVAL SOVEREIGN", 170, 170, { align: "right" });
+
+        doc.setTextColor(100, 100, 100);
+        doc.text("IDENTIFIER:", 40, 180);
+        doc.setTextColor(255, 255, 255);
+        doc.text(sessionId, 170, 180, { align: "right" });
+
+        doc.setTextColor(100, 100, 100);
+        doc.text("ENCRYPTION:", 40, 190);
+        doc.setTextColor(255, 255, 255);
+        doc.text("RSA-4096 / NOIR-NODE-V2", 170, 190, { align: "right" });
+
+        doc.setTextColor(100, 100, 100);
+        doc.text("TIMESTAMP:", 40, 200);
+        doc.setTextColor(255, 255, 255);
+        doc.text(new Date().toLocaleString(), 170, 200, { align: "right" });
+
+        // Footer Seal
+        doc.setDrawColor(goldColor);
+        doc.circle(105, 240, 15);
+        doc.setTextColor(goldColor);
+        doc.setFontSize(8);
+        doc.text("OFFICIAL SEAL", 105, 241, { align: "center" });
+
+        doc.setFontSize(6);
+        doc.setTextColor(80, 80, 80);
+        doc.text("THE ABOVE ASSET IS SECURED BY THE MAISON IDENTITY PROTOCOL.", 105, 270, { align: "center" });
+
+        doc.save(`MAISON_NOIR_TOKEN_${orderNumber}.pdf`);
+    };
 
     return (
-        <main ref={containerRef} className="min-h-screen bg-black text-white flex items-center justify-center p-8 overflow-hidden">
+        <main className="min-h-screen bg-noir-black flex items-center justify-center p-8 overflow-hidden relative">
+            {/* Background Atmosphere */}
+            <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-noir-gold/5 blur-[150px] rounded-full pointer-events-none" />
 
-            {/* AMBIENT BACKGROUND GLOW */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 blur-[120px] rounded-full pointer-events-none" />
-
-            <div className="max-w-2xl w-full text-center space-y-12 relative z-10">
-
-                {/* SUCCESS ICON */}
-                <div className="success-icon flex justify-center">
-                    <div className="relative">
-                        <div className="absolute inset-0 bg-gold/20 blur-[40px] rounded-full animate-pulse" />
-                        <CheckCircle2 size={88} strokeWidth={1} className="text-gold relative z-10" />
-                    </div>
-                </div>
-
-                {/* MESSAGES */}
-                <div className="space-y-4">
-                    <h2 className="success-text text-sm uppercase tracking-[0.5em] text-gold font-inter font-medium leading-none">
-                        Order Confirmed
-                    </h2>
-                    <h1 className="success-text text-5xl md:text-7xl font-playfair tracking-tight text-white mb-6">
-                        Welcome to NOIR.
-                    </h1>
-                    <p className="success-text text-[11px] md:text-xs uppercase tracking-[0.3em] text-white/40 leading-relaxed font-light max-w-sm mx-auto italic">
-                        "Your acquisition is being curated with the
-                        utmost precision in our Paris atelier."
-                    </p>
-                </div>
-
-                {/* ORDER INFO CARDS */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-8">
-                    <div className="success-card glass-effect rounded-[24px] p-8 text-left space-y-4 border border-white/5 bg-white/5">
-                        <div className="flex items-center gap-4 text-gold/60">
-                            <Package size={18} />
-                            <span className="text-[10px] uppercase tracking-widest font-bold">Acquisition ID</span>
-                        </div>
-                        <div>
-                            <p className="text-xl font-playfair text-white">#NIR-2025-08194</p>
-                            <p className="text-[9px] uppercase tracking-widest text-white/20 mt-1">Order timestamped: {new Date().toLocaleTimeString()}</p>
-                        </div>
-                    </div>
-
-                    <div className="success-card glass-effect rounded-[24px] p-8 text-left space-y-4 border border-white/5 bg-white/5">
-                        <div className="flex items-center gap-4 text-gold/60">
-                            <Mail size={18} />
-                            <span className="text-[10px] uppercase tracking-widest font-bold">Digital Receipt</span>
-                        </div>
-                        <div>
-                            <p className="text-xl font-playfair text-white">Check Inbox</p>
-                            <p className="text-[9px] uppercase tracking-widest text-white/20 mt-1">Sent to: alex@sterling.com</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* CTAs */}
-                <div className="success-cta pt-12 flex flex-col items-center gap-8">
-                    <Link
-                        href="/dashboard"
-                        className="w-full md:w-auto px-16 py-6 bg-gold text-black text-[11px] uppercase tracking-[0.4em] font-bold flex items-center justify-center gap-4 group hover:bg-white transition-all duration-500 shadow-2xl shadow-gold/20"
+            <div className="max-w-3xl w-full relative z-10 space-y-16">
+                {/* Header Cluster */}
+                <div className="text-center space-y-6">
+                    <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 1, type: "spring" }}
+                        className="w-24 h-24 bg-noir-gold rounded-3xl mx-auto flex items-center justify-center shadow-[0_0_60px_rgba(198,169,114,0.3)] border border-white/20"
                     >
-                        Go to Dashboard
-                        <ArrowRight size={16} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform" />
-                    </Link>
-
-                    <div className="flex gap-12 pt-4">
-                        <div className="flex items-center gap-3 opacity-30">
-                            <ShieldCheck size={14} />
-                            <span className="text-[8px] uppercase tracking-widest font-medium">Verified Client</span>
-                        </div>
-                        <div className="flex items-center gap-3 opacity-30">
-                            <Compass size={14} />
-                            <span className="text-[8px] uppercase tracking-widest font-medium">Tracking Map Live</span>
-                        </div>
-                        <div className="flex items-center gap-3 opacity-30">
-                            <Award size={14} />
-                            <span className="text-[8px] uppercase tracking-widest font-medium">Priority Tier</span>
-                        </div>
-                    </div>
+                        <ShieldCheck size={40} className="text-noir-black" strokeWidth={2.5} />
+                    </motion.div>
+                    
+                    <motion.div
+                        initial={{ y: 30, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.5, duration: 1 }}
+                        className="space-y-4"
+                    >
+                        <h1 className="text-5xl lg:text-7xl font-playfair text-white italic tracking-tight">Acquisition Secured</h1>
+                        <p className="text-[10px] uppercase tracking-[0.5em] text-noir-gold font-black">Maison Repository / Order #{orderNumber}</p>
+                    </motion.div>
                 </div>
 
+                {/* Digital Certificate Reveal */}
+                <motion.div
+                    initial={{ scale: 0.95, opacity: 0, y: 50 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    transition={{ delay: 1, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="glass-effect border border-white/10 rounded-[3rem] p-12 lg:p-20 relative overflow-hidden group shadow-2xl"
+                >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+                    
+                    <div className="relative z-10 space-y-12">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h2 className="text-2xl font-playfair text-white italic mb-2">Digital Certificate of Authenticity</h2>
+                                <p className="text-[8px] uppercase tracking-[0.4em] text-white/40 font-black">Encryption Type: RSA-4096 / Sovereign Archive</p>
+                            </div>
+                            <Sparkles className="text-noir-gold animate-pulse" size={24} />
+                        </div>
+
+                        <div className="h-px bg-white/5 w-full" />
+
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-10">
+                            <div className="space-y-2">
+                                <p className="text-[7px] uppercase tracking-[0.5em] text-white/20 font-black">Status</p>
+                                <p className="text-[10px] uppercase tracking-widest text-noir-gold font-bold">Authenticated</p>
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-[7px] uppercase tracking-[0.5em] text-white/20 font-black">Tier</p>
+                                <p className="text-[10px] uppercase tracking-widest text-white font-bold">Archival Sovereign</p>
+                            </div>
+                            <div className="space-y-2 col-span-2 lg:col-span-1">
+                                <p className="text-[7px] uppercase tracking-[0.5em] text-white/20 font-black">Registry</p>
+                                <p className="text-[10px] uppercase tracking-widest text-white/60 font-mono">{sessionId.slice(0, 8)}...</p>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-6 pt-8">
+                            <button 
+                                onClick={handleDownloadPDF}
+                                className="flex-1 h-16 bg-white/5 border border-white/10 rounded-xl text-[10px] uppercase tracking-[0.3em] font-black text-white hover:bg-white/10 transition-all flex items-center justify-center gap-4 group"
+                            >
+                                <Download size={16} className="text-noir-gold group-hover:translate-y-1 transition-transform" />
+                                Download PDF Token
+                            </button>
+                            <Link href="/account" className="flex-1 h-16 bg-white text-noir-black rounded-xl text-[10px] uppercase tracking-[0.3em] font-black flex items-center justify-center gap-4 hover:bg-noir-gold transition-all">
+                                View Maison Identity
+                                <ArrowRight size={16} />
+                            </Link>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Footer Assurance */}
+                <motion.p 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 2, duration: 1 }}
+                    className="text-center text-[9px] uppercase tracking-[0.4em] text-white/20 font-black italic"
+                >
+                    Welcome to the Inner Sanctum of Maison NOIR.
+                </motion.p>
             </div>
         </main>
     );

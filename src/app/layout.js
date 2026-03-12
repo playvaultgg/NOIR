@@ -27,7 +27,7 @@ export const metadata = {
 import CartDrawer from "@/components/cart/CartDrawer";
 import CartReminderPopup from "@/components/cro/CartReminderPopup";
 import PageWrapper from "@/components/layout/PageWrapper";
-import AIStylistChat from "@/components/ai/AIStylistChat";
+import ConciergeChat from "@/components/concierge/ConciergeChat";
 
 export default function RootLayout({ children }) {
   return (
@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
             {/* Phase 3 & 9: Ultra Conversion & AI Assistant */}
             <CartDrawer />
             <CartReminderPopup />
-            <AIStylistChat />
+            <ConciergeChat />
           </SmoothScrollProvider>
         </AuthProvider>
       </body>

@@ -9,44 +9,41 @@
 /* stylelint-disable scss/at-rule-no-unknown */
 /* stylelint-disable at-rule-no-unknown */
 :root {
-  --color-noir-black: #0A0A0A;
-  --color-noir-charcoal: #111111;
-  --color-noir-surface: #0F0F0F;
-  --color-noir-card: #1A1A1A;
-  --color-noir-text: #F5F5F5;
-  --color-noir-gold: #C6A972;
-  --color-noir-gold-soft: #E5D3A1;
-  --color-noir-platinum: #E5E5E5;
-  --color-noir-midnight: #0F172A;
-  /* Used for borders/hovers */
-
-  --font-playfair: var(--font-playfair);
-  --font-inter: var(--font-inter);
-
-  /* Glassmorphism settings for the mobile bar and mega menus */
-  --glass-bg: rgba(10, 10, 10, 0.75);
-  --glass-border: rgba(198, 169, 114, 0.15);
-  --glass-blur: 32px;
+  /* MAISON NOIR - MASTER PALETTE */
+  --noir-black: #000000;
+  --noir-charcoal: #050505;
+  --noir-surface: #0A0A0A;
+  --noir-card: #0F0F0F;
+  --noir-gold: #C6A972;
+  --noir-gold-deep: #A68B52;
+  --noir-gold-bright: #E5D3A1;
+  --noir-platinum: #FAFAFA;
   
-  --background: #0A0A0A;
-  --foreground: #F5F5F5;
-  --card: #111111;
-  --card-foreground: #F5F5F5;
-  --popover: #0A0A0A;
-  --popover-foreground: #F5F5F5;
-  --primary: #C6A972;
-  --primary-foreground: #0A0A0A;
-  --secondary: #111111;
-  --secondary-foreground: #F5F5F5;
-  --muted: #1A1A1A;
-  --muted-foreground: #A1A1A1;
-  --accent: #C6A972;
-  --accent-foreground: #0A0A0A;
+  /* PERCEPTION TOKENS */
+  --glass-bg: rgba(0, 0, 0, 0.6);
+  --glass-border: rgba(198, 169, 114, 0.1);
+  --glass-blur: 24px;
+  
+  /* SHADCN COMPATIBILITY LAYER */
+  --background: var(--noir-black);
+  --foreground: var(--noir-platinum);
+  --card: var(--noir-surface);
+  --card-foreground: var(--noir-platinum);
+  --popover: var(--noir-surface);
+  --popover-foreground: var(--noir-platinum);
+  --primary: var(--noir-gold);
+  --primary-foreground: var(--noir-black);
+  --secondary: var(--noir-charcoal);
+  --secondary-foreground: var(--noir-platinum);
+  --muted: var(--noir-card);
+  --muted-foreground: rgba(250, 250, 250, 0.4);
+  --accent: var(--noir-gold);
+  --accent-foreground: var(--noir-black);
   --destructive: #7F1D1D;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: #1A1A1A;
-  --ring: #C6A972;
-  --radius: 0.75rem;
+  --border: rgba(255, 255, 255, 0.05);
+  --input: var(--noir-card);
+  --ring: var(--noir-gold);
+  --radius: 1rem;
 }
 
 @layer base {

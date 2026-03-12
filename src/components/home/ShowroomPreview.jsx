@@ -2,27 +2,60 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Box } from "lucide-react";
+import { ArrowRight, Box, Boxes } from "lucide-react";
+import { Canvas } from "@react-three/fiber";
+import { Suspense, useRef } from "react";
+import { Environment, Float, MeshReflectorMaterial } from "@react-three/drei";
 
-/**
- * Maison Showroom Preview
- * Static entry point for the 3D immersive world.
- * Features:
- * - 3D Visual Cues
- * - Cinematic Motion Background
- * - High-Fidelity Call to Action
- */
+function ShowroomSilhouette() {
+    return (
+        <group>
+            {/* Floor */}
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
+                <planeGeometry args={[20, 20]} />
+                <MeshReflectorMaterial
+                    blur={[300, 100]}
+                    resolution={512}
+                    mixBlur={1}
+                    mixStrength={10}
+                    roughness={1}
+                    depthScale={1.2}
+                    minDepthThreshold={0.4}
+                    maxDepthThreshold={1.4}
+                    color="#050505"
+                    metalness={0.5}
+                />
+            </mesh>
+            
+            <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
+                {/* Abstract Monument */}
+                {[[-2, 0, -2], [2, 0, -2], [0, 1, -4]].map((pos, i) => (
+                    <mesh key={i} position={pos}>
+                        <boxGeometry args={[1, 4, 1]} />
+                        <meshStandardMaterial color="#0a0a0a" metalness={1} roughness={0.1} />
+                    </mesh>
+                ))}
+                
+                {/* Glowing Core */}
+                <mesh position={[0, 0.5, -2]}>
+                    <sphereGeometry args={[0.3, 32, 32]} />
+                    <meshBasicMaterial color="#C6A972" />
+                    <pointLight intensity={10} distance={10} color="#C6A972" />
+                </mesh>
+            </Float>
+        </group>
+    );
+}
+
 export default function ShowroomPreview() {
     return (
         <section className="py-24 lg:py-40 px-6 lg:px-24 bg-black relative overflow-hidden group">
-            {/* Immersive Depth Layers */}
-            <div className="absolute inset-0 z-0 opacity-20 group-hover:opacity-40 transition-opacity duration-1000">
-                <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black z-10" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[url('https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center grayscale blur-2xl animate-spin-slow opacity-30" />
+            {/* Visual Ambiance */}
+            <div className="absolute inset-0 z-0 opacity-10">
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
             </div>
 
-            <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
-                {/* Information Logic */}
+            <div className="max-w-[1600px] mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
                 <div className="space-y-12">
                      <header className="space-y-6">
                         <motion.div 
@@ -30,7 +63,7 @@ export default function ShowroomPreview() {
                             whileInView={{ opacity: 1, x: 0 }}
                             className="flex items-center gap-4 text-noir-gold text-[10px] uppercase tracking-[0.5em] font-black italic"
                         >
-                            <Box size={16} />
+                            <Boxes size={16} />
                             Spatial Commerce Engine
                         </motion.div>
                         <h3 className="text-5xl md:text-7xl font-playfair text-white tracking-widest italic leading-tight">
@@ -41,50 +74,39 @@ export default function ShowroomPreview() {
                         </p>
                      </header>
 
-                     <div className="flex flex-col md:flex-row gap-8">
-                        <Link href="/showroom" className="group flex items-center justify-center gap-3 px-10 py-5 bg-[#C6A972] rounded-lg transition-all duration-300 hover:scale-105 hover:bg-white text-[#0A0A0A] font-inter font-semibold tracking-wide uppercase shadow-xl shadow-[#C6A972]/5">
-                            Enter Showroom
-                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                     </div>
+                     <Link href="/showroom" className="group flex items-center justify-center gap-3 w-fit px-12 py-6 bg-white text-black rounded-2xl transition-all duration-500 hover:bg-noir-gold hover:scale-105 font-black text-[10px] uppercase tracking-[0.4em] shadow-2xl">
+                        Enter Experience
+                        <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                     </Link>
                 </div>
 
-                {/* 3D Visual Representation (Abstract) */}
-                <div className="relative h-[500px] flex items-center justify-center">
-                    <motion.div 
-                        animate={{ 
-                            rotateY: [0, 360],
-                            y: [0, -20, 0]
-                        }}
-                        transition={{ 
-                            rotateY: { duration: 20, repeat: Infinity, ease: "linear" },
-                            y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
-                        }}
-                        className="w-72 h-96 relative"
-                    >
-                         {/* Abstract Garment Silhouette Proxy */}
-                         <div className="absolute inset-0 bg-white/5 border border-white/10 backdrop-blur-3xl rounded-3xl overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-noir-gold/20 via-transparent to-white/10" />
-                            <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent" />
-                         </div>
-                         
-                         {/* Visual UI Markers */}
-                         <div className="absolute -top-4 -right-4 w-24 h-24 border border-noir-gold/40 rounded-full animate-ping opacity-20" />
-                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-noir-gold opacity-10">
-                            <Box size={120} strokeWidth={0.5} />
-                         </div>
-                    </motion.div>
+                {/* Live 3D Preview */}
+                <div className="relative h-[600px] bg-[#050505] rounded-[4rem] border border-white/5 overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.5)]">
+                    <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
+                        <Suspense fallback={null}>
+                            <Environment preset="night" />
+                            <ShowroomSilhouette />
+                        </Suspense>
+                    </Canvas>
 
                     {/* Metadata Overlays */}
-                    <div className="absolute top-10 right-0 glass-effect bg-black/40 p-4 border border-white/5 rounded-xl space-y-2">
+                    <div className="absolute top-10 right-10 bg-black/60 backdrop-blur-2xl p-6 border border-white/5 rounded-2xl space-y-4">
                         <div className="flex gap-2 items-center">
-                            <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                            <span className="text-[8px] uppercase tracking-[0.2em] text-white/60">Render Status: Active</span>
+                            <div className="w-1 h-1 rounded-full bg-noir-gold animate-pulse" />
+                            <span className="text-[8px] uppercase tracking-[0.3em] text-white/60">Node: Boutique-04 / Active</span>
                         </div>
-                        <p className="text-white font-playfair italic text-xs">Onyx Silk Mesh</p>
+                        <div className="space-y-1">
+                            <p className="text-white font-playfair italic text-lg leading-none">Spatial Shell</p>
+                            <p className="text-noir-gold text-[8px] uppercase tracking-[0.4em] font-black italic">60 FPS / ULTRA</p>
+                        </div>
+                    </div>
+                    
+                    <div className="absolute bottom-10 left-10 text-[8px] uppercase tracking-[0.4em] text-white/10 font-black">
+                        Maison NOIR Environmental Simulation
                     </div>
                 </div>
             </div>
         </section>
     );
 }
+

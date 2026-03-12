@@ -121,12 +121,20 @@ export async function getProductsByCategory(category) {
             orderBy: { createdAt: "desc" }
         });
 
+        // Normalize products
+        const normalized = products.map(p => ({
+            ...p,
+            price: `₹${p.price.toLocaleString()}`,
+            priceAmount: p.price,
+            images: p.imageUrls.length > 0 ? p.imageUrls : ["https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"]
+        }));
+
         // If no products found in DB yet, use high-end mock curation
-        if (products.length === 0) {
+        if (normalized.length === 0) {
             return MOCK_PRODUCTS[category] || [];
         }
 
-        return products;
+        return normalized;
     } catch (error) {
         console.error(`[Failsafe Mode] Database connection failed for category: ${category}. Loading elite mock curation.`);
         return MOCK_PRODUCTS[category] || [];
@@ -142,7 +150,14 @@ export async function getProductById(id) {
             where: { id }
         });
 
-        if (product) return product;
+        if (product) {
+            return {
+                ...product,
+                price: `₹${product.price.toLocaleString()}`,
+                priceAmount: product.price,
+                images: product.imageUrls.length > 0 ? product.imageUrls : ["https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"]
+            };
+        }
 
         // Failsafe: Search in mock curation if not in database
         const allMocks = [...MOCK_PRODUCTS.MENS, ...MOCK_PRODUCTS.WOMENS];

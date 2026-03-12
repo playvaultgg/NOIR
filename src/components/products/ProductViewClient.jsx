@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ProductGallery from "./ProductGallery";
 import VariantSelector from "./VariantSelector";
 import { ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, Sparkles } from "lucide-react";
-import { useCart } from "@/store/useCart";
+import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useState } from "react";
 import StickyPurchaseBar from "./StickyPurchaseBar";
@@ -14,7 +14,7 @@ import OutfitBuilder from "./OutfitBuilder";
 import { Camera, Layers } from "lucide-react";
 
 export default function ProductViewClient({ product }) {
-    const { addItem } = useCart();
+    const { addItem } = useCartStore();
     const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
     const [isAdding, setIsAdding] = useState(false);
     const [isTryOnOpen, setIsTryOnOpen] = useState(false);

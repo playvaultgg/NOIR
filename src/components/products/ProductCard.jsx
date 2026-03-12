@@ -5,10 +5,12 @@ import { Heart, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/store/cartStore";
 
 import { useWishlistStore } from "@/store/wishlistStore";
 import ScarcityBadge from "@/components/cro/ScarcityBadge";
+import QuickLook3D from "@/components/3d/QuickLook3D";
 
 export default function ProductCard({
     product = {
@@ -80,26 +82,31 @@ export default function ProductCard({
             {/* Visual Product Box */}
             <Link href={`/product/${product.id}`} className="block relative aspect-[3/4] overflow-hidden bg-noir-surface rounded-sm shadow-xl transition-all duration-500 hover:shadow-2xl group-hover:shadow-noir-gold/10">
 
-                {/* Main Image */}
+                {/* 3D Quick-Look Transition */}
+                <AnimatePresence>
+                    {isHovered && (
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 z-10"
+                        >
+                            <QuickLook3D color="#C6A972" />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Main Image (Visible when not hovered/3D active) */}
                 <Image
                     src={productImages[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"}
                     alt={product.name}
                     fill
-                    className={`object-cover transition-opacity duration-700 ${isHovered ? "opacity-0" : "opacity-100"}`}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-
-                {/* Hover Image Swap */}
-                <Image
-                    src={productImages[1] || productImages[0] || "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?q=80&w=2080&auto=format&fit=crop"}
-                    alt={`${product.name} alternate view`}
-                    fill
-                    className={`object-cover transition-opacity duration-700 ${isHovered ? "opacity-100" : "opacity-0"} scale-105 group-hover:scale-100 transition-transform`}
+                    className={`object-cover transition-opacity duration-700 ${isHovered ? "opacity-20" : "opacity-100"}`}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
 
                 {/* Soft gold glow overlay on hover */}
-                <div className="absolute inset-0 bg-noir-gold/0 group-hover:bg-noir-gold/[0.03] transition-colors duration-700 pointer-events-none" />
+                <div className="absolute inset-0 bg-noir-gold/0 group-hover:bg-noir-gold/[0.05] transition-colors duration-700 pointer-events-none" />
 
                 {/* Wishlist Heart Icon */}
                 <button

@@ -10,7 +10,9 @@ import {
     CreditCard,
     Truck,
     ArrowLeft,
-    ShoppingBag
+    ShoppingBag,
+    Sparkles,
+    Check
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -73,15 +75,18 @@ export default function CheckoutPage() {
         <main className="min-h-screen bg-black text-white font-inter selection:bg-gold/30">
 
             {/* MINIMALIST HEADER */}
-            <header className="p-8 lg:px-24 flex items-center justify-between border-b border-white/5">
+            <header className="p-10 lg:px-24 flex items-center justify-between border-b border-white/5 bg-[#050505]/80 backdrop-blur-3xl sticky top-0 z-50">
                 <Link href="/" className="flex items-center gap-4 text-white/40 hover:text-white transition-colors group">
                     <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                    <span className="text-[10px] uppercase tracking-[0.3em] font-medium">Continue Shopping</span>
+                    <span className="text-[9px] uppercase tracking-[0.4em] font-black">Back to Archives</span>
                 </Link>
-                <span className="text-3xl font-playfair tracking-[0.2em] relative left-[-4%]">NOIR</span>
-                <div className="flex items-center gap-3">
-                    <ShieldCheck size={16} className="text-gold/60" />
-                    <span className="text-[9px] uppercase tracking-widest text-white/30 hidden md:block">Secure Session</span>
+                <Link href="/" className="text-4xl font-playfair tracking-[0.3em] relative left-[-2%] text-white">NOIR</Link>
+                <div className="flex items-center gap-4">
+                    <div className="flex flex-col items-end">
+                        <span className="text-[8px] uppercase tracking-[0.5em] text-noir-gold font-black">Secure Link</span>
+                        <span className="text-[7px] uppercase tracking-widest text-white/20 font-mono">MD5: F23-A90</span>
+                    </div>
+                    <ShieldCheck size={20} className="text-noir-gold" />
                 </div>
             </header>
 
@@ -215,29 +220,28 @@ export default function CheckoutPage() {
                             ))}
                         </div>
 
-                        <div className="space-y-4 pt-12 border-t border-white/5">
-                            <div className="flex justify-between text-[11px] uppercase tracking-widest text-white/40">
-                                <span>Subtotal</span>
-                                <span className="text-white">₹{subtotal.toLocaleString()}</span>
+                        <div className="flex justify-between items-center pt-10 border-t border-white/10">
+                            <div className="space-y-1">
+                                <span className="text-[10px] uppercase tracking-[0.5em] text-white/40 font-black">Aggregate Total</span>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-1 h-1 rounded-full bg-noir-gold animate-pulse" />
+                                    <span className="text-[8px] uppercase tracking-widest text-noir-gold font-black">Sovereign Registry Included</span>
+                                </div>
                             </div>
-                            <div className="flex justify-between text-[11px] uppercase tracking-widest text-white/40">
-                                <span>Shipping</span>
-                                <span className="text-gold font-bold">Complimentary</span>
-                            </div>
-                            <div className="flex justify-between items-center pt-8">
-                                <span className="text-[12px] uppercase tracking-[0.4em] text-white font-bold">Total</span>
-                                <span className="text-3xl font-playfair font-bold text-gold italic">₹{total.toLocaleString()}</span>
-                            </div>
+                            <span className="text-4xl font-playfair font-medium text-white italic tracking-tighter">₹{total.toLocaleString()}</span>
                         </div>
 
-                        <div className="pt-12 p-8 bg-white/5 border border-white/5 rounded-2xl flex items-center gap-6">
-                            <div className="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center text-gold">
-                                <Truck size={20} />
+                        <div className="pt-12 p-10 bg-white/5 border border-white/5 rounded-[2rem] flex items-center gap-8 relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-noir-gold/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="w-16 h-16 bg-noir-gold/10 rounded-2xl flex items-center justify-center text-noir-gold relative z-10">
+                                <Truck size={24} strokeWidth={1.5} />
                             </div>
-                            <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 leading-relaxed font-medium">
-                                Your order is eligible for <br />
-                                <span className="text-white">Eco-Conscious Express delivery.</span>
-                            </p>
+                            <div className="relative z-10">
+                                <p className="text-[10px] uppercase tracking-[0.3em] text-white font-black leading-relaxed">
+                                    Priority Logistics <br />
+                                    <span className="text-white/40 font-medium">Global Express Insured</span>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </aside>

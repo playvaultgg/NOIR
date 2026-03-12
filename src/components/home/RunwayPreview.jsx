@@ -2,16 +2,32 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Play } from "lucide-react";
+import { Play, Zap } from "lucide-react";
+import { Canvas } from "@react-three/fiber";
+import { Suspense, useRef } from "react";
+import { Float, Environment, ContactShadows } from "@react-three/drei";
 
-/**
- * Maison Runway Preview
- * Cinematic entry point for the virtual runway experience.
- * Features:
- * - Wide Cinematic Canvas
- * - Dramatic Lighting Overlay
- * - Pulse Interactions
- */
+function RunwaySilhouette() {
+    const meshRef = useRef();
+    return (
+        <group>
+            <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+                <mesh position={[0, -1, 0]} castShadow>
+                    <capsuleGeometry args={[0.4, 1.8, 4, 16]} />
+                    <meshStandardMaterial 
+                        color="#050505" 
+                        roughness={0} 
+                        metalness={1} 
+                        emissive="#C6A972" 
+                        emissiveIntensity={0.2} 
+                    />
+                </mesh>
+            </Float>
+            <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={10} blur={2} far={4.5} />
+        </group>
+    );
+}
+
 export default function RunwayPreview() {
     return (
         <section className="py-24 lg:py-40 bg-noir-black relative overflow-hidden">
@@ -21,16 +37,18 @@ export default function RunwayPreview() {
                     <h3 className="text-4xl md:text-6xl font-playfair text-white tracking-tight italic">The Virtual Runway</h3>
                 </header>
 
-                <div className="relative aspect-[21/9] w-full bg-noir-surface rounded-[2rem] overflow-hidden group">
-                     {/* Cinematic Background */}
+                <div className="relative aspect-[21/9] w-full bg-[#050505] rounded-[2rem] overflow-hidden group border border-white/5">
+                     {/* 3D Visual Layer */}
                      <div className="absolute inset-0 z-0">
-                        <img 
-                            src="https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=2070&auto=format&fit=crop" 
-                            alt="Maison Runway" 
-                            className="w-full h-full object-cover grayscale opacity-40 transition-transform duration-[2s] group-hover:scale-105"
-                        />
+                        <Canvas camera={{ position: [0, 0, 5], fov: 40 }} shadows>
+                            <Suspense fallback={null}>
+                                <Environment preset="night" />
+                                <RunwaySilhouette />
+                                <ambientLight intensity={0.5} />
+                                <spotLight position={[5, 10, 5]} angle={0.15} penumbra={1} intensity={2} color="#C6A972" />
+                            </Suspense>
+                        </Canvas>
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
-                        <div className="absolute inset-0 bg-noir-gold/5 mix-blend-overlay z-15" />
                      </div>
 
                      {/* Content Overlay */}
@@ -51,29 +69,27 @@ export default function RunwayPreview() {
                         </div>
                      </div>
 
-                     {/* Visual Indicators: Viewport Markers */}
-                     <div className="absolute top-8 left-8 flex gap-4 opacity-20 z-30">
-                        <div className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse" />
-                        <span className="text-[8px] uppercase tracking-[0.3em] text-white">Live Projection Protocol</span>
+                     <div className="absolute top-8 left-8 flex gap-4 opacity-40 z-30">
+                        <Zap size={14} className="text-red-500 animate-pulse" />
+                        <span className="text-[8px] uppercase tracking-[0.3em] text-white font-black italic">Neural Projection Stream</span>
                      </div>
                 </div>
 
-                {/* Animated Silhouette Marquee */}
                 <div className="relative mt-24 mb-12 flex overflow-hidden border-y border-white/5 bg-[#0A0A0A] py-12">
                     <motion.div
                         className="flex whitespace-nowrap gap-16 lg:gap-32 items-center"
                         animate={{ x: ["0%", "-50%"] }}
-                        transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
+                        transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
                     >
-                        {/* 10 Silhouettes replicated to form loop */}
                         {[...Array(10)].map((_, i) => (
-                            <div key={i} className="flex flex-col items-center gap-4 shrink-0 px-8 group">
-                                <img
-                                    src={`https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=200&h=400&fit=crop`}
-                                    alt="Model Silhouette"
-                                    className="w-24 h-48 lg:w-32 lg:h-64 object-cover object-top grayscale opacity-30 contrast-[200%] brightness-0 filter group-hover:opacity-100 group-hover:brightness-100 group-hover:contrast-100 transition-all duration-700 pointer-events-none drop-shadow-2xl"
-                                />
-                                <span className="text-[8px] uppercase tracking-[0.4em] text-[#C6A972]/40 font-black italic">Look 0{i + 1}</span>
+                            <div key={i} className="flex items-center gap-8 shrink-0 px-8 group grayscale hover:grayscale-0 transition-all duration-700">
+                                <div className="w-16 h-32 bg-white/5 rounded-full flex items-center justify-center border border-white/5 group-hover:border-noir-gold/50">
+                                    <div className="w-0.5 h-12 bg-noir-gold/20 group-hover:bg-noir-gold animate-pulse" />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-white font-playfair italic text-xl">Look 0{i + 1}</span>
+                                    <span className="text-[8px] uppercase tracking-[0.4em] text-[#C6A972]/40 font-black italic">Silk Obsidian</span>
+                                </div>
                             </div>
                         ))}
                     </motion.div>
@@ -81,10 +97,11 @@ export default function RunwayPreview() {
 
                 <div className="mt-12 flex justify-center">
                     <Link href="/runway" className="text-[10px] uppercase tracking-[0.4em] text-noir-gold hover:text-white transition-all underline underline-offset-8 decoration-noir-gold/30">
-                        Watch the Full Experience
+                        Experience the Full Show
                     </Link>
                 </div>
             </div>
         </section>
     );
 }
+

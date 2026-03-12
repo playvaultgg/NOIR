@@ -6,7 +6,7 @@ import OutfitBuilder from "@/components/ai/OutfitBuilder";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
-    const { id } = params;
+    const { id } = await params;
     const product = await getProductById(id);
 
     if (!product) return { title: "Product Not Found | NOIR" };
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProductPage({ params }) {
-    const { id } = params;
+    const { id } = await params;
     const product = await getProductById(id);
 
     if (!product) {

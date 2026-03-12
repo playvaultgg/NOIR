@@ -15,6 +15,7 @@ import { Search, ShoppingBag, User } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useSession } from "next-auth/react";
 import SmartSearch from "../ai/SmartSearch";
+import CurrencySwitcher from "../layout/CurrencySwitcher";
 
 // ── Config ──────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
@@ -230,6 +231,8 @@ export default function Navbar() {
                         >
                             <Search className="w-[16px] h-[16px]" strokeWidth={1.5} />
                         </button>
+
+                        <CurrencySwitcher />
 
                         <Link
                             href={session ? "/account" : "/login"}

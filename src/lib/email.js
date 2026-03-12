@@ -44,12 +44,12 @@ const base = (content) => `
 </html>`;
 
 /* ══ 1. Order Confirmation ══════════════════════════════════════ */
-export async function sendOrderConfirmation({ to, name, orderId, items = [], total }) {
+export async function sendOrderConfirmation({ to, name, orderId, items = [], total, currencySymbol = "₹" }) {
     const itemRows = items.map(i => `
         <tr>
           <td>${i.name}</td>
           <td style="text-align:right;color:rgba(255,255,255,0.5)">&times;${i.quantity}</td>
-          <td style="text-align:right">₹${Number(i.price || 0).toLocaleString("en-IN")}</td>
+          <td style="text-align:right">${currencySymbol}${Number(i.price || 0).toLocaleString("en-IN")}</td>
         </tr>`).join("");
 
     const html = base(`
@@ -59,7 +59,7 @@ export async function sendOrderConfirmation({ to, name, orderId, items = [], tot
         <table class="order-table">
           ${itemRows}
           <tr><td class="label">Order ID</td><td colspan="2" style="text-align:right;font-family:monospace;font-size:11px">${orderId}</td></tr>
-          <tr><td class="total">Total</td><td colspan="2" class="total" style="text-align:right">₹${Number(total).toLocaleString("en-IN")}</td></tr>
+          <tr><td class="total">Total</td><td colspan="2" class="total" style="text-align:right">${currencySymbol}${Number(total).toLocaleString("en-IN")}</td></tr>
         </table>
         <a href="${process.env.NEXTAUTH_URL}/account/orders" class="btn">View Order</a>
         <hr class="divider"/>

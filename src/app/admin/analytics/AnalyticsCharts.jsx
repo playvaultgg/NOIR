@@ -5,18 +5,20 @@ import {
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from "recharts";
 import { TrendingUp, ShoppingBag, Users, Package } from "lucide-react";
+import { useCurrency } from "@/context/CurrencyContext";
 
 const GOLD = "#C6A972";
 const PIE_COLORS = ["#C6A972", "#888", "#555", "#333", "#222"];
 
-function CustomTooltip({ active, payload, label, prefix = "₹" }) {
+function CustomTooltip({ active, payload, label, isCurrency = true }) {
+    const { formatPrice } = useCurrency();
     if (!active || !payload?.length) return null;
     return (
         <div style={{ background: "rgba(10,10,10,0.95)", border: "1px solid rgba(198,169,114,0.3)", borderRadius: 12, padding: "10px 16px" }}>
             <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.3em", marginBottom: 4 }}>{label}</p>
             {payload.map((p, i) => (
                 <p key={i} style={{ color: p.color || GOLD, fontSize: 14, fontWeight: 700 }}>
-                    {prefix}{typeof p.value === "number" ? p.value.toLocaleString("en-IN") : p.value}
+                    {isCurrency ? formatPrice(p.value) : p.value.toLocaleString()}
                 </p>
             ))}
         </div>
@@ -39,6 +41,7 @@ function StatCard({ label, value, icon: Icon, sub }) {
 }
 
 export default function AnalyticsCharts({ data }) {
+    const { formatPrice, currencies, currency } = useCurrency();
     const {
         revenueByDay = [],
         ordersByStatus = {},
@@ -60,7 +63,7 @@ export default function AnalyticsCharts({ data }) {
             {/* Summary Stats */}
             <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
                 <StatCard label="Total Revenue" icon={TrendingUp}
-                    value={`₹${Number(summary.totalRevenue || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`}
+                    value={formatPrice(summary.totalRevenue || 0)}
                     sub="All time" />
                 <StatCard label="Total Orders" icon={ShoppingBag}
                     value={String(summary.totalOrders || 0)} sub="All statuses" />
@@ -85,7 +88,11 @@ export default function AnalyticsCharts({ data }) {
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
                         <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 9 }} axisLine={false} tickLine={false} />
                         <YAxis tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 9 }} axisLine={false} tickLine={false}
-                            tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
+                            tickFormatter={(v) => {
+                                const rate = currencies[currency].rate;
+                                const val = (v * rate) / 1000;
+                                return `${currencies[currency].symbol}${val.toFixed(1)}k`;
+                            }} />
                         <Tooltip content={<CustomTooltip />} />
                         <Area type="monotone" dataKey="revenue" stroke={GOLD} strokeWidth={2}
                             fill="url(#goldGrad)" dot={false} activeDot={{ r: 4, fill: GOLD }} />
@@ -103,7 +110,7 @@ export default function AnalyticsCharts({ data }) {
                                 <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
                                     {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                                 </Pie>
-                                <Tooltip content={<CustomTooltip prefix="" />} />
+                                <Tooltip content={<CustomTooltip isCurrency={false} />} />
                                 <Legend formatter={(v) => <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.2em" }}>{v}</span>} />
                             </PieChart>
                         </ResponsiveContainer>

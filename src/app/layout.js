@@ -29,6 +29,8 @@ import CartReminderPopup from "@/components/cro/CartReminderPopup";
 import PageWrapper from "@/components/layout/PageWrapper";
 import ConciergeChat from "@/components/concierge/ConciergeChat";
 
+import { CurrencyProvider } from "@/context/CurrencyContext";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`}>
@@ -37,7 +39,8 @@ export default function RootLayout({ children }) {
       </head>
       <body className="font-inter bg-noir-black text-noir-text selection:bg-noir-gold/30 selection:text-noir-gold">
         <AuthProvider>
-          <SmoothScrollProvider>
+          <CurrencyProvider>
+            <SmoothScrollProvider>
             {/* Universal Navbar Persistence */}
             <Navbar />
 
@@ -53,7 +56,8 @@ export default function RootLayout({ children }) {
             <CartDrawer />
             <CartReminderPopup />
             <ConciergeChat />
-          </SmoothScrollProvider>
+            </SmoothScrollProvider>
+          </CurrencyProvider>
         </AuthProvider>
       </body>
     </html>

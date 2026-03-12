@@ -6,9 +6,11 @@ import { X, Minus, Plus, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useCurrency } from "@/context/CurrencyContext";
 
 export default function CartDrawer() {
     const { items, isOpen, closeCart, increaseQty, decreaseQty, removeItem, getSubtotal } = useCartStore();
+    const { formatPrice } = useCurrency();
     const [mounted, setMounted] = useState(false);
     const [confirmed, setConfirmed] = useState(false);
 
@@ -126,7 +128,7 @@ export default function CartDrawer() {
                                                 <div className="text-right">
                                                     <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] font-black mb-1 italic">Acquisition Value</p>
                                                     <p className="text-xl tracking-tighter text-white font-medium italic">
-                                                        ₹{(item.priceAmount || 0).toLocaleString()}
+                                                        {formatPrice(item.priceAmount || 0)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -149,7 +151,7 @@ export default function CartDrawer() {
                                     </div>
                                     <div className="text-right">
                                         <span className="text-3xl font-playfair tracking-tighter block text-white italic">
-                                            ₹{(subtotal || 0).toLocaleString()}
+                                            {formatPrice(subtotal || 0)}
                                         </span>
                                     </div>
                                 </div>

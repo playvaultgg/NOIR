@@ -11,13 +11,13 @@ import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import ScarcityBadge from "@/components/cro/ScarcityBadge";
 import QuickLook3D from "@/components/3d/QuickLook3D";
+import { useCurrency } from "@/context/CurrencyContext";
 
 export default function ProductCard({
     product = {
         id: "m1",
         name: "Onyx Silk Trench",
-        price: "₹85,000",
-        priceAmount: 85000,
+        price: 85000,
         images: [
             "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000&auto=format&fit=crop",
             "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?q=80&w=1000&auto=format&fit=crop"
@@ -26,6 +26,7 @@ export default function ProductCard({
         isLimitedDrop: true
     }
 }) {
+    const { formatPrice, currency } = useCurrency();
     // Data Normalization Layer: Support both DB (imageUrls) and Mock (images) formats
     const productImages = product.images || product.imageUrls || [];
 
@@ -161,10 +162,29 @@ export default function ProductCard({
                         New Arrival
                     </p>
                     <p className="text-noir-gold text-sm font-inter font-medium tracking-wider">
-                        {product.price}
+                        {formatPrice(product.price || product.priceAmount || 0)}
                     </p>
                 </div>
             </div>
+
+            {/* SEO Structured Data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org/",
+                        "@type": "Product",
+                        "name": product.name,
+                        "image": productImages[0],
+                        "offers": {
+                            "@type": "Offer",
+                            "priceCurrency": currency,
+                            "price": product.price || product.priceAmount || 0,
+                            "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+                        }
+                    })
+                }}
+            />
         </motion.div>
     );
 }

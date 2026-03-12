@@ -14,7 +14,7 @@ function formatProduct(dbProduct) {
         ...dbProduct,
         images: dbProduct.imageUrls, // Map for UI compatibility
         priceAmount: dbProduct.price,
-        price: `₹${dbProduct.price.toLocaleString("en-IN")}`, // Format for display
+        price: dbProduct.price, // Keep as number for CurrencyContext to handle
     };
 }
 

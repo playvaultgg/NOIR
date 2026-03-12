@@ -158,15 +158,18 @@ async function main() {
             const primaryImage = `https://images.unsplash.com/photo-${1500000000000 + randomSource}?w=800&q=80`; // Safe fallback shape
             
             // The user requested 100+, so what we'll do is multiply our base lists by adding variations
+            // Reliable luxury images from Unsplash
+            const rando = Math.floor(Math.random() * 1000000);
+            const k1 = encodeURIComponent(item.keywords.split(',')[0]);
+            const k2 = encodeURIComponent(item.keywords.split(',')[1] || 'luxury');
+            
             allProducts.push({
                 name: item.name,
                 brand: brand,
                 price: item.price,
-                // Due to recent unsplash changes, source.unsplash is sometimes deprecated.
-                // We'll use a reliable placeholder service that returns high quality fashion imagery based on keywords
                 imageUrls: [
-                    `https://loremflickr.com/800/1200/${encodeURIComponent(item.keywords.split(',')[0])}?lock=${randomSource}`,
-                    `https://loremflickr.com/800/1200/${encodeURIComponent(item.keywords.split(',')[1] || 'fashion')}?lock=${randomSource+1}`
+                    `https://source.unsplash.com/800x1200/?${k1},fashion&sig=${rando}`,
+                    `https://source.unsplash.com/800x1200/?${k2},detail&sig=${rando+1}`
                 ],
                 category: category,
                 description: `Experience the epitome of luxury with the ${item.name}. Crafted by master artisans for the modern elite.`,
@@ -195,15 +198,15 @@ async function main() {
         // Pick a random product from what we have so far
         const base = allProducts[Math.floor(Math.random() * allProducts.length)];
         const varPrefix = variations[Math.floor(Math.random() * variations.length)];
-        const randomSource = Math.floor(Math.random() * 1000000);
+        const rando = Math.floor(Math.random() * 1000000);
         
         allProducts.push({
             name: `${base.name} - ${varPrefix}`,
             brand: base.brand,
             price: Math.floor(base.price * (Math.random() * 0.5 + 1)), // 1x to 1.5x price
             imageUrls: [
-                `https://loremflickr.com/800/1200/luxury,fashion?lock=${randomSource}`,
-                `https://loremflickr.com/800/1200/clothing,detail?lock=${randomSource+1}`
+                `https://source.unsplash.com/800x1200/?luxury,fashion&sig=${rando}`,
+                `https://source.unsplash.com/800x1200/?clothing,style&sig=${rando+1}`
             ],
             category: base.category,
             description: base.description + ` This is a strictly limited ${varPrefix}.`,

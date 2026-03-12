@@ -10,11 +10,18 @@ import CustomerReviews from "@/components/home/CustomerReviews";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
 
+import prisma from "@/lib/prisma";
+
 /**
  * Maison NOIR - Ultra-Luxury Global Homepage
  * Orchestrates 11 distinct interaction layers for a ₹1 Crore digital experience.
  */
-export default function Home() {
+export default async function Home() {
+  const products = await prisma.product.findMany({
+    take: 8,
+    orderBy: { createdAt: 'desc' }
+  });
+
   return (
     <main className="relative w-full overflow-hidden bg-noir-black selection:bg-noir-gold selection:text-noir-black">
       {/* 1. Cinematic Hero Section */}
@@ -36,7 +43,7 @@ export default function Home() {
       <AvatarTryOnPreview />
 
       {/* 7. Luxury Product Grid Catalogue */}
-      <ProductGrid />
+      <ProductGrid products={products} />
 
       {/* 8. Brand Narrative (Brand Story) */}
       <BrandStory />

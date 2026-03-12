@@ -19,22 +19,33 @@ export function CurrencyProvider({ children }) {
     });
 
     useEffect(() => {
-        const saved = localStorage.getItem("noir_currency");
-        if (saved && CURRENCIES[saved]) setCurrency(saved);
+        try {
+            const saved = localStorage.getItem("noir_currency");
+            if (saved && CURRENCIES[saved]) setCurrency(saved);
+        } catch (e) {
+            console.error("LocalStorage access blocked or failed:", e);
+        }
 
-        // Fetch Live Rates
         const fetchRates = async () => {
             try {
                 const cachedRates = localStorage.getItem("noir_rates");
                 const cacheTime = localStorage.getItem("noir_rates_time");
                 
-                // Use cache if less than 24 hours old
-                if (cachedRates && cacheTime && Date.now() - parseInt(cacheTime) < 86400000) {
-                    setRates(JSON.parse(cachedRates));
-                    return;
+                if (cachedRates && cacheTime) {
+                    const parsedTime = parseInt(cacheTime);
+                    if (!isNaN(parsedTime) && Date.now() - parsedTime < 86400000) {
+                        try {
+                            const parsedRates = JSON.parse(cachedRates);
+                            if (parsedRates && typeof parsedRates === "object") {
+                                setRates(parsedRates);
+                                return;
+                            }
+                        } catch (e) {
+                            console.warn("Invalid currency rates in storage.");
+                        }
+                    }
                 }
 
-                // Public API with NOIR fallback key (or use your own)
                 const res = await fetch(`https://open.er-api.com/v6/latest/INR`);
                 const data = await res.json();
                 

@@ -13,7 +13,7 @@ import {
     Save,
     Sparkles
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
 
 export default function SettingsPage() {

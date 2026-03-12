@@ -15,7 +15,7 @@ import { Search, ShoppingBag, User } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useSession } from "next-auth/react";
 import SmartSearch from "../ai/SmartSearch";
-import CurrencySwitcher from "../layout/CurrencySwitcher";
+import CurrencySwitcher from "@/components/layout/CurrencySwitcher";
 
 // ── Config ──────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [

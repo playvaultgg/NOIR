@@ -56,11 +56,28 @@ import ConciergeChat from "@/components/concierge/ConciergeChat";
 
 import { CurrencyProvider } from "@/context/CurrencyContext";
 
+import Link from "next/link";
+import Script from "next/script";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+        
+        {/* Production Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXX');
+          `}
+        </Script>
       </head>
       <body className="font-inter bg-noir-black text-noir-text selection:bg-noir-gold/30 selection:text-noir-gold">
         <AuthProvider>

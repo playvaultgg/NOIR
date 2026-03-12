@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import prisma from "@/lib/prisma";
 import { sendOrderConfirmation } from "@/lib/email";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder_for_build");
 
 /**
  * POST /api/checkout/webhook

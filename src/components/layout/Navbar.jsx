@@ -18,9 +18,10 @@ import SmartSearch from "../ai/SmartSearch";
 
 // ── Config ──────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
-    { label: "Archive",  href: "/collections" },
-    { label: "Showroom", href: "/showroom"    },
-    { label: "Runway",   href: "/runway"      },
+    { label: "Archive",  href: "/collections"     },
+    { label: "Showroom", href: "/showroom"         },
+    { label: "Runway",   href: "/runway"           },
+    { label: "Perfume",  href: "/custom-perfume"   },
 ];
 
 // Brand tokens (matching PillNav's pillColor / baseColor API)

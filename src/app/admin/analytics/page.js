@@ -1,113 +1,201 @@
-import prisma from "@/lib/prisma";
-import { AreaChart, BarChart } from "lucide-react";
+"use client";
 
-export const dynamic = "force-dynamic";
+import { useEffect, useState } from "react";
+import {
+    AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+    XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+} from "recharts";
+import { TrendingUp, ShoppingBag, Users, Package, RefreshCw } from "lucide-react";
 
-export default async function AdminAnalytics() {
-    const products = await prisma.product.findMany({
-        take: 3,
-        orderBy: { orders: { _count: 'desc' } },
-        include: { _count: { select: { orders: true, wishedBy: true } } }
-    });
+const GOLD = "#C6A972";
+const PIE_COLORS = ["#C6A972", "#fff", "#888", "#444", "#333"];
+
+/* ─── Custom Tooltip ────────────────────────────────────────── */
+function CustomTooltip({ active, payload, label, prefix = "₹" }) {
+    if (!active || !payload?.length) return null;
+    return (
+        <div style={{ background: "rgba(10,10,10,0.9)", border: "1px solid rgba(198,169,114,0.3)", borderRadius: 12, padding: "10px 16px" }}>
+            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.3em", marginBottom: 4 }}>{label}</p>
+            {payload.map((p, i) => (
+                <p key={i} style={{ color: p.color || GOLD, fontSize: 14, fontWeight: 700 }}>
+                    {prefix}{typeof p.value === "number" ? p.value.toLocaleString("en-IN") : p.value}
+                </p>
+            ))}
+        </div>
+    );
+}
+
+/* ─── Stat Card ─────────────────────────────────────────────── */
+function StatCard({ label, value, icon: Icon, sub }) {
+    return (
+        <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex gap-4 items-start">
+            <div className="w-10 h-10 rounded-xl bg-[#C6A972]/10 flex items-center justify-center text-[#C6A972] shrink-0">
+                <Icon size={18} />
+            </div>
+            <div>
+                <p className="text-white/30 text-[9px] uppercase tracking-widest mb-1">{label}</p>
+                <p className="text-white text-2xl font-bold">{value}</p>
+                {sub && <p className="text-white/20 text-[9px] mt-0.5">{sub}</p>}
+            </div>
+        </div>
+    );
+}
+
+/* ─── Main Page ─────────────────────────────────────────────── */
+export default function AnalyticsPage() {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch("/api/admin/analytics");
+            if (!res.ok) throw new Error("Failed");
+            const json = await res.json();
+            setData(json);
+            setError(null);
+        } catch {
+            setError("Could not load analytics data.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => { fetchData(); }, []);
+
+    /* Pie chart data from ordersByStatus */
+    const pieData = data
+        ? Object.entries(data.ordersByStatus || {}).map(([name, value]) => ({ name, value }))
+        : [];
+
+    /* Revenue chart — shorten dates to "Mar 12" format */
+    const revenueData = (data?.revenueByDay || []).map((d) => ({
+        ...d,
+        date: new Date(d.date).toLocaleDateString("en-IN", { month: "short", day: "numeric" }),
+    })).filter((_, i) => i % 3 === 0); // show every 3rd day to avoid clutter
 
     return (
-        <div className="space-y-8">
-            <header className="mb-8">
-                <h1 className="text-3xl font-playfair text-white italic">Analytics Engine</h1>
-                <p className="text-white/40 text-sm mt-1">Deep metrics and dimensional growth tracking.</p>
+        <div className="space-y-8 text-white">
+            <header className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-playfair italic">Analytics Engine</h1>
+                    <p className="text-white/30 text-sm mt-1">Real-time revenue, orders, and product performance.</p>
+                </div>
+                <button
+                    onClick={fetchData}
+                    className="flex items-center gap-2 px-4 py-2 border border-white/10 rounded-xl text-white/40 text-xs uppercase tracking-widest hover:text-[#C6A972] hover:border-[#C6A972]/40 transition-all"
+                >
+                    <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                    Refresh
+                </button>
             </header>
 
+            {error && (
+                <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+                    {error} — Using mock data below.
+                </div>
+            )}
+
+            {/* ── Summary Stats ── */}
+            <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+                <StatCard label="Total Revenue" icon={TrendingUp}
+                    value={`₹${((data?.summary?.totalRevenue || 0) / 100).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`}
+                    sub="All time" />
+                <StatCard label="Total Orders" icon={ShoppingBag}
+                    value={(data?.summary?.totalOrders || 0).toLocaleString()}
+                    sub="All statuses" />
+                <StatCard label="Customers" icon={Users}
+                    value={(data?.summary?.totalUsers || 0).toLocaleString()}
+                    sub="Registered" />
+                <StatCard label="Products" icon={Package}
+                    value={(data?.summary?.totalProducts || 0).toLocaleString()}
+                    sub="In catalog" />
+            </div>
+
+            {/* ── Revenue Chart ── */}
+            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-7">
+                <div className="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 className="text-[10px] uppercase tracking-widest text-[#C6A972] font-bold mb-1">Revenue (30 Days)</h2>
+                        <p className="text-white/30 text-xs">Daily revenue excluding cancelled orders</p>
+                    </div>
+                </div>
+                <ResponsiveContainer width="100%" height={240}>
+                    <AreaChart data={revenueData.length > 0 ? revenueData : mockRevenueData}>
+                        <defs>
+                            <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor={GOLD} stopOpacity={0.3} />
+                                <stop offset="95%" stopColor={GOLD} stopOpacity={0} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                        <XAxis dataKey="date" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 9 }} axisLine={false} tickLine={false} />
+                        <YAxis tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 9 }} axisLine={false} tickLine={false}
+                            tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Area type="monotone" dataKey="revenue" stroke={GOLD} strokeWidth={2} fill="url(#goldGrad)" dot={false} activeDot={{ r: 4, fill: GOLD }} />
+                    </AreaChart>
+                </ResponsiveContainer>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Advanced Mock Chart 1 */}
-                <div className="glass-effect p-8 rounded-2xl border border-white/5 bg-noir-surface/40 flex flex-col justify-between h-[400px]">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <h2 className="text-[10px] uppercase tracking-widest text-[#C6A972] font-bold">Conversion Rate matrix</h2>
-                            <div className="text-3xl font-inter text-white mt-2">4.2%</div>
-                        </div>
-                        <div className="p-3 bg-white/5 rounded-xl text-white/40">
-                            <AreaChart size={20} />
-                        </div>
-                    </div>
-                    
-                    <div className="flex items-end justify-between h-48 gap-3 pt-4 border-b border-white/5">
-                        {[15, 25, 20, 35, 30, 50, 45, 60, 55, 80, 75, 95].map((height, idx) => (
-                            <div key={idx} className="w-full flex justify-center group h-full items-end pb-2">
-                                <div 
-                                    className="w-full max-w-[12px] bg-white/10 rounded-full group-hover:bg-[#C6A972] transition-colors relative"
-                                    style={{ height: `${height}%` }}
+                {/* ── Order Status Pie ── */}
+                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-7">
+                    <h2 className="text-[10px] uppercase tracking-widest text-[#C6A972] font-bold mb-6">Orders by Status</h2>
+                    {pieData.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={220}>
+                            <PieChart>
+                                <Pie
+                                    data={pieData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={60}
+                                    outerRadius={90}
+                                    paddingAngle={3}
+                                    dataKey="value"
                                 >
-                                    <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] text-[#C6A972] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                                        {height}%
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="pt-4 flex justify-between text-[9px] uppercase tracking-widest text-white/30">
-                        <span>Jan</span>
-                        <span>Dec</span>
-                    </div>
+                                    {pieData.map((_, i) => (
+                                        <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip content={<CustomTooltip prefix="" />} />
+                                <Legend formatter={(v) => <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 10, textTransform: "uppercase", letterSpacing: "0.2em" }}>{v}</span>} />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        /* Fallback mock */
+                        <div className="flex items-center justify-center h-48 text-white/20 text-sm italic">No order data yet</div>
+                    )}
                 </div>
 
-                {/* Advanced Mock Chart 2 */}
-                <div className="glass-effect p-8 rounded-2xl border border-white/5 bg-noir-surface/40 flex flex-col justify-between h-[400px]">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <h2 className="text-[10px] uppercase tracking-widest text-[#C6A972] font-bold">Category Distribution</h2>
-                            <div className="text-white/40 text-sm mt-1">Sales by sector</div>
-                        </div>
-                        <div className="p-3 bg-white/5 rounded-xl text-white/40">
-                            <BarChart size={20} />
-                        </div>
-                    </div>
-                    
-                    <div className="flex-1 flex flex-col justify-center gap-6">
-                        {[ 
-                            { label: "Menswear", value: 65, color: "bg-[#C6A972]" },
-                            { label: "Womenswear", value: 82, color: "bg-white" },
-                            { label: "Accessories", value: 45, color: "bg-white/40" },
-                            { label: "Virtual Assets", value: 28, color: "bg-white/10" }
-                        ].map((stat, i) => (
-                            <div key={i} className="space-y-2">
-                                <div className="flex justify-between text-[10px] uppercase tracking-widest font-bold">
-                                    <span className="text-white/60">{stat.label}</span>
-                                    <span className="text-white">{stat.value}%</span>
-                                </div>
-                                <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                    <div className={`h-full ${stat.color} rounded-full transition-all duration-1000`} style={{ width: `${stat.value}%` }} />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Top Performers */}
-                <div className="lg:col-span-2 glass-effect p-8 rounded-2xl border border-white/5 bg-noir-surface/40">
-                    <h2 className="text-[10px] uppercase tracking-widest text-[#C6A972] font-bold mb-6 border-b border-white/5 pb-4">Top Performing Products</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {products.map((product, i) => (
-                            <div key={product.id} className="p-4 bg-white/[0.02] rounded-xl border border-white/5 flex gap-4">
-                                <div className="text-[#C6A972] font-playfair text-2xl font-black italic">
-                                    0{i + 1}
-                                </div>
-                                <div>
-                                    <h4 className="text-white text-sm font-bold truncate max-w-[150px]">{product.name}</h4>
-                                    <p className="text-[#C6A972] text-xs font-mono mt-1">₹{product.price.toLocaleString('en-IN')}</p>
-                                    <div className="flex gap-4 mt-3">
-                                        <div className="text-[9px] uppercase tracking-widest text-white/40">
-                                            <strong className="text-white font-mono">{product._count.orders}</strong> Sales
-                                        </div>
-                                        <div className="text-[9px] uppercase tracking-widest text-white/40">
-                                            <strong className="text-white font-mono">{product._count.wishedBy}</strong> Hearts
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                {/* ── Top Products Bar Chart ── */}
+                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-7">
+                    <h2 className="text-[10px] uppercase tracking-widest text-[#C6A972] font-bold mb-6">Top Products by Units Sold</h2>
+                    {data?.topProducts?.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={220}>
+                            <BarChart data={data.topProducts} layout="vertical">
+                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" horizontal={false} />
+                                <XAxis type="number" tick={{ fill: "rgba(255,255,255,0.3)", fontSize: 9 }} axisLine={false} tickLine={false} />
+                                <YAxis type="category" dataKey="name" width={100} tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 9 }} axisLine={false} tickLine={false} />
+                                <Tooltip content={<CustomTooltip prefix="" />} />
+                                <Bar dataKey="count" fill={GOLD} radius={[0, 6, 6, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <div className="flex items-center justify-center h-48 text-white/20 text-sm italic">No sales data yet</div>
+                    )}
                 </div>
             </div>
         </div>
     );
 }
+
+/* ─── Mock Revenue Data (shown when API returns 0 data) ─────── */
+const mockRevenueData = [
+    { date: "Mar 1", revenue: 0 },
+    { date: "Mar 3", revenue: 45000 },
+    { date: "Mar 6", revenue: 82000 },
+    { date: "Mar 9", revenue: 61000 },
+    { date: "Mar 12", revenue: 120000 },
+];

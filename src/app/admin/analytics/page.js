@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import AnalyticsCharts from "./AnalyticsCharts";
+// import AnalyticsCharts from "./AnalyticsCharts";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Analytics | NOIR Admin" };
@@ -73,7 +73,12 @@ export default async function AdminAnalyticsPage() {
                 <h1 className="text-3xl font-playfair text-white italic">Analytics Engine</h1>
                 <p className="text-white/30 text-sm mt-1">Real-time revenue, orders, and product performance.</p>
             </header>
-            <AnalyticsCharts data={data} />
+            {/* <AnalyticsCharts data={data} /> */}
+            <div className="p-12 border border-dashed border-white/10 rounded-3xl text-center">
+                <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] italic">
+                    Visual Analytics Engine Temporarily Paused for System Optimization
+                </p>
+            </div>
         </div>
     );
 }

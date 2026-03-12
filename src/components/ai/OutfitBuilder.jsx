@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { Sparkles, ShoppingBag, Plus, Sparkle, UserCheck } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { getRecommendedOutfit } from "@/modules/ai/ai.service";
 import { useCartStore } from "@/store/cartStore";
 import GarmentTryOn from "../avatar/GarmentTryOn";
 import { AnimatePresence } from "framer-motion";
@@ -17,10 +16,18 @@ export default function OutfitBuilder({ baseProduct }) {
 
     useEffect(() => {
         async function fetchOutfit() {
-            setIsLoading(true);
-            const items = await getRecommendedOutfit(baseProduct.id);
-            setOutfit(items);
-            setIsLoading(false);
+            try {
+                setIsLoading(true);
+                const res = await fetch(`/api/ai/outfit?productId=${baseProduct.id}`);
+                const items = await res.json();
+                if (Array.isArray(items)) {
+                    setOutfit(items);
+                }
+            } catch (err) {
+                console.error("FAILED_TO_FETCH_OUTFIT:", err);
+            } finally {
+                setIsLoading(false);
+            }
         }
         if (baseProduct?.id) fetchOutfit();
     }, [baseProduct?.id]);

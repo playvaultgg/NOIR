@@ -9,11 +9,10 @@ const nextConfig = {
       { protocol: 'https', hostname: 'plus.unsplash.com' },
     ],
   },
-  // High-performance compiler settings
-  // High-performance compiler settings
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+  transpilePackages: ["recharts", "d3-shape", "d3-interpolate", "d3-color"],
 };
 
 export default nextConfig;

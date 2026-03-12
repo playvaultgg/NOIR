@@ -10,17 +10,21 @@ import CustomerReviews from "@/components/home/CustomerReviews";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
 
-import prisma from "@/lib/prisma";
+import { getProductsByCategory } from "@/modules/products/product.service";
 
 /**
  * Maison NOIR - Ultra-Luxury Global Homepage
  * Orchestrates 11 distinct interaction layers for a ₹1 Crore digital experience.
  */
 export default async function Home() {
-  const products = await prisma.product.findMany({
-    take: 8,
-    orderBy: { createdAt: 'desc' }
-  });
+  const products = await getProductsByCategory("MENS"); // Defaulting to MENS for homepage curation
+  
+  // We can also combine MENS and WOMENS if we want a mixed grid
+  // const [mens, womens] = await Promise.all([
+  //   getProductsByCategory("MENS"),
+  //   getProductsByCategory("WOMENS")
+  // ]);
+  // const products = [...mens, ...womens].slice(0, 8);
 
   return (
     <main className="relative w-full overflow-hidden bg-noir-black selection:bg-noir-gold selection:text-noir-black">

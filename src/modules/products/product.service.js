@@ -122,12 +122,15 @@ export async function getProductsByCategory(category) {
         });
 
         // Normalize products
-        const normalized = products.map(p => ({
-            ...p,
-            price: `₹${p.price.toLocaleString()}`,
-            priceAmount: p.price,
-            images: p.imageUrls.length > 0 ? p.imageUrls : ["https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"]
-        }));
+        const normalized = products.map(p => {
+            const images = Array.isArray(p.imageUrls) ? p.imageUrls : [];
+            return {
+                ...p,
+                price: `₹${(p.price || 0).toLocaleString()}`,
+                priceAmount: p.price || 0,
+                images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"]
+            };
+        });
 
         // If no products found in DB yet, use high-end mock curation
         if (normalized.length === 0) {
@@ -151,11 +154,12 @@ export async function getProductById(id) {
         });
 
         if (product) {
+            const images = Array.isArray(product.imageUrls) ? product.imageUrls : [];
             return {
                 ...product,
-                price: `₹${product.price.toLocaleString()}`,
-                priceAmount: product.price,
-                images: product.imageUrls.length > 0 ? product.imageUrls : ["https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"]
+                price: `₹${(product.price || 0).toLocaleString()}`,
+                priceAmount: product.price || 0,
+                images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"]
             };
         }
 

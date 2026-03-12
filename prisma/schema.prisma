@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -33,7 +33,7 @@ model Product {
   price       Float
   brand       String?
   category    String
-  imageUrls   String[]
+  imageUrls   Json
   stock       Int         @default(0)
   isFeatured  Boolean     @default(false)
   createdAt   DateTime    @default(now())

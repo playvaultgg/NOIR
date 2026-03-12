@@ -1,6 +1,4 @@
-import dynamic from "next/dynamic";
-
-const PerfumeBuilder = dynamic(() => import("@/components/3d/PerfumeBuilder"), { ssr: false });
+import PerfumePageClient from "./PerfumePageClient";
 
 export const metadata = {
     title: "Custom Perfume Builder | Maison NOIR",
@@ -8,5 +6,5 @@ export const metadata = {
 };
 
 export default function CustomPerfumePage() {
-    return <PerfumeBuilder />;
+    return <PerfumePageClient />;
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import prisma from "@/lib/prisma";
+import { sendOrderConfirmation } from "@/lib/email";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -72,6 +73,25 @@ export async function POST(req) {
             });
 
             console.log("Order created:", order.id);
+
+            // Send order confirmation email (fail-safe)
+            try {
+                const user = await prisma.user.findUnique({
+                    where: { id: userId },
+                    select: { name: true, email: true },
+                });
+                if (user?.email) {
+                    await sendOrderConfirmation({
+                        to: user.email,
+                        name: user.name || "",
+                        orderId: order.id,
+                        items: cartItems.map((i) => ({ name: i.name, quantity: i.quantity || 1, price: i.price || 0 })),
+                        total: order.totalAmount,
+                    });
+                }
+            } catch (emailErr) {
+                console.warn("Order confirmation email failed:", emailErr.message);
+            }
         } catch (err) {
             console.error("Error creating order from webhook:", err);
             return NextResponse.json({ error: "Order creation failed" }, { status: 500 });

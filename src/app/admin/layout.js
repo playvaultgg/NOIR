@@ -25,6 +25,7 @@ const SIDEBAR_ITEMS = [
     { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
     { label: "Users", href: "/admin/users", icon: Users },
     { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+    { label: "Coupons", href: "/admin/coupons", icon: Boxes },
     { label: "Inventory", href: "/admin/inventory", icon: Boxes },
     { label: "Avatars", href: "/admin/avatars", icon: UserCircle2 },
     { label: "Settings", href: "/admin/settings", icon: Settings },

@@ -23,6 +23,7 @@ model User {
   sessions      Session[]
   avatar        UserAvatar?
   wishlist      Product[]   @relation("UserWishlist")
+  reviews       Review[]
 }
 
 model Product {
@@ -39,6 +40,7 @@ model Product {
   updatedAt   DateTime    @updatedAt
   orders      OrderItem[]
   wishedBy    User[]      @relation("UserWishlist")
+  reviews     Review[]
 }
 
 model Order {
@@ -122,6 +124,37 @@ model UserAvatar {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Coupon {
+  id           String   @id @default(cuid())
+  code         String   @unique
+  description  String?
+  discountType String   @default("PERCENT") // PERCENT | FIXED
+  discountValue Float
+  minOrderValue Float   @default(0)
+  maxUses      Int?
+  usedCount    Int      @default(0)
+  isActive     Boolean  @default(true)
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Review {
+  id               String   @id @default(cuid())
+  productId        String
+  userId           String
+  rating           Int      // 1-5
+  title            String?
+  body             String
+  verifiedPurchase Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, userId])
 }
 
 enum Role {

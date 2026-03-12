@@ -57,6 +57,18 @@ model Order {
   updatedAt       DateTime    @updatedAt
   user            User        @relation(fields: [userId], references: [id])
   items           OrderItem[]
+  logs            OrderLog[]
+  isSuspect       Boolean     @default(false) // Fraud detection flag
+}
+
+model OrderLog {
+  id        String      @id @default(cuid())
+  orderId   String
+  status    OrderStatus
+  changedBy String      // "SYSTEM" or Admin User ID
+  message   String?
+  createdAt DateTime    @default(now())
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model OrderItem {

@@ -20,8 +20,33 @@ const playfair = Playfair_Display({
 });
 
 export const metadata = {
-  title: "NOIR — Luxury Clothing & Accessories",
-  description: "Ultra-premium e-commerce for refined individuals.",
+  title: {
+    default: "NOIR — Luxury Clothing & Accessories",
+    template: "%s | Maison NOIR"
+  },
+  description: "Ultra-premium e-commerce for refined individuals. Experience uncompromising luxury fashion and custom fragrances.",
+  openGraph: {
+    title: "Maison NOIR — Luxury Architectural Fashion",
+    description: "Ultra-premium e-commerce for refined individuals. Experience uncompromising luxury.",
+    url: "https://maisonoir.com",
+    siteName: "Maison NOIR",
+    images: [
+      {
+        url: "/og-image.jpg", // Ensure this exists or use a cinematic placeholder
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Maison NOIR — Luxury Fashion",
+    description: "Ultra-premium architectural fashion and custom fragrances.",
+    images: ["/og-image.jpg"],
+  },
+  themeColor: "#0A0A0A",
 };
 
 import CartDrawer from "@/components/cart/CartDrawer";

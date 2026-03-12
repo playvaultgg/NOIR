@@ -35,6 +35,16 @@ export async function PATCH(req, { params }) {
             }
         });
 
+        // Create Activity Log entry
+        await prisma.orderLog.create({
+            data: {
+                orderId: id,
+                status: status,
+                changedBy: session.user.id || "ADMIN",
+                message: `Status updated to ${status}`
+            }
+        });
+
         // If status changed to SHIPPED, send email
         if (status === "SHIPPED" && currentOrder.status !== "SHIPPED") {
             try {

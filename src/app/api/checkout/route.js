@@ -36,6 +36,17 @@ export async function POST(req) {
                     userId,
                     totalAmount,
                     status: "PENDING",
+                    isSuspect: totalAmount > 200000, // High-value threshold for fraud review
+                }
+            });
+
+            // Initial activity log
+            await tx.orderLog.create({
+                data: {
+                    orderId: newOrder.id,
+                    status: "PENDING",
+                    changedBy: "SYSTEM",
+                    message: "Order placed via digital checkout"
                 }
             });
 

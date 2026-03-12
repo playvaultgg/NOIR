@@ -87,6 +87,34 @@ export async function sendShippingUpdate({ to, name, orderId, trackingId, courie
     return resend.emails.send({ from: FROM, to, subject: `Your NOIR Order Has Shipped`, html });
 }
 
+/* ══ 2.1 Order Delivered ════════════════════════════════════════ */
+export async function sendOrderDelivered({ to, name, orderId }) {
+    const html = base(`
+        <div class="tag">Delivered</div>
+        <h1>Arrival.</h1>
+        <p>Hi ${name || "valued patron"}, we are pleased to confirm that your Maison NOIR selection has been successfully delivered.</p>
+        <p>Order Reference: <span style="font-family:monospace;font-size:12px">${orderId}</span></p>
+        <hr class="divider"/>
+        <p style="font-size:12px">We hope these pieces meet your expectations of uncompromising luxury. If you have any feedback or require further assistance, our concierge is at your service.</p>
+    `);
+
+    return resend.emails.send({ from: FROM, to, subject: `Your NOIR Order Was Delivered`, html });
+}
+
+/* ══ 2.2 Refund Issued ══════════════════════════════════════════ */
+export async function sendRefundIssued({ to, name, orderId, amount, currencySymbol = "₹" }) {
+    const html = base(`
+        <div class="tag">Refunded</div>
+        <h1>Notification of Credit.</h1>
+        <p>Hi ${name || "valued patron"}, we have processed a refund of <strong>${currencySymbol}${amount.toLocaleString()}</strong> for your order.</p>
+        <p>Order Reference: <span style="font-family:monospace;font-size:12px">${orderId}</span></p>
+        <hr class="divider"/>
+        <p style="font-size:12px">The funds should appear in your account within 5–10 business days depending on your financial institution.</p>
+    `);
+
+    return resend.emails.send({ from: FROM, to, subject: `Credit Issued for Your NOIR Order`, html });
+}
+
 /* ══ 3. Password Reset ══════════════════════════════════════════ */
 export async function sendPasswordReset({ to, name, resetUrl }) {
     const html = base(`

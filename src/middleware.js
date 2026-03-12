@@ -8,8 +8,8 @@ const rateLimitMap = new Map();
 export async function middleware(req) {
     const { pathname } = req.nextUrl;
 
-    // Only rate limit API routes and sensitive paths
-    if (pathname.startsWith("/api/checkout") || pathname.startsWith("/api/auth")) {
+    // Only rate limit sensitive business logic (like checkout)
+    if (pathname.startsWith("/api/checkout")) {
         const ip = req.ip || "127.0.0.1";
         const now = Date.now();
         const windowSize = 60 * 1000; // 1 minute

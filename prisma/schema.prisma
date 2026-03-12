@@ -20,10 +20,10 @@ model User {
   accounts      Account[]
   addresses     Address[]
   orders        Order[]
+  reviews       Review[]
   sessions      Session[]
   avatar        UserAvatar?
   wishlist      Product[]   @relation("UserWishlist")
-  reviews       Review[]
 }
 
 model Product {
@@ -39,8 +39,8 @@ model Product {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   orders      OrderItem[]
-  wishedBy    User[]      @relation("UserWishlist")
   reviews     Review[]
+  wishedBy    User[]      @relation("UserWishlist")
 }
 
 model Order {
@@ -48,24 +48,24 @@ model Order {
   userId          String
   totalAmount     Float
   status          OrderStatus @default(PENDING)
-  stripeSessionId String?     @unique
-  trackingNumber  String?     // For shipping
-  courierName     String?     // e.g. FedEx, DHL
-  refundId        String?     // Stripe refund ID if applicable
-  refundAmount    Float?      // Partial or full refund amount
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+  stripeSessionId String?     @unique
+  courierName     String?
+  refundAmount    Float?
+  refundId        String?
+  trackingNumber  String?
+  isSuspect       Boolean     @default(false)
   user            User        @relation(fields: [userId], references: [id])
   items           OrderItem[]
   logs            OrderLog[]
-  isSuspect       Boolean     @default(false) // Fraud detection flag
 }
 
 model OrderLog {
   id        String      @id @default(cuid())
   orderId   String
   status    OrderStatus
-  changedBy String      // "SYSTEM" or Admin User ID
+  changedBy String
   message   String?
   createdAt DateTime    @default(now())
   order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
@@ -143,25 +143,25 @@ model UserAvatar {
 }
 
 model Coupon {
-  id           String   @id @default(cuid())
-  code         String   @unique
-  description  String?
-  discountType String   @default("PERCENT") // PERCENT | FIXED
+  id            String    @id @default(cuid())
+  code          String    @unique
+  description   String?
+  discountType  String    @default("PERCENT")
   discountValue Float
-  minOrderValue Float   @default(0)
-  maxUses      Int?
-  usedCount    Int      @default(0)
-  isActive     Boolean  @default(true)
-  expiresAt    DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  minOrderValue Float     @default(0)
+  maxUses       Int?
+  usedCount     Int       @default(0)
+  isActive      Boolean   @default(true)
+  expiresAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Review {
   id               String   @id @default(cuid())
   productId        String
   userId           String
-  rating           Int      // 1-5
+  rating           Int
   title            String?
   body             String
   verifiedPurchase Boolean  @default(false)
@@ -180,9 +180,9 @@ enum Role {
 
 enum OrderStatus {
   PENDING
-  PROCESSING
   SHIPPED
   DELIVERED
   CANCELLED
+  PROCESSING
   REFUNDED
 }

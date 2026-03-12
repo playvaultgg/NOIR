@@ -3,16 +3,12 @@
 import { motion } from "framer-motion";
 import { ShieldCheck, ArrowRight, Download, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { jsPDF } from "jspdf";
 import { useSearchParams } from "next/navigation";
 
-/**
- * Maison NOIR - Acquisition Success Page
- * Features cinematic animations and a digital certificate reveal.
- */
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
     const searchParams = useSearchParams();
     const sessionId = searchParams.get("session_id") || "MN-INTERNAL-AUTH";
     const orderNumber = `MN-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -221,5 +217,21 @@ export default function CheckoutSuccessPage() {
                 </motion.p>
             </div>
         </main>
+    );
+}
+
+/**
+ * Maison NOIR - Acquisition Success Page
+ * Features cinematic animations and a digital certificate reveal.
+ */
+export default function CheckoutSuccessPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-noir-black flex items-center justify-center">
+                <div className="w-12 h-12 border-2 border-noir-gold border-t-transparent rounded-full animate-spin" />
+            </div>
+        }>
+            <SuccessContent />
+        </Suspense>
     );
 }

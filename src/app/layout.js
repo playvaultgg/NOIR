@@ -32,7 +32,7 @@ export const metadata = {
     siteName: "Maison NOIR",
     images: [
       {
-        url: "/og-image.jpg", // Ensure this exists or use a cinematic placeholder
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
       },
@@ -46,7 +46,14 @@ export const metadata = {
     description: "Ultra-premium architectural fashion and custom fragrances.",
     images: ["/og-image.jpg"],
   },
+};
+
+export const viewport = {
   themeColor: "#0A0A0A",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  maximumScale: 1,
 };
 
 import CartDrawer from "@/components/cart/CartDrawer";
@@ -63,8 +70,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`}>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
-        
         {/* Production Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"

@@ -49,7 +49,11 @@ export async function POST(req) {
             { status: 201 }
         );
     } catch (err) {
-        console.error("Registration Error:", err);
+        console.error("================ REGISTRATION CRITICAL FAILURE ================");
+        console.error("Registration Error Message:", err.message);
+        console.error("Registration Error Stack:", err.stack);
+        console.error("Registration Error Full Object:", err);
+        console.error("===============================================================");
         return NextResponse.json(
             { message: "Security protocol error in account creation." },
             { status: 500 }

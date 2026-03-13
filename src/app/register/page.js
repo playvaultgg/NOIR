@@ -48,7 +48,7 @@ export default function RegisterPage() {
                 }
             } else {
                 const data = await res.json();
-                setError(data.message || "Registration failed.");
+                setError(data.message + (data.debug_error ? ` | DEBUG: ${data.debug_error}` : ""));
             }
         } catch (err) {
             setError("An unexpected error occurred.");

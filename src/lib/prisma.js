@@ -1,13 +1,21 @@
 import { PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
+    const dbUrl = process.env.DATABASE_URL;
+
+    if (!dbUrl) {
+        // Fallback for Next.js build phase if env vars are missing
+        console.warn("Prisma initializing without explicit DATABASE_URL. Build environments may ignore this.");
+        return new PrismaClient();
+    }
+
     return new PrismaClient({
         datasources: {
             db: {
-                url: process.env.DATABASE_URL,
+                url: dbUrl,
             },
         },
-    })
+    });
 }
 
 const globalForPrisma = globalThis

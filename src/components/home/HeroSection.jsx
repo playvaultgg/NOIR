@@ -41,9 +41,9 @@ export default function HeroSection() {
                             <Sparkles size={14} className="animate-pulse" />
                             Est. 1995 / Sovereign Archive
                         </div>
-                        <h1 className="text-6xl lg:text-7xl font-playfair text-white tracking-tighter leading-tight italic">
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-playfair text-white tracking-tighter leading-tight italic">
                             Maison Noir <br />
-                            <span className="text-2xl lg:text-4xl text-white/80 block mt-4">The Future of Luxury Fashion</span>
+                            <span className="text-xl sm:text-2xl lg:text-4xl text-white/80 block mt-4">The Future of Luxury Fashion</span>
                         </h1>
                     </div>
 

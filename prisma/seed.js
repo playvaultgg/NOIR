@@ -1,6 +1,7 @@
 // Use the Unsplash Source API or specific Unsplash collection IDs to generate 100+ items
 // MENS, WOMENS, ACCESSORIES, WATCHES, JEWELRY, BAGS, PERFUME
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 const BRANDS = ["NOIR COUTURE", "NOIR ARCHIVE", "NOIR ATELIER", "NOIR JEWELRY", "NOIR BEAUTY", "NOIR HOROLOGY"];
@@ -116,10 +117,12 @@ async function main() {
     // We recreate admin only if none exists, else skip
     let admin = await prisma.user.findUnique({ where: { email: "gundelwaranup119@gmail.com" } });
     if (!admin) {
+        const hashedPassword = await bcrypt.hash("AdminPassword123!", 12);
         admin = await prisma.user.create({
             data: {
                 name: "Gundelwar anup santosh",
                 email: "gundelwaranup119@gmail.com",
+                password: hashedPassword,
                 role: "ADMIN",
             },
         });
@@ -163,6 +166,8 @@ async function main() {
             const k1 = encodeURIComponent(item.keywords.split(',')[0]);
             const k2 = encodeURIComponent(item.keywords.split(',')[1] || 'luxury');
             
+            const slug = `${item.name.toLowerCase().replace(/ /g, '-')}-${Math.floor(Math.random() * 1000)}`;
+            
             allProducts.push({
                 name: item.name,
                 brand: brand,
@@ -174,7 +179,9 @@ async function main() {
                 category: category,
                 description: `Experience the epitome of luxury with the ${item.name}. Crafted by master artisans for the modern elite.`,
                 stock: stock,
-                isFeatured: isFeatured
+                lowStockThreshold: 5,
+                isFeatured: isFeatured,
+                slug: slug
             });
             i++;
         }
@@ -200,6 +207,8 @@ async function main() {
         const varPrefix = variations[Math.floor(Math.random() * variations.length)];
         const rando = Math.floor(Math.random() * 1000000);
         
+        const slug = `${base.name.toLowerCase().replace(/ /g, '-')}-${varPrefix.toLowerCase().replace(/ /g, '-')}-${rando}`;
+        
         allProducts.push({
             name: `${base.name} - ${varPrefix}`,
             brand: base.brand,
@@ -211,7 +220,9 @@ async function main() {
             category: base.category,
             description: base.description + ` This is a strictly limited ${varPrefix}.`,
             stock: Math.floor(Math.random() * 10) + 1, // Rare
-            isFeatured: Math.random() > 0.7
+            lowStockThreshold: 2,
+            isFeatured: Math.random() > 0.7,
+            slug: slug
         });
     }
 

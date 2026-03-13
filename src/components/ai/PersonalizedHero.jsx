@@ -14,13 +14,32 @@ export default function PersonalizedHero() {
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        async function fetchProfile() {
-            const data = await getUserStyleProfile(session?.user?.id);
-            setProfile(data);
+        async function fetchPersonalization() {
+            // 1. Fetch Identity Profile
+            const profileData = await getUserStyleProfile(session?.user?.id);
+            setProfile(profileData);
+
+            // 2. Fetch Behavioral Signature
+            const signature = JSON.parse(localStorage.getItem("maison_signature_v1") || "[]");
+            if (signature.length > 0) {
+                const lastId = signature[0]; // Most recent
+                try {
+                    const res = await fetch(`/api/products/${lastId}`);
+                    const productData = await res.json();
+                    if (productData) {
+                        setSpotlightProduct(productData);
+                    }
+                } catch (e) {
+                    console.warn("Personalization spotlight failed to materialize.");
+                }
+            }
+            
             setIsLoaded(true);
         }
-        fetchProfile();
+        fetchPersonalization();
     }, [session?.user?.id]);
+
+    const [spotlightProduct, setSpotlightProduct] = useState(null);
 
     if (!isLoaded || !profile) return null;
 
@@ -75,7 +94,7 @@ export default function PersonalizedHero() {
                                 <p className="text-[9px] uppercase tracking-widest text-white/30">Maison Tier</p>
                                 <p className="text-[10px] text-noir-gold font-black uppercase tracking-widest mt-1">{profile.loyaltyTier}</p>
                             </div>
-                            <Link href="/account" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white-[#C6A972] hover:text-black hover:border-[#C6A972] hover:text-noir-black transition-all">
+                            <Link href="/account" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-noir-gold hover:bg-noir-gold hover:text-noir-black transition-all">
                                 <ArrowRight size={16} />
                             </Link>
                         </div>
@@ -91,8 +110,8 @@ export default function PersonalizedHero() {
                 >
                     <div className="absolute inset-0 border border-white/5 rounded-3xl overflow-hidden group">
                         <Image
-                            src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1000&auto=format&fit=crop"
-                            alt="Recommended for Your Style"
+                            src={spotlightProduct?.images?.[0] || spotlightProduct?.imageUrls?.[0] || "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1000&auto=format&fit=crop"}
+                            alt={spotlightProduct?.name || "Recommended for Your Style"}
                             fill
                             className="object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"
                         />
@@ -100,9 +119,9 @@ export default function PersonalizedHero() {
 
                         <div className="absolute bottom-10 left-10 space-y-4">
                             <p className="text-noir-gold text-[10px] uppercase tracking-[0.4em] font-black">Inspired by Your Curation</p>
-                            <h2 className="text-4xl font-playfair text-white italic tracking-tight">The Onyx Winter Series</h2>
-                            <Link href="/shop" className="inline-flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-white border-b border-white/20 pb-1 hover:border-noir-gold hover:text-noir-gold transition-all">
-                                Examine The Sequence
+                            <h2 className="text-4xl font-playfair text-white italic tracking-tight">{spotlightProduct?.name || "The Onyx Winter Series"}</h2>
+                            <Link href={spotlightProduct ? `/product/${spotlightProduct.id}` : "/shop"} className="inline-flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-white border-b border-white/20 pb-1 hover:border-noir-gold hover:text-noir-gold transition-all">
+                                {spotlightProduct ? "Examine Selection" : "Examine The Sequence"}
                             </Link>
                         </div>
                     </div>

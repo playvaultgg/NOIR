@@ -1,12 +1,20 @@
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import AuthProvider from "@/providers/AuthProvider";
+import { CurrencyProvider } from "@/context/CurrencyContext";
+import SmoothScrollProvider from "@/providers/SmoothScrollProvider";
 import Navbar from "@/components/layout/Navbar";
 import MobileNavbar from "@/components/layout/MobileNavbar";
 import Footer from "@/components/layout/Footer";
-import SmoothScrollProvider from "@/providers/SmoothScrollProvider";
-import AuthProvider from "@/providers/AuthProvider";
+import PageWrapper from "@/components/layout/PageWrapper";
+import CartDrawer from "@/components/cart/CartDrawer";
+import CartReminderPopup from "@/components/cro/CartReminderPopup";
+import OutfitBuilder from "@/components/products/OutfitBuilder";
+import AIStylist from "@/components/ai/AIStylist";
+import DiscoveryObserver from "@/components/ai/DiscoveryObserver";
+import WishlistSynchronizer from "@/components/wishlist/WishlistSynchronizer";
+import Script from "next/script";
 
-// High-end Typography initialization
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -56,21 +64,10 @@ export const viewport = {
   maximumScale: 1,
 };
 
-import CartDrawer from "@/components/cart/CartDrawer";
-import CartReminderPopup from "@/components/cro/CartReminderPopup";
-import PageWrapper from "@/components/layout/PageWrapper";
-import ConciergeChat from "@/components/concierge/ConciergeChat";
-
-import { CurrencyProvider } from "@/context/CurrencyContext";
-
-import Link from "next/link";
-import Script from "next/script";
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`}>
       <head>
-        {/* Production Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
           strategy="afterInteractive"
@@ -84,25 +81,22 @@ export default function RootLayout({ children }) {
           `}
         </Script>
       </head>
-      <body className="font-inter bg-noir-black text-noir-text selection:bg-noir-gold/30 selection:text-noir-gold">
+      <body className="bg-noir-black text-white">
         <AuthProvider>
           <CurrencyProvider>
             <SmoothScrollProvider>
-            {/* Universal Navbar Persistence */}
-            <Navbar />
-
-            {/* Smart Wrapper for edge-to-edge screens like Auth */}
-            <PageWrapper>
-              {children}
-            </PageWrapper>
-
-            <MobileNavbar />
-            <Footer />
-
-            {/* Phase 3 & 9: Ultra Conversion & AI Assistant */}
-            <CartDrawer />
-            <CartReminderPopup />
-            <ConciergeChat />
+              <Navbar />
+              <PageWrapper>
+                {children}
+              </PageWrapper>
+              <MobileNavbar />
+              <Footer />
+              <CartDrawer />
+              <OutfitBuilder />
+              <CartReminderPopup />
+              <AIStylist />
+              <DiscoveryObserver />
+              <WishlistSynchronizer />
             </SmoothScrollProvider>
           </CurrencyProvider>
         </AuthProvider>

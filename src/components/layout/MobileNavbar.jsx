@@ -48,18 +48,18 @@ export default function MobileNavbar() {
                         <Link
                             key={item.label}
                             href={item.href}
-                            className={`flex flex-col items-center gap-1 w-12 transition-colors duration-300 ${isActive ? "text-noir-gold" : "text-white/50 hover:text-white/80"
+                            className={`flex flex-col items-center gap-1.5 w-full min-w-[50px] transition-all duration-300 py-1 ${isActive ? "text-noir-gold scale-110" : "text-white/40 hover:text-white/80"
                                 }`}
                         >
                             <div className="relative">
-                                <Icon className="w-5 h-5" strokeWidth={isActive ? 2 : 1.5} />
+                                <Icon className="w-[18px] h-[18px]" strokeWidth={isActive ? 2.5 : 1.5} />
                                 {item.label === "Cart" && totalItemsCount > 0 && (
-                                    <span className="absolute -top-1 -right-1.5 w-3 h-3 bg-noir-gold text-noir-black rounded-full text-[8px] flex justify-center items-center font-bold">
+                                    <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-noir-gold text-noir-black rounded-full text-[8px] flex justify-center items-center font-black">
                                         {totalItemsCount}
                                     </span>
                                 )}
                             </div>
-                            <span className={`text-[9px] uppercase tracking-wider ${isActive ? "font-semibold" : "font-normal"}`}>
+                            <span className={`text-[8px] uppercase tracking-[0.2em] font-black ${isActive ? "opacity-100" : "opacity-40"}`}>
                                 {item.label}
                             </span>
                         </Link>

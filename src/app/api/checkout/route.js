@@ -69,6 +69,19 @@ export async function POST(req) {
                 });
             }
 
+            // Log activity
+            await tx.customerActivity.create({
+                data: {
+                    userId,
+                    action: "PURCHASE",
+                    metadata: {
+                        orderId: newOrder.id,
+                        totalAmount,
+                        itemCount: items.length
+                    }
+                }
+            });
+
             return newOrder;
         });
 

@@ -19,7 +19,9 @@ function CinematicFlashes() {
  * Maison NOIR - Showroom Architecture
  * High-fidelity environment construction.
  */
-export default function Architecture() {
+export default function Architecture({ currentRoom }) {
+    const isVIP = currentRoom === "vip";
+
     // Generate randomized panel positions for a "brushed architectural" look
     const panels = useMemo(() => {
         const p = [];
@@ -37,7 +39,7 @@ export default function Architecture() {
             
             {/* ── Atmospheric Effects: Dust Particles ── */}
             <Sparkles 
-                count={200} 
+                count={isVIP ? 200 : 50} 
                 scale={[40, 10, 60]} 
                 size={0.4} 
                 speed={0.2} 
@@ -53,14 +55,14 @@ export default function Architecture() {
                 <planeGeometry args={[100, 100]} />
                 <MeshReflectorMaterial
                     blur={[300, 100]}
-                    resolution={1024}
+                    resolution={512}
                     mixBlur={1}
-                    mixStrength={15}
-                    roughness={0.8}
-                    depthScale={1.2}
+                    mixStrength={10}
+                    roughness={0.9}
+                    depthScale={1}
                     minDepthThreshold={0.4}
-                    maxDepthThreshold={1.4}
-                    color="#050505" // Darker, deeper onyx
+                    maxDepthThreshold={1.2}
+                    color="#030303" 
                     metalness={0.9}
                 />
             </mesh>

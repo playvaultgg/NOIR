@@ -142,3 +142,59 @@ export async function sendWelcomeEmail({ to, name }) {
 
     return resend.emails.send({ from: FROM, to, subject: `Welcome to Maison NOIR`, html });
 }
+/* ══ 5. Abandoned Cart ════════════════════════════════════════ */
+export async function sendAbandonedCartEmail({ to, name, cartLink }) {
+    const html = base(`
+        <div class="tag">Selection Pending</div>
+        <h1>Your curation awaits.</h1>
+        <p>Hi ${name || "patron"}, we noticed you left some exquisite pieces in your collection. These items are in high demand and we cannot guarantee their availability for long.</p>
+        <a href="${cartLink}" class="btn">Resume Selection</a>
+        <hr class="divider"/>
+        <p style="font-size:12px">Maison NOIR pieces are crafted in limited quantities. Complete your acquisition to ensure ownership of these archival designs.</p>
+    `);
+
+    return resend.emails.send({ from: FROM, to, subject: `Your Selection at Maison NOIR Awaits`, html });
+}
+
+/* ══ 6. Newsletter Welcome ══════════════════════════════════════ */
+export async function sendNewsletterWelcome({ to }) {
+    const html = base(`
+        <div class="tag">The Inner Circle</div>
+        <h1>Connectivity Established.</h1>
+        <p>Welcome to the Inner Circle of Maison NOIR. You are now part of a global society with priority access to our most prestigious drops and private events.</p>
+        <p>Expect intelligence on upcoming runway collections and exclusive invitations to our 3D Showroom experiences.</p>
+        <hr class="divider"/>
+        <p style="font-size:12px">Luxury is a dialogue. We are honored to have you with us.</p>
+    `);
+
+    return resend.emails.send({ from: FROM, to, subject: `Maison NOIR — Membership Confirmed`, html });
+}
+
+/* ══ 7. Stock Alert ═══════════════════════════════════════════ */
+export async function sendStockAlert({ to, productName, productUrl }) {
+    const html = base(`
+        <div class="tag">Restock Alert</div>
+        <h1>Artistic Return.</h1>
+        <p>The <strong>${productName}</strong> has returned to the archive. As a requested alert, we are notifying you immediately before the public release.</p>
+        <a href="${productUrl}" class="btn">Acquire Now</a>
+        <hr class="divider"/>
+        <p style="font-size:12px">High-demand pieces typically exhaust stock within hours of liberation. We advise immediate action.</p>
+    `);
+
+    return resend.emails.send({ from: FROM, to, subject: `${productName} is Back in Stock`, html });
+}
+
+/* ══ 8. Campaign Template ═══════════════════════════════════════ */
+export async function sendCampaignEmail({ to, subject, title, body, ctaLabel, ctaUrl, imageUrl }) {
+    const html = base(`
+        <div class="tag">Campaign Notification</div>
+        ${imageUrl ? `<img src="${imageUrl}" style="width:100%; border-radius:8px; margin-bottom:24px;" alt="Campaign Visual" />` : ""}
+        <h1>${title}</h1>
+        <p>${body}</p>
+        ${ctaUrl ? `<a href="${ctaUrl}" class="btn">${ctaLabel || "Discover"}</a>` : ""}
+        <hr class="divider"/>
+        <p style="font-size:12px">This is an exclusive communication for Maison NOIR patrons. To update your preferences, visit your account settings.</p>
+    `);
+
+    return resend.emails.send({ from: FROM, to, subject, html });
+}

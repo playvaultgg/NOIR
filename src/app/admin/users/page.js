@@ -7,7 +7,13 @@ export const dynamic = "force-dynamic";
 export default async function AdminUsers() {
     const users = await prisma.user.findMany({
         orderBy: { createdAt: 'desc' },
-        include: { _count: { select: { orders: true, wishlist: true } } }
+        include: { 
+            _count: { select: { orders: true, wishlist: true } },
+            activities: {
+                orderBy: { createdAt: 'desc' },
+                take: 1
+            }
+        }
     });
 
     return (
@@ -39,6 +45,7 @@ export default async function AdminUsers() {
                                 <th className="px-6 py-5 font-semibold">Joined Date</th>
                                 <th className="px-6 py-5 font-semibold">Orders Issued</th>
                                 <th className="px-6 py-5 font-semibold">Wishlisted</th>
+                                <th className="px-6 py-5 font-semibold">Recent Pulse</th>
                                 <th className="px-6 py-5 font-semibold text-right">Actions</th>
                             </tr>
                         </thead>
@@ -73,6 +80,16 @@ export default async function AdminUsers() {
                                     </td>
                                     <td className="px-6 py-4 font-mono text-white/50">{user._count.orders}</td>
                                     <td className="px-6 py-4 font-mono text-[#C6A972]">{user._count.wishlist} Items</td>
+                                    <td className="px-6 py-4">
+                                        {user.activities?.[0] ? (
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] text-white font-bold uppercase tracking-wider">{user.activities[0].action}</span>
+                                                <span className="text-[8px] text-white/30 uppercase">{new Date(user.activities[0].createdAt).toLocaleDateString()}</span>
+                                            </div>
+                                        ) : (
+                                            <span className="text-[9px] text-white/10 uppercase tracking-widest italic">Dormant</span>
+                                        )}
+                                    </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-3 opacity-50 group-hover:opacity-100 transition-opacity">
                                             <button className="p-2 hover:bg-red-500/20 rounded-lg text-white/60 hover:text-red-400 transition-colors" title="Deactivate">

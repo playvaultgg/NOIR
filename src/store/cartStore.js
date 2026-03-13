@@ -5,12 +5,32 @@ export const useCartStore = create(
     persist(
         (set, get) => ({
             items: [],
+            outfitItems: [],
             isOpen: false,
+            isOutfitOpen: false,
 
             // UI Actions
             openCart: () => set({ isOpen: true }),
             closeCart: () => set({ isOpen: false }),
             toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+            
+            openOutfit: () => set({ isOutfitOpen: true }),
+            closeOutfit: () => set({ isOutfitOpen: false }),
+            toggleOutfit: () => set((state) => ({ isOutfitOpen: !state.isOutfitOpen })),
+
+            // Outfit Operations
+            addOutfitItem: (product) => set((state) => {
+                const exists = state.outfitItems.find(p => p.id === product.id);
+                if (exists) return { isOutfitOpen: true };
+                return { 
+                    outfitItems: [...state.outfitItems, product],
+                    isOutfitOpen: true 
+                };
+            }),
+
+            removeOutfitItem: (productId) => set((state) => ({
+                outfitItems: state.outfitItems.filter(p => p.id !== productId)
+            })),
 
             // Cart Operations
             addItem: (product) => {

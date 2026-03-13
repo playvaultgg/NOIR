@@ -199,7 +199,7 @@ function LookCard({ look, isActive, onClick }) {
             onClick={onClick}
             whileHover={{ y: -4, scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
-            className={`relative flex-shrink-0 w-48 cursor-pointer rounded-2xl overflow-hidden border transition-all duration-500 ${
+            className={`relative flex-shrink-0 w-32 md:w-48 cursor-pointer rounded-2xl overflow-hidden border transition-all duration-500 ${
                 isActive 
                     ? "border-[#C6A972]/60 shadow-[0_0_24px_rgba(198,169,114,0.25)]" 
                     : "border-white/5 hover:border-white/20"
@@ -318,36 +318,51 @@ export default function RunwayExperience() {
             {/* ── Audio ── */}
             <audio
                 ref={audioRef}
-                src="https://www.bensound.com/bensound-music/bensound-epic.mp3"
+                src="https://cdn.pixabay.com/audio/2022/03/10/audio_c8fd871678.mp3"
                 loop
                 muted={isMuted}
                 autoPlay
             />
 
+            {/* ── Cinematic Transition Flash ── */}
+            <AnimatePresence>
+                {prevLookIndex !== null && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0, 1, 0] }}
+                        transition={{ duration: 1.2, ease: "easeInOut" }}
+                        className="absolute inset-0 z-[100] bg-white pointer-events-none mix-blend-overlay"
+                    />
+                )}
+            </AnimatePresence>
+
             {/* ── Cinematic Vignette + Noise ── */}
             <div className="absolute inset-0 z-10 pointer-events-none">
                 <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-90" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-60" />
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.025] contrast-150" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-80" />
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.04] contrast-150 mix-blend-soft-light" />
+                
+                {/* Bloom Overlay */}
+                <div className="absolute inset-0 bg-[#C6A972]/5 mix-blend-screen animate-pulse" style={{ animationDuration: '4s' }} />
             </div>
 
             {/* ── Spotlight Beams ── */}
             <SpotlightBeams />
 
             {/* ── Top Left: Show Metadata ── */}
-            <div className="absolute top-10 left-10 z-20 space-y-5">
+            <div className="absolute top-6 left-6 lg:top-10 lg:left-10 z-20 space-y-3 lg:space-y-5">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex items-center gap-4"
+                    className="flex items-center gap-3 lg:gap-4"
                 >
                     <div className="flex gap-1">
-                        <div className="w-1 h-3 bg-[#C6A972]" />
-                        <div className="w-1 h-3 bg-[#C6A972] opacity-40" />
+                        <div className="w-0.5 lg:w-1 h-3 bg-[#C6A972]" />
+                        <div className="w-0.5 lg:w-1 h-3 bg-[#C6A972] opacity-40" />
                     </div>
-                    <span className="text-[#C6A972] text-[9px] uppercase font-black tracking-[0.6em]">
-                        Live Broadcast · Maison Noir AW26
+                    <span className="text-[#C6A972] text-[7px] lg:text-[9px] uppercase font-black tracking-[0.4em] lg:tracking-[0.6em]">
+                        Live Broadcast · Maison Noir AW26 · Tokyo High-Fidelity
                     </span>
                 </motion.div>
 
@@ -359,52 +374,79 @@ export default function RunwayExperience() {
                         initial="enter"
                         animate="center"
                         exit="exit"
-                        className="space-y-1"
+                        className="space-y-0.5 lg:space-y-1"
                     >
-                        <h1 className="text-white font-playfair text-5xl lg:text-6xl italic tracking-tighter leading-none">
+                        <div className="flex items-center gap-3 mb-2">
+                             <div className="px-2 py-0.5 border border-[#C6A972]/30 rounded text-[7px] text-[#C6A972] font-black uppercase tracking-widest bg-[#C6A972]/5">
+                                 Active Silhouette
+                             </div>
+                             <div className="w-8 h-px bg-white/10" />
+                        </div>
+                        <h1 className="text-white font-playfair text-4xl md:text-5xl lg:text-7xl italic tracking-tighter leading-none">
                             {currentLook.name.split(" ").map((word, i) => (
                                 <span key={i} className={i === currentLook.name.split(" ").length - 1 ? "text-[#C6A972]" : ""}>
                                     {word}{" "}
                                 </span>
                             ))}
                         </h1>
-                        <div className="flex items-center gap-5 pt-3">
-                            <p className="text-white/30 text-[9px] uppercase tracking-[0.4em] font-medium border-r border-white/10 pr-5">
+                        <div className="flex items-center gap-3 lg:gap-5 pt-1 lg:pt-3">
+                            <p className="text-white/30 text-[7px] lg:text-[9px] uppercase tracking-[0.3em] lg:tracking-[0.4em] font-medium border-r border-white/10 pr-3 lg:pr-5">
                                 Look № {String(lookIndex + 1).padStart(2, "0")} / {String(LOOKS.length).padStart(2, "0")}
                             </p>
-                            <p className="text-[#C6A972] text-[9px] uppercase tracking-[0.4em] font-bold italic">
+                            <p className="text-[#C6A972] text-[7px] lg:text-[9px] uppercase tracking-[0.3em] lg:tracking-[0.4em] font-bold italic">
                                 {currentLook.designer}
                             </p>
                         </div>
-                        <p className="text-white/50 text-xl font-light tracking-wider pt-1">
+                        <p className="text-white/50 text-xl md:text-2xl font-light tracking-wider pt-2">
                             {currentLook.price}
                         </p>
-                        <motion.a
-                            href={`/product/${currentLook.slug}`}
+                        <motion.button
+                            onClick={() => window.location.href = `/product/${currentLook.slug}`}
                             whileHover={{ scale: 1.05, backgroundColor: "#fff" }}
                             whileTap={{ scale: 0.97 }}
-                            className="mt-4 inline-flex items-center gap-3 bg-[#C6A972] text-[#0A0A0A] px-6 py-2.5 rounded-full text-[9px] font-black uppercase tracking-[0.4em]"
+                            className="mt-6 inline-flex items-center gap-3 bg-[#C6A972] text-[#0A0A0A] px-8 py-3.5 rounded-xl text-[9px] font-black uppercase tracking-[0.4em] transition-all"
                         >
-                            <ShoppingBag size={12} />
-                            Shop This Look
-                        </motion.a>
+                            <ShoppingBag size={14} />
+                            Acquire This Ensemble
+                        </motion.button>
                     </motion.div>
                 </AnimatePresence>
             </div>
 
             {/* ── Top Right: Controls ── */}
-            <div className="absolute top-10 right-10 z-20 flex items-center gap-4">
+            <div className="absolute top-10 right-10 z-20 flex items-center gap-6">
+                <div className="flex flex-col items-end px-6 border-r border-white/10">
+                    <div className="flex items-center gap-3 mb-1">
+                        <div className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C6A972] opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C6A972]"></span>
+                        </div>
+                        <span className="text-white/40 text-[8px] uppercase tracking-widest font-black">Spatial Audio</span>
+                    </div>
+                    <span className="text-white text-[9px] uppercase tracking-widest font-bold italic text-noir-gold">"Echoes of Noir" — Official Soundtrack</span>
+                </div>
+                
                 <button
                     onClick={toggleMute}
-                    className="w-11 h-11 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-center text-white/40 hover:text-[#C6A972] hover:border-[#C6A972]/40 transition-all"
+                    className="group relative w-14 h-14 rounded-full border border-white/10 bg-white/5 backdrop-blur-2xl flex items-center justify-center text-white/40 hover:text-[#C6A972] hover:border-[#C6A972]/40 transition-all"
                     title={isMuted ? "Unmute" : "Mute"}
                 >
-                    {isMuted ? <VolumeX size={16} strokeWidth={1.5} /> : <Volume2 size={16} strokeWidth={1.5} />}
+                    <div className="absolute inset-0 rounded-full bg-[#C6A972]/5 group-hover:scale-110 transition-transform" />
+                    {isMuted ? <VolumeX size={18} strokeWidth={1} /> : <Volume2 size={18} strokeWidth={1} />}
+                    
+                    {!isMuted && (
+                        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex gap-0.5 items-end h-6 pointer-events-none">
+                            {[0.4, 0.7, 0.3, 0.9, 0.5].map((h, i) => (
+                                <motion.div
+                                    key={i}
+                                    animate={{ height: [`${h * 100}%`, `${(1-h) * 100}%`, `${h * 100}%`] }}
+                                    transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }}
+                                    className="w-0.5 bg-noir-gold"
+                                />
+                            ))}
+                        </div>
+                    )}
                 </button>
-                <div className="flex flex-col items-end px-4 border-l border-white/10">
-                    <span className="text-white/20 text-[8px] uppercase tracking-widest font-black">Camera</span>
-                    <span className="text-white text-[9px] uppercase tracking-widest font-bold">FR-04 Cinematic</span>
-                </div>
             </div>
 
             {/* ── 3D Scene ── */}
@@ -412,24 +454,33 @@ export default function RunwayExperience() {
                 <Canvas shadows gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }} camera={{ position: [0, 1.2, 8], fov: 35 }}>
                     <Suspense fallback={null}>
                         <color attach="background" args={["#000"]} />
-                        <fog attach="fog" args={["#000", 8, 22]} />
+                        <fog attach="fog" args={["#000", 6, 20]} />
 
                         <Environment preset="night" />
-                        <ambientLight intensity={0.04} />
+                        <ambientLight intensity={0.02} />
 
-                        {/* Main runway spotlight */}
+                        {/* Main runway spotlight - High Fidelity */}
                         <spotLight
-                            position={[0, 16, 0]}
-                            angle={0.14}
+                            position={[0, 18, 0]}
+                            angle={0.12}
                             penumbra={1}
-                            intensity={30}
+                            intensity={40}
                             castShadow
+                            shadow-mapSize={[2048, 2048]}
                             shadow-bias={-0.0001}
                             color="#fff"
                         />
-                        {/* Gold accent lights */}
-                        <spotLight position={[-5, 10, -3]} angle={0.2} penumbra={0.8} intensity={12} color="#C6A972" />
-                        <spotLight position={[5, 10, -3]} angle={0.2} penumbra={0.8} intensity={12} color="#C6A972" />
+                        <spotLight
+                            position={[0, 18, 2]}
+                            angle={0.15}
+                            penumbra={1}
+                            intensity={20}
+                            color="#C6A972"
+                        />
+                        
+                        {/* Side Accent lights */}
+                        <spotLight position={[-8, 12, -4]} angle={0.25} penumbra={0.8} intensity={15} color="#C6A972" />
+                        <spotLight position={[8, 12, -4]} angle={0.25} penumbra={0.8} intensity={15} color="#C6A972" />
 
                         <CameraFlashes />
 
@@ -437,25 +488,36 @@ export default function RunwayExperience() {
                             <RunwayModel isActive={isPlaying} lookIndex={lookIndex} />
                             <RunwayEnvironment />
 
-                            {/* Reflective Runway Floor */}
+                            {/* Reflective Runway Floor - Ultra Premium */}
                             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-                                <planeGeometry args={[2.5, 45]} />
-                                <meshStandardMaterial color="#060606" roughness={0.04} metalness={0.9} />
+                                <planeGeometry args={[3.2, 50]} />
+                                <meshStandardMaterial color="#050505" roughness={0.02} metalness={1} />
                             </mesh>
+                            
+                            {/* Runway Side Strips */}
+                            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-1.65, -0.005, 0]}>
+                                <planeGeometry args={[0.05, 50]} />
+                                <meshBasicMaterial color="#C6A972" transparent opacity={0.3} />
+                            </mesh>
+                            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1.65, -0.005, 0]}>
+                                <planeGeometry args={[0.05, 50]} />
+                                <meshBasicMaterial color="#C6A972" transparent opacity={0.3} />
+                            </mesh>
+
                             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
-                                <planeGeometry args={[120, 120]} />
-                                <shadowMaterial opacity={0.6} />
+                                <planeGeometry args={[150, 150]} />
+                                <shadowMaterial opacity={0.7} />
                             </mesh>
-                            <ContactShadows position={[0, -0.01, 0]} opacity={1} scale={25} blur={2.5} far={4.5} />
+                            <ContactShadows position={[0, -0.01, 0]} opacity={1} scale={30} blur={2} far={5} />
                         </group>
 
-                        <Stars radius={120} depth={60} count={6000} factor={4} saturation={0} fade speed={0.8} />
+                        <Stars radius={150} depth={50} count={8000} factor={4} saturation={0} fade speed={1} />
                     </Suspense>
                     <OrbitControls
                         enablePan={false}
                         enableZoom={false}
                         maxPolarAngle={Math.PI / 2}
-                        minPolarAngle={Math.PI / 2.5}
+                        minPolarAngle={Math.PI / 2.2}
                     />
                 </Canvas>
             </div>
@@ -463,73 +525,78 @@ export default function RunwayExperience() {
             {/* ── Bottom Controls ── */}
             <div className="absolute bottom-0 left-0 right-0 z-20">
                 {/* Look progress bar */}
-                <div className="flex gap-0.5 mb-5 px-10">
+                <div className="flex gap-1 mb-4 lg:mb-8 px-8 lg:px-12">
                     {LOOKS.map((_, i) => (
                         <button
                             key={i}
                             onClick={() => goToLook(i)}
-                            className={`h-0.5 flex-1 rounded-full transition-all duration-700 ${i === lookIndex ? "bg-[#C6A972]" : "bg-white/10 hover:bg-white/25"}`}
+                            className={`h-0.5 flex-1 rounded-full transition-all duration-1000 ${i === lookIndex ? "bg-noir-gold shadow-[0_0_10px_#C6A972]" : "bg-white/5 hover:bg-white/20"}`}
                         />
                     ))}
                 </div>
 
                 {/* Controls row */}
-                <div className="flex items-end justify-between px-10 pb-8 gap-6">
-                    {/* Playback */}
-                    <div className="flex items-center gap-5">
+                <div className="flex items-end justify-between px-8 lg:px-12 pb-8 lg:pb-12 gap-6 lg:gap-10 overflow-x-auto no-scrollbar">
+                    {/* Playback Controls */}
+                    <div className="flex items-center gap-4 lg:gap-6 shrink-0">
                         <button
                             onClick={() => advanceLook(-1)}
-                            className="w-10 h-10 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-all"
+                            className="w-10 h-10 lg:w-12 lg:h-12 rounded-full border border-white/5 bg-white/[0.02] backdrop-blur-2xl flex items-center justify-center text-white/30 hover:text-white hover:border-white/20 transition-all"
                         >
-                            <SkipBack size={16} />
+                            <SkipBack size={16} strokeWidth={1.5} />
                         </button>
                         <button
                             onClick={() => setIsPlaying(!isPlaying)}
-                            className="w-14 h-14 bg-white text-black rounded-full flex items-center justify-center hover:bg-[#C6A972] transition-all hover:scale-110 active:scale-90 shadow-2xl"
+                            className="w-14 h-14 lg:w-20 lg:h-20 bg-white text-black rounded-full flex items-center justify-center hover:bg-noir-gold transition-all hover:scale-105 active:scale-95 shadow-3xl"
                         >
-                            {isPlaying ? <Pause size={22} fill="currentColor" /> : <Play size={22} fill="currentColor" className="ml-0.5" />}
+                            {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
                         </button>
                         <button
                             onClick={() => advanceLook(1)}
-                            className="w-10 h-10 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-all"
+                            className="w-10 h-10 lg:w-12 lg:h-12 rounded-full border border-white/5 bg-white/[0.02] backdrop-blur-2xl flex items-center justify-center text-white/30 hover:text-white hover:border-white/20 transition-all"
                         >
-                            <SkipForward size={16} />
+                            <SkipForward size={16} strokeWidth={1.5} />
                         </button>
-                        <div className="flex flex-col gap-1 ml-2">
-                            <p className="text-white/20 text-[8px] uppercase tracking-[0.4em] font-black">Mode</p>
-                            <p className="text-[#C6A972] text-[9px] uppercase tracking-[0.2em] font-bold">Auto Sequence</p>
+                        <div className="hidden md:flex flex-col gap-1 ml-4 border-l border-white/5 pl-6">
+                            <p className="text-white/20 text-[8px] uppercase tracking-[0.4em] font-black">Transmission</p>
+                            <p className="text-noir-gold text-[10px] uppercase tracking-[0.2em] font-black italic">Infinite Sequence</p>
                         </div>
                     </div>
 
-                    {/* Look Cards Horizontal Scroll */}
-                    <div className="flex-1 overflow-hidden relative">
-                        {/* fade edges */}
-                        <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
-                        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+                    {/* Look Selection Deck */}
+                    <div className="flex-1 overflow-hidden relative min-w-0">
+                        <div className="absolute left-0 top-0 bottom-0 w-16 lg:w-24 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+                        <div className="absolute right-0 top-0 bottom-0 w-16 lg:w-24 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
                         <div
                             ref={cardsRef}
-                            className="flex gap-3 overflow-x-auto pb-1 scrollbar-none"
+                            className="flex gap-4 lg:gap-6 overflow-x-auto pb-12 scrollbar-none snap-x"
                             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                         >
                             {LOOKS.map((look, i) => (
-                                <LookCard
-                                    key={look.id}
-                                    look={look}
-                                    isActive={i === lookIndex}
-                                    onClick={() => goToLook(i)}
-                                />
+                                <div key={look.id} className="snap-center">
+                                    <LookCard
+                                        look={look}
+                                        isActive={i === lookIndex}
+                                        onClick={() => goToLook(i)}
+                                    />
+                                </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* REC indicator */}
-                    <div className="flex flex-col items-end gap-1 opacity-25 shrink-0">
-                        <div className="flex items-center gap-2 text-white">
-                            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                            <Camera size={13} />
-                            <span className="text-[9px] font-mono tracking-tighter">REC</span>
+                    {/* REC / Telemetry (Desktop Only) */}
+                    <div className="hidden xl:flex flex-col items-end gap-3 opacity-30 shrink-0">
+                        <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse shadow-[0_0_10px_rgba(220,38,38,0.5)]" />
+                            <Camera size={14} className="text-white" />
+                            <span className="text-[10px] font-mono tracking-tighter text-white font-bold italic">STREAMING 4K · 60FPS</span>
                         </div>
-                        <div className="w-28 h-px bg-white mt-1" />
+                        <div className="w-48 h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                        <div className="flex gap-4 text-[9px] font-mono text-white/60">
+                            <span>ISO 400</span>
+                            <span>f/2.8</span>
+                            <span>1/120</span>
+                        </div>
                     </div>
                 </div>
             </div>

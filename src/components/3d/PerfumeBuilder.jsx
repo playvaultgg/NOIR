@@ -6,9 +6,10 @@ import { OrbitControls, Environment, Float, Text, MeshDistortMaterial } from "@r
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ChevronLeft, ShoppingBag, Sparkles, Check } from "lucide-react";
+import PerfumeBottle3D from "./PerfumeBottle3D";
 
 /* ─── Data ──────────────────────────────────────────────────── */
-const STEPS = ["Top Notes", "Heart Notes", "Base Notes", "Bottle", "Engrave", "Order"];
+const STEPS = ["Aroma Protocol", "Heart Essence", "Base Archive", "Vessel", "Label Identity", "Synthesis"];
 
 const NOTES = {
     top: [
@@ -38,7 +39,7 @@ const NOTES = {
 };
 
 const BOTTLES = [
-    { id: "obelisk", name: "Obelisk", desc: "Tall rectangular artisan cut", shape: "box", args: [0.4, 1.6, 0.25] },
+    { id: "obelisk", name: "Obelisk", desc: "Tall rectangular masterpiece", shape: "box", args: [0.4, 1.6, 0.25] },
     { id: "sphere", name: "Orb", desc: "Spherical modernist form", shape: "sphere", args: [0.55, 32, 32] },
     { id: "cylinder", name: "Pillar", desc: "Classic cylindrical elegance", shape: "cylinder", args: [0.35, 0.35, 1.4, 32] },
 ];
@@ -46,82 +47,6 @@ const BOTTLES = [
 const BASE_PRICE = 12000;
 const NOTE_PRICE = 800;
 const ENGRAVING_PRICE = 500;
-
-/* ─── 3D Bottle ─────────────────────────────────────────────── */
-function PerfumeBottle3D({ bottleId, topNote, heartNote, baseNote, engravingText }) {
-    const meshRef = useRef();
-    const bottle = BOTTLES.find((b) => b.id === bottleId) || BOTTLES[0];
-
-    // Derive bottle color from selected notes
-    const color = useMemo(() => {
-        const top = topNote ? NOTES.top.find((n) => n.id === topNote) : null;
-        const heart = heartNote ? NOTES.heart.find((n) => n.id === heartNote) : null;
-        const base = baseNote ? NOTES.base.find((n) => n.id === baseNote) : null;
-        const c = top?.color || heart?.color || base?.color || "#C6A972";
-        const col = new THREE.Color(c);
-        col.multiplyScalar(0.6); // darken
-        return col;
-    }, [topNote, heartNote, baseNote]);
-
-    useFrame((state) => {
-        if (!meshRef.current) return;
-        meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.4;
-    });
-
-    const geom = () => {
-        if (bottle.shape === "box") return <boxGeometry args={bottle.args} />;
-        if (bottle.shape === "sphere") return <sphereGeometry args={bottle.args} />;
-        return <cylinderGeometry args={bottle.args} />;
-    };
-
-    return (
-        <Float speed={1.5} floatIntensity={0.4} rotationIntensity={0.1}>
-            <group>
-                {/* Main bottle body */}
-                <mesh ref={meshRef} castShadow>
-                    {geom()}
-                    <meshPhysicalMaterial
-                        color={color}
-                        roughness={0.05}
-                        metalness={0.1}
-                        transmission={0.85}
-                        thickness={0.5}
-                        ior={1.5}
-                        transparent
-                    />
-                </mesh>
-                {/* Liquid inside */}
-                <mesh scale={0.7}>
-                    {geom()}
-                    <meshStandardMaterial
-                        color={color}
-                        roughness={0.1}
-                        metalness={0.3}
-                        transparent
-                        opacity={0.5}
-                    />
-                </mesh>
-                {/* Glowing aura */}
-                <pointLight intensity={6} color={color.getStyle ? color.getStyle() : "#C6A972"} distance={3} />
-                {/* Engraving text */}
-                {engravingText && (
-                    <Text
-                        position={[0, 0, bottle.shape === "sphere" ? 0.56 : 0.13]}
-                        fontSize={0.06}
-                        color="#C6A972"
-                        font="/fonts/Playfair/PlayfairDisplay-Italic.ttf"
-                        maxWidth={0.6}
-                        textAlign="center"
-                        anchorX="center"
-                        anchorY="middle"
-                    >
-                        {engravingText}
-                    </Text>
-                )}
-            </group>
-        </Float>
-    );
-}
 
 /* ─── Note Selector ────────────────────────────────────────── */
 function NoteSelector({ notes, selected, onSelect }) {
@@ -179,6 +104,31 @@ function BottleSelector({ selected, onSelect }) {
     );
 }
 
+/* ─── Label Material Selector ───────────────────────────────── */
+function LabelMaterialSelector({ selected, onSelect }) {
+    const materials = [
+        { id: "onyx", name: "Deep Onyx", color: "#111", desc: "Matte stealth finish" },
+        { id: "gold", name: "24K Gold", color: "#C6A972", desc: "Polished luxury" },
+        { id: "platinum", name: "Platinum", color: "#E5E4E2", desc: "Modern brilliance" },
+    ];
+    return (
+        <div className="flex gap-4">
+            {materials.map((m) => (
+                <button
+                    key={m.id}
+                    onClick={() => onSelect(m.id)}
+                    className={`flex-1 p-4 rounded-3xl border transition-all ${
+                        selected === m.id ? "border-[#C6A972] bg-[#C6A972]/5" : "border-white/5 bg-white/2"
+                    }`}
+                >
+                    <div className="w-full h-8 rounded-full mb-3" style={{ backgroundColor: m.color }} />
+                    <p className="text-white text-[10px] font-bold uppercase tracking-widest">{m.name}</p>
+                </button>
+            ))}
+        </div>
+    );
+}
+
 /* ─── Main Builder ───────────────────────────────────────────── */
 export default function PerfumeBuilder() {
     const [step, setStep] = useState(0);
@@ -186,7 +136,9 @@ export default function PerfumeBuilder() {
     const [heartNote, setHeartNote] = useState(null);
     const [baseNote, setBaseNote] = useState(null);
     const [bottle, setBottle] = useState("obelisk");
+    const [labelMaterial, setLabelMaterial] = useState("onyx");
     const [engraving, setEngraving] = useState("");
+    const [isSynthesizing, setIsSynthesizing] = useState(false);
     const [added, setAdded] = useState(false);
 
     const price = BASE_PRICE
@@ -202,115 +154,118 @@ export default function PerfumeBuilder() {
             price,
             quantity: 1,
             isCustomPerfume: true,
-            customConfig: { topNote, heartNote, baseNote, bottle, engraving },
+            customConfig: { topNote, heartNote, baseNote, bottle, engraving, labelMaterial },
         };
         // Dispatch to cart store or localStorage
         try {
             const cart = JSON.parse(localStorage.getItem("noir-cart") || "[]");
             cart.push(item);
             localStorage.setItem("noir-cart", JSON.stringify(cart));
-        } catch {}
+            // Dispatch a custom event for the cart drawer to update
+            window.dispatchEvent(new Event("cart-updated"));
+        } catch (e) {
+            console.error("Failed to add bespoke creation to archive:", e);
+        }
         setAdded(true);
         setTimeout(() => setAdded(false), 3000);
     };
 
+    const handleSynthesize = () => {
+        setIsSynthesizing(true);
+        setTimeout(() => {
+            setIsSynthesizing(false);
+            setStep(5);
+        }, 3000);
+    };
+
     const stepContent = () => {
+        if (isSynthesizing) {
+            return (
+                <div className="flex flex-col items-center justify-center h-full space-y-8 py-20">
+                    <div className="relative w-24 h-24">
+                        <motion.div 
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 border-b-2 border-[#C6A972] rounded-full"
+                        />
+                        <div className="absolute inset-4 border border-white/5 rounded-full animate-pulse" />
+                    </div>
+                    <div className="text-center space-y-2">
+                        <h3 className="text-[#C6A972] font-playfair text-2xl italic tracking-widest">Molecular Synthesis</h3>
+                        <p className="text-white/20 text-[8px] uppercase tracking-[0.6em]">Aligning Olfactory Protocols</p>
+                    </div>
+                </div>
+            );
+        }
+
         switch (step) {
-            case 0:
-                return (
-                    <div className="space-y-3">
-                        <p className="text-white/40 text-xs leading-relaxed">Select your opening accord — the first impression.</p>
-                        <NoteSelector notes={NOTES.top} selected={topNote} onSelect={setTopNote} />
-                    </div>
-                );
-            case 1:
-                return (
-                    <div className="space-y-3">
-                        <p className="text-white/40 text-xs leading-relaxed">The heart defines the soul of your fragrance.</p>
-                        <NoteSelector notes={NOTES.heart} selected={heartNote} onSelect={setHeartNote} />
-                    </div>
-                );
-            case 2:
-                return (
-                    <div className="space-y-3">
-                        <p className="text-white/40 text-xs leading-relaxed">Base notes linger longest — the final memory.</p>
-                        <NoteSelector notes={NOTES.base} selected={baseNote} onSelect={setBaseNote} />
-                    </div>
-                );
-            case 3:
-                return (
-                    <div className="space-y-3">
-                        <p className="text-white/40 text-xs leading-relaxed">Choose the vessel that houses your creation.</p>
-                        <BottleSelector selected={bottle} onSelect={setBottle} />
-                    </div>
-                );
+            case 0: return <NoteSelector notes={NOTES.top} selected={topNote} onSelect={setTopNote} />;
+            case 1: return <NoteSelector notes={NOTES.heart} selected={heartNote} onSelect={setHeartNote} />;
+            case 2: return <NoteSelector notes={NOTES.base} selected={baseNote} onSelect={setBaseNote} />;
+            case 3: return <BottleSelector selected={bottle} onSelect={setBottle} />;
             case 4:
                 return (
-                    <div className="space-y-4">
-                        <p className="text-white/40 text-xs leading-relaxed">
-                            Engrave up to 20 characters — a name, a date, a word. <span className="text-[#C6A972]">+₹500</span>
-                        </p>
-                        <div className="relative">
+                    <div className="space-y-8">
+                        <div className="space-y-4">
+                            <label className="text-[10px] text-white/30 uppercase tracking-[0.4em] font-black">Label Material</label>
+                            <LabelMaterialSelector selected={labelMaterial} onSelect={setLabelMaterial} />
+                        </div>
+                        <div className="space-y-4">
+                            <label className="text-[10px] text-white/30 uppercase tracking-[0.4em] font-black">Bespoke Engraving</label>
                             <input
-                                type="text"
                                 maxLength={20}
                                 value={engraving}
                                 onChange={(e) => setEngraving(e.target.value)}
-                                placeholder="e.g. For You, Always"
-                                className="w-full bg-white/5 border border-white/10 focus:border-[#C6A972] outline-none text-white text-sm px-5 py-4 rounded-xl transition-all placeholder:text-white/20 font-playfair italic"
+                                placeholder="THE ETERNAL NOIR"
+                                className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl outline-none focus:border-[#C6A972] text-white font-playfair italic text-lg tracking-widest uppercase transition-all"
                             />
-                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 text-[9px] font-mono">
-                                {engraving.length}/20
-                            </span>
                         </div>
-                        {engraving && (
-                            <div className="p-4 border border-[#C6A972]/20 bg-[#C6A972]/5 rounded-xl">
-                                <p className="text-[9px] text-white/40 uppercase tracking-widest mb-1">Preview</p>
-                                <p className="text-[#C6A972] font-playfair italic text-lg">"{engraving}"</p>
-                            </div>
-                        )}
                     </div>
                 );
             case 5:
                 return (
-                    <div className="space-y-5">
-                        <div className="border border-white/5 rounded-2xl p-5 space-y-3">
-                            <p className="text-white/20 text-[9px] uppercase tracking-widest font-black">Your Creation</p>
-                            {[
-                                { label: "Top Note", value: topNote ? NOTES.top.find(n => n.id === topNote)?.name : "—" },
-                                { label: "Heart Note", value: heartNote ? NOTES.heart.find(n => n.id === heartNote)?.name : "—" },
-                                { label: "Base Note", value: baseNote ? NOTES.base.find(n => n.id === baseNote)?.name : "—" },
-                                { label: "Bottle", value: BOTTLES.find(b => b.id === bottle)?.name || "—" },
-                                { label: "Engraving", value: engraving || "None" },
-                            ].map(({ label, value }) => (
-                                <div key={label} className="flex items-center justify-between">
-                                    <span className="text-white/30 text-xs">{label}</span>
-                                    <span className="text-white text-xs font-medium">{value}</span>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="flex items-center justify-between border-t border-white/5 pt-4">
-                            <div>
-                                <p className="text-white/30 text-[9px] uppercase tracking-widest">Total</p>
-                                <p className="text-[#C6A972] text-2xl font-bold">₹{price.toLocaleString("en-IN")}</p>
+                    <div className="space-y-6">
+                        <div className="p-8 border border-white/10 bg-white/[0.02] rounded-[2rem] space-y-6">
+                            <div className="space-y-1">
+                                <p className="text-white/20 text-[8px] uppercase tracking-[0.5em] font-black">Manifesto</p>
+                                <h3 className="text-white font-playfair italic text-3xl">"{engraving || "UNTITLED NOIR"}"</h3>
                             </div>
-                            <motion.button
+                            <div className="grid grid-cols-2 gap-8 pt-6 border-t border-white/5">
+                                <div className="space-y-4">
+                                    {['Top', 'Heart', 'Base'].map(l => (
+                                        <div key={l}>
+                                            <p className="text-white/20 text-[7px] uppercase tracking-widest">{l}</p>
+                                            <p className="text-[#C6A972] text-[10px] font-bold uppercase">{l === 'Top' ? (NOTES.top.find(n => n.id === topNote)?.name || '—') : l === 'Heart' ? (NOTES.heart.find(n => n.id === heartNote)?.name || '—') : (NOTES.base.find(n => n.id === baseNote)?.name || '—')}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="space-y-4">
+                                    <div>
+                                        <p className="text-white/20 text-[7px] uppercase tracking-widest">Vessel</p>
+                                        <p className="text-white text-[10px] font-bold uppercase">{BOTTLES.find(b => b.id === bottle)?.name}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-white/20 text-[7px] uppercase tracking-widest">Label</p>
+                                        <p className="text-white text-[10px] font-bold uppercase">{labelMaterial}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-between pt-4">
+                           <div>
+                                <p className="text-white/30 text-[9px] uppercase tracking-widest font-black">Total Acquisition</p>
+                                <p className="text-[#C6A972] text-4xl font-black">₹{price.toLocaleString()}</p>
+                           </div>
+                           <button 
                                 onClick={handleAddToCart}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className={`flex items-center gap-2 px-7 py-3.5 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
-                                    added
-                                        ? "bg-green-500 text-white"
-                                        : "bg-[#C6A972] text-[#0A0A0A] hover:bg-white"
-                                }`}
-                            >
-                                {added ? <><Check size={14} /> Added!</> : <><ShoppingBag size={14} /> Add to Cart</>}
-                            </motion.button>
+                                className="px-12 py-5 bg-[#C6A972] text-black rounded-full text-[12px] font-black uppercase tracking-[0.4em] hover:bg-white transition-all shadow-[0_0_50px_rgba(198,169,114,0.3)]"
+                           >
+                               {added ? 'In Registry' : 'Acquire Creation'}
+                           </button>
                         </div>
                     </div>
                 );
-            default:
-                return null;
+            default: return null;
         }
     };
 
@@ -328,9 +283,9 @@ export default function PerfumeBuilder() {
                 </div>
             </div>
 
-            <div className="flex h-[calc(100vh-80px)]">
+            <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-80px)]">
                 {/* ── Left: 3D Canvas ── */}
-                <div className="w-1/2 relative bg-black flex items-center justify-center">
+                <div className="w-full lg:w-1/2 h-[50vh] lg:h-full relative bg-black flex items-center justify-center">
                     {/* Noise texture */}
                     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02]" />
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,169,114,0.05)_0%,transparent_70%)]" />
@@ -375,7 +330,7 @@ export default function PerfumeBuilder() {
                 </div>
 
                 {/* ── Right: Builder UI ── */}
-                <div className="w-1/2 flex flex-col bg-[#080808] border-l border-white/5">
+                <div className="w-full lg:w-1/2 flex flex-col bg-[#080808] border-t lg:border-t-0 lg:border-l border-white/5">
                     {/* Step tabs */}
                     <div className="flex border-b border-white/5 overflow-x-auto">
                         {STEPS.map((s, i) => (
@@ -432,10 +387,13 @@ export default function PerfumeBuilder() {
                         </div>
                         {step < STEPS.length - 1 ? (
                             <button
-                                onClick={() => setStep(Math.min(STEPS.length - 1, step + 1))}
-                                className="flex items-center gap-2 text-[#C6A972] text-xs uppercase tracking-widest hover:text-white font-black transition-all"
+                                onClick={() => {
+                                    if (step === 3) handleSynthesize();
+                                    else setStep(step + 1);
+                                }}
+                                className="flex items-center gap-2 text-[#C6A972] text-xs uppercase tracking-[0.3em] hover:text-white font-black transition-all"
                             >
-                                Next <ChevronRight size={14} />
+                                {step === 3 ? "Begin Synthesis" : "Next Protocol"} <ChevronRight size={14} />
                             </button>
                         ) : (
                             <div className="w-16" />

@@ -2,25 +2,47 @@
 
 import { useCartStore } from "@/store/cartStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minus, Plus, ShoppingBag } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCurrency } from "@/context/CurrencyContext";
 
 export default function CartDrawer() {
-    const { items, isOpen, closeCart, increaseQty, decreaseQty, removeItem, getSubtotal } = useCartStore();
+    const { items, isOpen, closeCart, increaseQty, decreaseQty, removeItem, getSubtotal, addItem } = useCartStore();
     const { formatPrice } = useCurrency();
     const [mounted, setMounted] = useState(false);
     const [confirmed, setConfirmed] = useState(false);
+    const [recommendations, setRecommendations] = useState([]);
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
+    useEffect(() => {
+        if (isOpen && mounted) {
+            fetch("/api/ai/recommendations?limit=2")
+                .then(res => res.json())
+                .then(data => setRecommendations(Array.isArray(data) ? data : []))
+                .catch(err => console.error("Recs fetch error:", err));
+        }
+    }, [isOpen, mounted]);
+
     if (!mounted) return null;
 
     const subtotal = getSubtotal();
+
+    const handleQuickAdd = (product) => {
+        addItem({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            priceAmount: product.price,
+            image: product.images?.[0] || product.image || "/placeholder.jpg",
+            size: "M", // Default for quick add
+            quantity: 1
+        });
+    };
 
     return (
         <AnimatePresence>
@@ -70,71 +92,109 @@ export default function CartDrawer() {
                                     </div>
                                 </div>
                             ) : (
-                                items.map((item) => (
-                                    <motion.div 
-                                        layout
-                                        key={`${item.id}-${item.size}`} 
-                                        className="flex gap-8 group relative"
-                                    >
-                                        {/* Thumbnail Image with Zoom Hover */}
-                                        <div className="relative w-32 h-44 flex-shrink-0 bg-noir-black overflow-hidden border border-white/5 rounded-sm">
-                                            <Image
-                                                src={item.image}
-                                                alt={item.name}
-                                                fill
-                                                className="object-cover transition-transform duration-1000 group-hover:scale-110 grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100"
-                                            />
-                                            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700" />
-                                        </div>
+                                <div className="space-y-12">
+                                    <div className="space-y-10">
+                                        {items.map((item) => (
+                                            <motion.div 
+                                                layout
+                                                key={`${item.id}-${item.size}`} 
+                                                className="flex gap-8 group relative"
+                                            >
+                                                {/* Thumbnail Image with Zoom Hover */}
+                                                <div className="relative w-32 h-44 flex-shrink-0 bg-noir-black overflow-hidden border border-white/5 rounded-sm">
+                                                    <Image
+                                                        src={item.image}
+                                                        alt={item.name}
+                                                        fill
+                                                        className="object-cover transition-transform duration-1000 group-hover:scale-110 grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700" />
+                                                </div>
 
-                                        {/* Metadata Engine */}
-                                        <div className="flex flex-col flex-1 justify-between py-2">
-                                            <div className="space-y-4">
-                                                <div className="flex justify-between items-start gap-4">
-                                                    <h3 className="text-sm font-black tracking-[0.2em] text-white uppercase leading-relaxed font-inter">{item.name}</h3>
-                                                    <button
-                                                        onClick={() => removeItem(item.id, item.size)}
-                                                        className="text-white/10 hover:text-white transition-colors p-1"
-                                                    >
-                                                        <X size={16} />
-                                                    </button>
+                                                {/* Metadata Engine */}
+                                                <div className="flex flex-col flex-1 justify-between py-2">
+                                                    <div className="space-y-4">
+                                                        <div className="flex justify-between items-start gap-4">
+                                                            <h3 className="text-sm font-black tracking-[0.2em] text-white uppercase leading-relaxed font-inter">{item.name}</h3>
+                                                            <button
+                                                                onClick={() => removeItem(item.id, item.size)}
+                                                                className="text-white/10 hover:text-white transition-colors p-1"
+                                                            >
+                                                                <X size={16} />
+                                                            </button>
+                                                        </div>
+                                                        <div className="flex items-center gap-4">
+                                                            <span className="text-[8px] text-noir-gold uppercase tracking-[0.4em] font-black px-3 py-1 border border-noir-gold/20 bg-noir-gold/5 rounded-full">
+                                                                Ref: {item.size}
+                                                            </span>
+                                                            <span className="text-[8px] text-white/30 uppercase tracking-[0.4em] font-black italic">Archival Quality</span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Precise Quantity & Luxury Price Control */}
+                                                    <div className="flex items-center justify-between w-full mt-8">
+                                                        <div className="flex items-center bg-white/5 border border-white/5 rounded-full px-3 py-1.5 backdrop-blur-md">
+                                                            <button
+                                                                onClick={() => decreaseQty(item.id, item.size)}
+                                                                className="p-1.5 hover:text-noir-gold transition-colors text-white/20"
+                                                            >
+                                                                <Minus size={14} />
+                                                            </button>
+                                                            <span className="text-xs w-8 text-center font-black font-inter text-white">{item.quantity}</span>
+                                                            <button
+                                                                onClick={() => increaseQty(item.id, item.size)}
+                                                                className="p-1.5 hover:text-noir-gold transition-colors text-white/20"
+                                                            >
+                                                                <Plus size={14} />
+                                                            </button>
+                                                        </div>
+
+                                                        <div className="text-right">
+                                                            <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] font-black mb-1 italic">Acquisition Value</p>
+                                                            <p className="text-xl tracking-tighter text-white font-medium italic">
+                                                                {formatPrice(item.priceAmount || 0)}
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-4">
-                                                    <span className="text-[8px] text-noir-gold uppercase tracking-[0.4em] font-black px-3 py-1 border border-noir-gold/20 bg-noir-gold/5 rounded-full">
-                                                        Ref: {item.size}
-                                                    </span>
-                                                    <span className="text-[8px] text-white/30 uppercase tracking-[0.4em] font-black italic">Archival Quality</span>
-                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+
+                                    {/* AI Recommendations: Complete The Look */}
+                                    {recommendations.length > 0 && (
+                                        <div className="pt-10 border-t border-white/5 space-y-8">
+                                            <div className="flex items-center justify-between">
+                                                <h4 className="text-[10px] uppercase tracking-[0.5em] text-noir-gold font-black">Complete The Look</h4>
+                                                <Sparkles size={14} className="text-noir-gold animate-pulse" />
                                             </div>
-
-                                            {/* Precise Quantity & Luxury Price Control */}
-                                            <div className="flex items-center justify-between w-full mt-8">
-                                                <div className="flex items-center bg-white/5 border border-white/5 rounded-full px-3 py-1.5 backdrop-blur-md">
-                                                    <button
-                                                        onClick={() => decreaseQty(item.id, item.size)}
-                                                        className="p-1.5 hover:text-noir-gold transition-colors text-white/20"
-                                                    >
-                                                        <Minus size={14} />
-                                                    </button>
-                                                    <span className="text-xs w-8 text-center font-black font-inter text-white">{item.quantity}</span>
-                                                    <button
-                                                        onClick={() => increaseQty(item.id, item.size)}
-                                                        className="p-1.5 hover:text-noir-gold transition-colors text-white/20"
-                                                    >
-                                                        <Plus size={14} />
-                                                    </button>
-                                                </div>
-
-                                                <div className="text-right">
-                                                    <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] font-black mb-1 italic">Acquisition Value</p>
-                                                    <p className="text-xl tracking-tighter text-white font-medium italic">
-                                                        {formatPrice(item.priceAmount || 0)}
-                                                    </p>
-                                                </div>
+                                            <div className="grid grid-cols-2 gap-6">
+                                                {recommendations.map((prod) => (
+                                                    <div key={prod.id} className="group relative space-y-4">
+                                                        <div className="relative aspect-[3/4] rounded-xl overflow-hidden border border-white/5 bg-noir-black">
+                                                            <Image 
+                                                                src={prod.images?.[0] || prod.image} 
+                                                                alt={prod.name} 
+                                                                fill 
+                                                                className="object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
+                                                            />
+                                                            <button 
+                                                                onClick={() => handleQuickAdd(prod)}
+                                                                className="absolute bottom-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center text-noir-black opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 shadow-2xl"
+                                                            >
+                                                                <Plus size={18} />
+                                                            </button>
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <p className="text-[8px] font-black uppercase tracking-[0.2em] text-white truncate">{prod.name}</p>
+                                                            <p className="text-[9px] font-medium text-white/40 italic">{formatPrice(prod.price)}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </div>
-                                    </motion.div>
-                                ))
+                                    )}
+                                </div>
                             )}
                         </div>
 

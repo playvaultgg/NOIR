@@ -65,5 +65,26 @@ export const authOptions = {
             return session;
         },
     },
+    events: {
+        async signIn({ user }) {
+            await prisma.customerActivity.create({
+                data: {
+                    userId: user.id,
+                    action: "LOGIN",
+                    metadata: { method: "auth-credentials" }
+                }
+            });
+        },
+        async signOut({ token }) {
+            if (token?.id) {
+                await prisma.customerActivity.create({
+                    data: {
+                        userId: token.id,
+                        action: "LOGOUT"
+                    }
+                });
+            }
+        },
+    },
     secret: process.env.NEXTAUTH_SECRET,
 };

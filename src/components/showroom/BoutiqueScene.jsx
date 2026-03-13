@@ -64,10 +64,25 @@ function Loader() {
     const { progress } = useProgress();
     return (
         <Html center>
-            <div className="flex flex-col items-center gap-6">
-                <div className="w-16 h-16 border-2 border-[#C6A972] border-t-transparent rounded-full animate-spin" />
-                <div className="text-[#C6A972] font-inter text-[10px] uppercase tracking-[0.6em] whitespace-nowrap bg-black/80 backdrop-blur-xl px-8 py-4 rounded-full border border-white/5">
-                    Synchronizing Environment / {Math.round(progress)}%
+            <div className="flex flex-col items-center gap-10">
+                <div className="relative">
+                    <div className="w-24 h-24 border border-white/5 rounded-full" />
+                    <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 border-t-2 border-[#C6A972] rounded-full"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-white text-[10px] font-mono">{Math.round(progress)}%</span>
+                    </div>
+                </div>
+                <div className="space-y-4 text-center">
+                    <h3 className="text-[#C6A972] font-playfair text-2xl italic tracking-widest">Constructing Reality</h3>
+                    <div className="flex items-center justify-center gap-3">
+                        <div className="w-12 h-px bg-gradient-to-r from-transparent to-white/20" />
+                        <span className="text-white/20 text-[8px] uppercase tracking-[0.6em] font-black">Environmental Synthesis in Progress</span>
+                        <div className="w-12 h-px bg-gradient-to-l from-transparent to-white/20" />
+                    </div>
                 </div>
             </div>
         </Html>
@@ -199,7 +214,13 @@ export default function BoutiqueScene() {
             {/* Ambient Music */}
             <audio ref={audioRef} src="https://www.bensound.com/bensound-music/bensound-piano-moment.mp3" loop muted={isMuted} autoPlay />
 
-            <Canvas shadows camera={{ position: [0, 1.6, 5], fov: 60 }} teleportTarget={teleportTarget}>
+            <Canvas 
+                shadows 
+                dpr={[1, 2]}
+                performance={{ min: 0.5 }}
+                camera={{ position: [0, 1.6, 5], fov: 60 }} 
+                teleportTarget={teleportTarget}
+            >
                 <color attach="background" args={["#000"]} />
                 <fog attach="fog" args={["#000", 5, 45]} />
 
@@ -210,7 +231,7 @@ export default function BoutiqueScene() {
                     <PointerLockControls ref={controlsRef} />
                     <Player teleportTarget={teleportTarget} />
 
-                    <Architecture />
+                    <Architecture currentRoom={currentRoom} />
                     <BoutiqueAtmosphere />
 
                     {/* Product displays mapped to positions with real prod data */}

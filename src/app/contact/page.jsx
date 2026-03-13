@@ -1,17 +1,45 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, MessageSquare, Send } from "lucide-react";
 
 /**
  * Maison NOIR Contact Page
- * Powered by ReactBits contact-5 block logic.
- * Features:
- * - Luxury Glassmorphism UI
- * - Concierge Support Channels
- * - High-fidelity Input Interactions
+ * Enhanced with Database Integration.
  */
 export default function ContactPage() {
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        subject: "Select Objective",
+        message: ""
+    });
+    const [status, setStatus] = useState({ loading: false, success: false, error: null });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setStatus({ loading: true, success: false, error: null });
+
+        try {
+            const res = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                setStatus({ loading: false, success: true, error: null });
+                setFormData({ name: "", email: "", subject: "Select Objective", message: "" });
+            } else {
+                throw new Error(data.error || "Failed to dispatch message");
+            }
+        } catch (err) {
+            setStatus({ loading: false, success: false, error: err.message });
+        }
+    };
+
     const contactSections = [
         {
             title: "Concierge Support",
@@ -43,7 +71,7 @@ export default function ContactPage() {
         <main className="min-h-screen bg-noir-black selection:bg-noir-gold selection:text-noir-black pt-24 pb-40 px-6 lg:px-24">
             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
             
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto relative z-10">
                 <header className="mb-20 text-center space-y-4">
                     <motion.h2 
                         initial={{ opacity: 0, y: 20 }}
@@ -70,12 +98,15 @@ export default function ContactPage() {
                         transition={{ delay: 0.4 }}
                         className="glass-effect bg-noir-surface/40 p-8 md:p-12 rounded-3xl border border-white/5"
                     >
-                        <form className="space-y-8">
+                        <form className="space-y-8" onSubmit={handleSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-3">
                                     <label className="text-[10px] uppercase tracking-[0.3em] text-white/40 ml-1">Legal Name</label>
                                     <input 
                                         type="text" 
+                                        required
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({...formData, name: e.target.value})}
                                         placeholder="Alexander Noir"
                                         className="w-full bg-noir-black/40 border border-white/5 focus:border-noir-gold outline-none text-white text-sm px-6 py-4 rounded-xl transition-all font-inter"
                                     />
@@ -84,6 +115,9 @@ export default function ContactPage() {
                                     <label className="text-[10px] uppercase tracking-[0.3em] text-white/40 ml-1">Email Identifier</label>
                                     <input 
                                         type="email" 
+                                        required
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({...formData, email: e.target.value})}
                                         placeholder="a.noir@exclusive.com"
                                         className="w-full bg-noir-black/40 border border-white/5 focus:border-noir-gold outline-none text-white text-sm px-6 py-4 rounded-xl transition-all font-inter"
                                     />
@@ -92,7 +126,11 @@ export default function ContactPage() {
 
                             <div className="space-y-3">
                                 <label className="text-[10px] uppercase tracking-[0.3em] text-white/40 ml-1">Inquiry Subject</label>
-                                <select className="w-full bg-noir-black/40 border border-white/5 focus:border-noir-gold outline-none text-white text-sm px-6 py-4 rounded-xl transition-all font-inter appearance-none">
+                                <select 
+                                    value={formData.subject}
+                                    onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                                    className="w-full bg-noir-black/40 border border-white/5 focus:border-noir-gold outline-none text-white text-sm px-6 py-4 rounded-xl transition-all font-inter appearance-none"
+                                >
                                     <option>Select Objective</option>
                                     <option>Bespoke Order</option>
                                     <option>Press & Media</option>
@@ -105,15 +143,32 @@ export default function ContactPage() {
                                 <label className="text-[10px] uppercase tracking-[0.3em] text-white/40 ml-1">Detailed Message</label>
                                 <textarea 
                                     rows={5}
+                                    required
+                                    value={formData.message}
+                                    onChange={(e) => setFormData({...formData, message: e.target.value})}
                                     placeholder="How may the Maison assist you today?"
                                     className="w-full bg-noir-black/40 border border-white/5 focus:border-noir-gold outline-none text-white text-sm px-6 py-4 rounded-xl transition-all font-inter resize-none"
                                 />
                             </div>
 
-                            <button className="w-full bg-white text-noir-black py-5 font-black uppercase text-[10px] tracking-[0.4em] rounded-xl hover:bg-noir-gold transition-all shadow-xl shadow-white/5 flex items-center justify-center gap-3 group">
-                                Dispatch Message
+                            <button 
+                                disabled={status.loading}
+                                className="w-full bg-white text-noir-black py-5 font-black uppercase text-[10px] tracking-[0.4em] rounded-xl hover:bg-noir-gold transition-all shadow-xl shadow-white/5 flex items-center justify-center gap-3 group disabled:opacity-50"
+                            >
+                                {status.loading ? "Dispatching..." : "Dispatch Message"}
                                 <Send size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                             </button>
+
+                            {status.success && (
+                                <p className="text-[#C6A972] text-[10px] uppercase tracking-widest text-center animate-pulse mt-4">
+                                    Message transmitted successfully.
+                                </p>
+                            )}
+                            {status.error && (
+                                <p className="text-red-400 text-[10px] uppercase tracking-widest text-center mt-4">
+                                    {status.error}
+                                </p>
+                            )}
                         </form>
                     </motion.section>
 

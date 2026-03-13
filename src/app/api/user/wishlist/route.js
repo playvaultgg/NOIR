@@ -8,17 +8,19 @@ export async function GET(req) {
         const session = await getServerSession(authOptions);
         if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-        const user = await prisma.user.findUnique({
-            where: { id: session.user.id },
+        const wishlistItems = await prisma.wishlist.findMany({
+            where: { userId: session.user.id },
             include: {
-                wishlist: {
-                    select: { id: true, name: true, price: true, imageUrls: true, category: true, brand: true }
+                product: {
+                    select: { id: true, name: true, price: true, imageUrls: true, category: true, brand: true, slug: true }
                 }
             }
         });
 
-        return NextResponse.json(user?.wishlist ?? []);
+        // Map to return just the products
+        return NextResponse.json(wishlistItems.map(item => item.product));
     } catch (err) {
+        console.error("Wishlist GET Error:", err);
         return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
 }
@@ -32,25 +34,42 @@ export async function POST(req) {
         if (!productId) return NextResponse.json({ error: "productId required" }, { status: 400 });
 
         // Check if already wishlisted
-        const user = await prisma.user.findUnique({
-            where: { id: session.user.id },
-            include: { wishlist: { where: { id: productId }, select: { id: true } } }
-        });
-
-        const isWishlisted = user?.wishlist?.length > 0;
-
-        // Toggle
-        await prisma.user.update({
-            where: { id: session.user.id },
-            data: {
-                wishlist: isWishlisted
-                    ? { disconnect: { id: productId } }
-                    : { connect: { id: productId } }
+        const existing = await prisma.wishlist.findUnique({
+            where: {
+                userId_productId: {
+                    userId: session.user.id,
+                    productId: productId
+                }
             }
         });
 
-        return NextResponse.json({ wishlisted: !isWishlisted });
+        if (existing) {
+            // Remove
+            await prisma.wishlist.delete({
+                where: { id: existing.id }
+            });
+            return NextResponse.json({ wishlisted: false });
+        } else {
+            // Add and log activity
+            await prisma.$transaction([
+                prisma.wishlist.create({
+                    data: {
+                        userId: session.user.id,
+                        productId: productId
+                    }
+                }),
+                prisma.customerActivity.create({
+                    data: {
+                        userId: session.user.id,
+                        action: "ADD_TO_WISHLIST",
+                        metadata: { productId }
+                    }
+                })
+            ]);
+            return NextResponse.json({ wishlisted: true });
+        }
     } catch (err) {
+        console.error("Wishlist POST Error:", err);
         return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
 }

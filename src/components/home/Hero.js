@@ -79,7 +79,7 @@ export default function Hero() {
     }, [index]);
 
     return (
-        <section className="relative h-[100dvh] w-full overflow-hidden bg-black flex items-center justify-center">
+        <section className="relative min-h-[70vh] md:h-[100dvh] w-full overflow-hidden bg-black flex items-center justify-center">
             {/* BACKGROUND GALLERY */}
             {HERO_SLIDES.map((slide, i) => (
                 <div
@@ -101,10 +101,10 @@ export default function Hero() {
             {/* CONTENT OVERLAY */}
             <div className="relative z-20 container mx-auto px-6 lg:px-12 pointer-events-none">
                 <div ref={contentRef} className="max-w-4xl space-y-4 md:space-y-6">
-                    <h2 className="text-gold/90 uppercase tracking-[0.5em] text-[10px] md:text-xs font-inter font-medium">
+                    <h2 className="text-gold/90 uppercase tracking-[0.5em] text-[8px] md:text-xs font-inter font-medium leading-relaxed">
                         {HERO_SLIDES[index].subtitle}
                     </h2>
-                    <h1 className="text-5xl md:text-8xl lg:text-9xl font-playfair text-white leading-[1.1] tracking-tight">
+                    <h1 className="text-3xl sm:text-4xl md:text-8xl lg:text-9xl font-playfair text-white leading-tight md:leading-[1.1] tracking-tight">
                         {HERO_SLIDES[index].title}
                     </h1>
                     <div className="pt-6 pointer-events-auto">

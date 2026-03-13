@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -31,7 +31,7 @@ export default function ProductCard({
     const productImages = product.images || product.imageUrls || [];
 
     const [isHovered, setIsHovered] = useState(false);
-    const addItem = useCartStore((state) => state.addItem);
+    const { addItem, addOutfitItem } = useCartStore();
     const { toggleWishlist, isInWishlist } = useWishlistStore();
     const wishlisted = isInWishlist(product.id);
 
@@ -132,7 +132,7 @@ export default function ProductCard({
                 </div>
 
                 {/* Quick Add To Cart */}
-                <div className="absolute bottom-4 left-4 right-4 translate-y-[120%] group-hover:translate-y-0 transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-10">
+                <div className="absolute bottom-4 left-4 right-4 translate-y-[120%] group-hover:translate-y-0 transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-10 flex gap-2">
                     <button
                         onClick={(e) => {
                             e.preventDefault();
@@ -144,10 +144,23 @@ export default function ProductCard({
                                 size: "M"
                             });
                         }}
-                        className="w-full glass-effect bg-black/60 hover:bg-[#C6A972] hover:text-black hover:border-transparent transition-colors duration-300 text-white text-[9px] uppercase tracking-[0.3em] py-3.5 flex items-center justify-center gap-2 font-black border border-white/10 rounded-sm"
+                        className="flex-1 glass-effect bg-black/60 hover:bg-[#C6A972] hover:text-black hover:border-transparent transition-colors duration-300 text-white text-[10px] md:text-xs uppercase tracking-[0.2em] h-12 flex items-center justify-center gap-2 font-black border border-white/10 rounded-sm"
                     >
-                        <ShoppingBag className="w-3.5 h-3.5" />
+                        <ShoppingBag className="w-4 h-4" />
                         Quick Purchase
+                    </button>
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            addOutfitItem({
+                                ...product,
+                                image: productImages[0]
+                            });
+                        }}
+                        className="w-12 h-12 glass-effect bg-black/60 hover:bg-white hover:text-black hover:border-transparent transition-colors duration-300 text-white border border-white/10 rounded-sm flex items-center justify-center shrink-0"
+                        title="Add to Outfit Builder"
+                    >
+                        <Sparkles className="w-4 h-4" />
                     </button>
                 </div>
             </Link>
@@ -158,9 +171,21 @@ export default function ProductCard({
                     {product.name}
                 </h3>
                 <div className="flex items-center justify-between mt-1.5">
-                    <p className="text-white/40 text-[10px] font-inter uppercase tracking-[0.2em]">
-                        New Arrival
-                    </p>
+                    <div className="flex flex-col gap-3">
+                        <p className="text-white/40 text-[10px] font-inter uppercase tracking-[0.2em]">
+                            New Arrival
+                        </p>
+                        {/* Prompt 3: Color Variant Preview */}
+                        <div className="flex gap-1.5">
+                            {["#C6A972", "#FAFAFA", "#000000"].map((color) => (
+                                <div 
+                                    key={color} 
+                                    className="w-2.5 h-2.5 rounded-full border border-white/10 hover:border-white transition-colors cursor-crosshair"
+                                    style={{ backgroundColor: color }}
+                                />
+                            ))}
+                        </div>
+                    </div>
                     <p className="text-noir-gold text-sm font-inter font-medium tracking-wider">
                         {formatPrice(product.price || product.priceAmount || 0)}
                     </p>

@@ -72,3 +72,34 @@ export async function getRecommendedOutfit(baseProductId) {
         .sort(() => Math.random() - 0.5)
         .slice(0, 2);
 }
+
+/**
+ * AI Similarity Engine
+ * Finds products with shared aesthetic or category traits.
+ */
+export async function getSimilarProducts(productId, limit = 4) {
+    const product = await getProductById(productId);
+    if (!product) return [];
+    
+    const candidates = await getProductsByCategory(product.category);
+    return candidates
+        .filter(p => p.id !== productId)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, limit);
+}
+
+/**
+ * AI Collaborative Filtering
+ * Predicts interest based on aggregate customer acquisition patterns.
+ */
+export async function getCustomersAlsoBought(productId, limit = 4) {
+    const mens = await getProductsByCategory("MENS");
+    const womens = await getProductsByCategory("WOMENS");
+    const all = [...mens, ...womens];
+    
+    // Simulations: Returns products from alternate categories or cross-sell items
+    return all
+        .filter(p => p.id !== productId)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, limit);
+}

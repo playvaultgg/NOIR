@@ -154,6 +154,15 @@
 }
 
 @theme inline {
+  --color-noir-black: var(--noir-black);
+  --color-noir-charcoal: var(--noir-charcoal);
+  --color-noir-surface: var(--noir-surface);
+  --color-noir-card: var(--noir-card);
+  --color-noir-gold: var(--noir-gold);
+  --color-noir-gold-deep: var(--noir-gold-deep);
+  --color-noir-gold-bright: var(--noir-gold-bright);
+  --color-noir-platinum: var(--noir-platinum);
+
   --animate-vertical-marquee: vertical-marquee 60s linear infinite;
   --animate-float-slow: float-slow 15s ease-in-out infinite;
   --animate-pulse-slow: pulse-slow 10s ease-in-out infinite;

@@ -35,6 +35,15 @@ export async function POST(req) {
             },
         });
 
+        // Log registration activity
+        await prisma.customerActivity.create({
+            data: {
+                userId: user.id,
+                action: "REGISTER",
+                metadata: { email: user.email }
+            }
+        });
+
         return NextResponse.json(
             { message: "Account created successfully.", userId: user.id },
             { status: 201 }

@@ -13,10 +13,9 @@ import { useCartStore } from "@/store/cartStore";
  * - Drag & Drop Visual Layout (Mock)
  * - Bulk Acquisition Logic
  */
-export default function OutfitBuilder({ isOpen, onClose, initialProduct }) {
-    const [outfitItems, setOutfitItems] = useState(initialProduct ? [initialProduct] : []);
-    const addItem = useCartStore(state => state.addItem);
-
+export default function OutfitBuilder() {
+    const { outfitItems, isOutfitOpen, closeOutfit, removeOutfitItem, addItem } = useCartStore();
+    
     const handleAddEntireLook = () => {
         outfitItems.forEach(item => {
             addItem({
@@ -26,14 +25,14 @@ export default function OutfitBuilder({ isOpen, onClose, initialProduct }) {
                 size: "M"
             });
         });
-        onClose();
+        closeOutfit();
     };
 
     const totalValue = outfitItems.reduce((acc, item) => acc + (item.priceAmount || 0), 0);
 
     return (
         <AnimatePresence>
-            {isOpen && (
+            {isOutfitOpen && (
                 <motion.div
                     initial={{ x: "100%" }}
                     animate={{ x: 0 }}
@@ -49,7 +48,7 @@ export default function OutfitBuilder({ isOpen, onClose, initialProduct }) {
                             </div>
                             <h2 className="text-3xl font-playfair text-white italic">Curate the Ensemble</h2>
                         </div>
-                        <button onClick={onClose} className="p-4 hover:bg-white">
+                        <button onClick={closeOutfit} className="p-4 hover:bg-white/10 rounded-full transition-colors text-white">
                             <X size={24} />
                         </button>
                     </div>
@@ -67,7 +66,7 @@ export default function OutfitBuilder({ isOpen, onClose, initialProduct }) {
                                         <p className="text-[10px] text-white font-bold tracking-widest truncate">{item.name}</p>
                                     </div>
                                     <button 
-                                        onClick={() => setOutfitItems(prev => prev.filter(p => p.id !== item.id))}
+                                        onClick={() => removeOutfitItem(item.id)}
                                         className="absolute top-2 right-2 p-2 bg-black/40 text-white/40 hover:text-red-500 rounded-full backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all"
                                     >
                                         <X size={12} />

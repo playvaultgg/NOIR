@@ -1,5 +1,6 @@
 import { getProductsByCategory } from "@/modules/products/product.service";
 import ProductCard from "@/components/products/ProductCard";
+import CollectionClient from "@/components/products/CollectionClient";
 
 export default async function CollectionsPage() {
     // Fetch consolidated collection data
@@ -23,11 +24,7 @@ export default async function CollectionsPage() {
                     </p>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-24">
-                    {allProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
-                </div>
+                <CollectionClient initialProducts={allProducts} />
                 
                 {allProducts.length === 0 && (
                     <div className="py-48 text-center text-white/20">

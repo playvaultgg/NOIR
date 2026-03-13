@@ -23,7 +23,55 @@ export default function CheckoutPage() {
     const [isProcessing, setIsProcessing] = useState(false);
     const router = useRouter();
     const { items, getSubtotal, clearCart } = useCartStore();
+    
+    // Form States
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        address: "",
+        city: "",
+        postalCode: ""
+    });
+
+    // Coupon / Discount States
+    const [couponCode, setCouponCode] = useState("");
+    const [couponStatus, setCouponStatus] = useState({ loading: false, error: null, success: null });
+    const [discountAmount, setDiscountAmount] = useState(0);
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
+
     const subtotal = getSubtotal();
+    const shipping = 0; // Free for luxury tier
+    const total = subtotal + shipping - discountAmount;
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleApplyCoupon = async () => {
+        if (!couponCode) return;
+        setCouponStatus({ loading: true, error: null, success: null });
+
+        try {
+            const res = await fetch("/api/commerce/coupons/validate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code: couponCode, cartTotal: subtotal })
+            });
+            const data = await res.json();
+
+            if (data.valid) {
+                setDiscountAmount(data.discountAmount);
+                setAppliedCoupon(data);
+                setCouponStatus({ loading: false, error: null, success: `Protocol Accepted: -₹${data.discountAmount.toLocaleString()}` });
+            } else {
+                setCouponStatus({ loading: false, error: data.message || "Invalid Protocol", success: null });
+            }
+        } catch (error) {
+            setCouponStatus({ loading: false, error: "Synchronization Failure", success: null });
+        }
+    };
 
     const handleCheckout = async () => {
         setIsProcessing(true);
@@ -31,7 +79,12 @@ export default function CheckoutPage() {
             const res = await fetch("/api/checkout/create-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ items, totalAmount: total }),
+                body: JSON.stringify({ 
+                    items, 
+                    totalAmount: total,
+                    couponCode: appliedCoupon?.code,
+                    shippingAddress: formData
+                }),
             });
 
             if (res.ok) {
@@ -51,8 +104,7 @@ export default function CheckoutPage() {
             setIsProcessing(false);
         }
     };
-    const shipping = 0; // Free for luxury tier
-    const total = subtotal + shipping;
+    // Removal of redundant declarations (now managed above in state)
 
     if (items.length === 0) {
         return (
@@ -104,12 +156,12 @@ export default function CheckoutPage() {
                         onEdit={() => setStep(1)}
                     >
                         <form className="grid grid-cols-2 gap-6 pt-6" onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
-                            <Input label="First Name" placeholder="Alexander" span={1} />
-                            <Input label="Last Name" placeholder="Sterling" span={1} />
-                            <Input label="Email Address" placeholder="alex@sterling.com" span={2} type="email" />
-                            <Input label="Shipping Address" placeholder="102 Nocturne Plaza, Elite District" span={2} />
-                            <Input label="City" placeholder="New York" span={1} />
-                            <Input label="Postal Code" placeholder="10001" span={1} />
+                            <Input label="First Name" name="firstName" placeholder="Alexander" span={1} value={formData.firstName} onChange={handleInputChange} />
+                            <Input label="Last Name" name="lastName" placeholder="Sterling" span={1} value={formData.lastName} onChange={handleInputChange} />
+                            <Input label="Email Address" name="email" placeholder="alex@sterling.com" span={2} type="email" value={formData.email} onChange={handleInputChange} />
+                            <Input label="Shipping Address" name="address" placeholder="102 Nocturne Plaza, Elite District" span={2} value={formData.address} onChange={handleInputChange} />
+                            <Input label="City" name="city" placeholder="New York" span={1} value={formData.city} onChange={handleInputChange} />
+                            <Input label="Postal Code" name="postalCode" placeholder="10001" span={1} value={formData.postalCode} onChange={handleInputChange} />
                             <div className="col-span-2 pt-6">
                                 <button
                                     type="submit"
@@ -153,6 +205,32 @@ export default function CheckoutPage() {
                         completed={false}
                     >
                         <div className="pt-6 space-y-10">
+                            {/* Prompt 9: Discount / Coupon System Integration */}
+                            <div className="p-8 border border-white/5 bg-white/5 rounded-2xl space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h5 className="text-[10px] uppercase tracking-[0.4em] text-noir-gold font-black">Maison Protocol (Coupon)</h5>
+                                    <Sparkles size={14} className="text-noir-gold" />
+                                </div>
+                                <div className="flex gap-4">
+                                    <input 
+                                        type="text" 
+                                        value={couponCode}
+                                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                        placeholder="ENTER PROTOCOL CODE" 
+                                        className="flex-1 bg-noir-black border border-white/10 px-6 py-4 text-[10px] tracking-widest text-white focus:border-noir-gold outline-none transition-all placeholder:text-white/10 rounded-sm"
+                                    />
+                                    <button 
+                                        onClick={handleApplyCoupon}
+                                        disabled={couponStatus.loading || !couponCode}
+                                        className="px-8 bg-white/5 border border-white/10 text-[9px] uppercase tracking-widest font-black hover:bg-white hover:text-noir-black transition-all rounded-sm disabled:opacity-50"
+                                    >
+                                        {couponStatus.loading ? "Synchronizing..." : "Apply"}
+                                    </button>
+                                </div>
+                                {couponStatus.error && <p className="text-[9px] text-red-500 uppercase tracking-widest font-bold">{couponStatus.error}</p>}
+                                {couponStatus.success && <p className="text-[9px] text-green-500 uppercase tracking-widest font-bold">{couponStatus.success}</p>}
+                            </div>
+
                             <div className="p-8 border border-white/10 bg-white/5 rounded-2xl relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                                     <CreditCard size={80} strokeWidth={1} />
@@ -220,15 +298,32 @@ export default function CheckoutPage() {
                             ))}
                         </div>
 
-                        <div className="flex justify-between items-center pt-10 border-t border-white/10">
-                            <div className="space-y-1">
-                                <span className="text-[10px] uppercase tracking-[0.5em] text-white/40 font-black">Aggregate Total</span>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-1 h-1 rounded-full bg-noir-gold animate-pulse" />
-                                    <span className="text-[8px] uppercase tracking-widest text-noir-gold font-black">Sovereign Registry Included</span>
-                                </div>
+                        <div className="space-y-4 pt-10 border-t border-white/10">
+                            <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-white/40 font-medium">
+                                <span>Subtotal</span>
+                                <span>₹{subtotal.toLocaleString()}</span>
                             </div>
-                            <span className="text-4xl font-playfair font-medium text-white italic tracking-tighter">₹{total.toLocaleString()}</span>
+                            {discountAmount > 0 && (
+                                <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-green-500 font-bold">
+                                    <span>Discount (Protocol Applied)</span>
+                                    <span>-₹{discountAmount.toLocaleString()}</span>
+                                </div>
+                            )}
+                            <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-white/40 font-medium pb-10">
+                                <span>Logistics</span>
+                                <span className="text-noir-gold">Complimentary</span>
+                            </div>
+                            
+                            <div className="flex justify-between items-center border-t border-white/5 pt-10">
+                                <div className="space-y-1">
+                                    <span className="text-[10px] uppercase tracking-[0.5em] text-white/40 font-black">Aggregate Total</span>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-1 h-1 rounded-full bg-noir-gold animate-pulse" />
+                                        <span className="text-[8px] uppercase tracking-widest text-noir-gold font-black">Sovereign Registry Included</span>
+                                    </div>
+                                </div>
+                                <span className="text-4xl font-playfair font-medium text-white italic tracking-tighter">₹{total.toLocaleString()}</span>
+                            </div>
                         </div>
 
                         <div className="pt-12 p-10 bg-white/5 border border-white/5 rounded-[2rem] flex items-center gap-8 relative overflow-hidden group">
@@ -286,14 +381,17 @@ function CheckoutStep({ number, title, active, completed, onEdit, children }) {
     );
 }
 
-function Input({ label, placeholder, span = 2, type = "text" }) {
+function Input({ label, name, placeholder, span = 2, type = "text", value, onChange }) {
     return (
         <div className={`space-y-2 col-span-${span}`}>
             <label className="text-[9px] uppercase tracking-[0.3em] font-medium text-white/30 ml-1">{label}</label>
             <input
+                name={name}
                 type={type}
+                value={value}
+                onChange={onChange}
                 placeholder={placeholder}
-                className="w-full bg-white/5 border border-white/10 px-6 py-4 text-sm text-white focus:border-gold outline-none transition-all placeholder:text-white/10"
+                className="w-full bg-white/5 border border-white/10 px-6 py-4 text-sm text-white focus:border-gold outline-none transition-all placeholder:text-white/10 rounded-sm"
             />
         </div>
     );

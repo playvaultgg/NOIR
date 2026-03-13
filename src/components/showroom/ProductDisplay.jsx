@@ -57,9 +57,9 @@ export default function ProductDisplay({ position, rotation = [0, 0, 0], product
             <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.5}>
                 {/* ── The Mannequin Silhouette ── */}
                 <group onClick={() => setActive(!active)}>
-                    {/* Head */}
+                    {/* Head - Simple sphere */}
                     <mesh position={[0, 0.8, 0]} castShadow>
-                        <sphereGeometry args={[0.08, 16, 16]} />
+                        <sphereGeometry args={[0.08, isNear ? 16 : 6, isNear ? 16 : 6]} />
                         <meshStandardMaterial color="#050505" metalness={1} roughness={0} />
                     </mesh>
                     {/* Body Core */}
@@ -70,13 +70,13 @@ export default function ProductDisplay({ position, rotation = [0, 0, 0], product
                             roughness={0.1} 
                             metalness={0.9} 
                             emissive="#C6A972"
-                            emissiveIntensity={hovered ? 0.2 : 0}
+                            emissiveIntensity={(hovered || isNear) ? 0.2 : 0}
                         />
                     </mesh>
                 </group>
 
                 {/* ── Proximity UI: Holographic Metadata ── */}
-                {(isNear || active) && (
+                {isNear && (
                     <Html 
                         position={[0.5, 0.5, 0]} 
                         center 

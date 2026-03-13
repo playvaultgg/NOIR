@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ShieldCheck, ArrowRight, Download, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import confetti from "canvas-confetti";
 import { jsPDF } from "jspdf";
 import { useSearchParams } from "next/navigation";
@@ -11,7 +11,26 @@ import { useSearchParams } from "next/navigation";
 function SuccessContent() {
     const searchParams = useSearchParams();
     const sessionId = searchParams.get("session_id") || "MN-INTERNAL-AUTH";
-    const orderNumber = `MN-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderId = searchParams.get("order_id");
+    
+    const [order, setOrder] = useState(null);
+    const [loading, setLoading] = useState(!!orderId);
+    const orderNumber = order?.id ? `MN-${order.id.slice(-6).toUpperCase()}` : `MN-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    useEffect(() => {
+        if (orderId) {
+            fetch(`/api/user/orders/${orderId}`)
+                .then(res => res.json())
+                .then(data => {
+                    setOrder(data);
+                    setLoading(false);
+                })
+                .catch(err => {
+                    console.error("Order fetch error:", err);
+                    setLoading(false);
+                });
+        }
+    }, [orderId]);
 
     useEffect(() => {
         // Subtle golden confetti for a luxury feel

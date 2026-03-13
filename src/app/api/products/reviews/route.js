@@ -48,18 +48,30 @@ export async function POST(req) {
             }
         });
 
-        const review = await prisma.review.upsert({
-            where: { productId_userId: { productId, userId: session.user.id } },
-            update: { rating, title, body },
-            create: {
-                productId,
-                userId: session.user.id,
-                rating,
-                title,
-                body,
-                verifiedPurchase: !!purchased,
-            },
-            include: { user: { select: { name: true, image: true } } },
+        const review = await prisma.$transaction(async (tx) => {
+            const upsertedReview = await tx.review.upsert({
+                where: { productId_userId: { productId, userId: session.user.id } },
+                update: { rating, title, comment: body },
+                create: {
+                    productId,
+                    userId: session.user.id,
+                    rating,
+                    title,
+                    comment: body,
+                    verified: !!purchased,
+                },
+                include: { user: { select: { name: true, image: true } } },
+            });
+
+            await tx.customerActivity.create({
+                data: {
+                    userId: session.user.id,
+                    action: "SUBMIT_REVIEW",
+                    metadata: { productId, reviewId: upsertedReview.id }
+                }
+            });
+
+            return upsertedReview;
         });
 
         return NextResponse.json(review, { status: 201 });

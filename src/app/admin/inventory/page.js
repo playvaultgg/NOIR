@@ -5,15 +5,13 @@ import Image from "next/image";
 export const dynamic = "force-dynamic";
 
 export default async function AdminInventory() {
-    // Determine low stock items
-    const lowStockThreshold = 10;
     const inventory = await prisma.product.findMany({
         orderBy: { stock: 'asc' }, // Order by lowest stock first
     });
 
     const outOfStock = inventory.filter(i => i.stock === 0);
-    const lowStock = inventory.filter(i => i.stock > 0 && i.stock <= lowStockThreshold);
-    const healthyStock = inventory.filter(i => i.stock > lowStockThreshold);
+    const lowStock = inventory.filter(i => i.stock > 0 && i.stock <= i.lowStockThreshold);
+    const healthyStock = inventory.filter(i => i.stock > i.lowStockThreshold);
 
     return (
         <div className="space-y-8">

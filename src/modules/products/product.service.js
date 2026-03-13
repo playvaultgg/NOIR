@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { parseImages } from "@/lib/utils";
 
 export const MOCK_PRODUCTS = {
     MENS: [
@@ -123,7 +124,7 @@ export async function getProductsByCategory(category) {
 
         // Normalize products
         const normalized = products.map(p => {
-            const images = Array.isArray(p.imageUrls) ? p.imageUrls : [];
+            const images = parseImages(p.imageUrls);
             return {
                 ...p,
                 price: `₹${(p.price || 0).toLocaleString()}`,
@@ -154,7 +155,7 @@ export async function getProductById(id) {
         });
 
         if (product) {
-            const images = Array.isArray(product.imageUrls) ? product.imageUrls : [];
+            const images = parseImages(product.imageUrls);
             return {
                 ...product,
                 price: `₹${(product.price || 0).toLocaleString()}`,

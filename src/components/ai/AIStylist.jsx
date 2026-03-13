@@ -192,7 +192,7 @@ export default function AIStylist() {
                                                     >
                                                         <div className="absolute top-0 right-0 w-16 h-16 bg-noir-gold/5 blur-2xl rounded-full" />
                                                         <div className="relative w-24 h-32 rounded-xl overflow-hidden shrink-0 border border-white/10">
-                                                            <Image src={p.imageUrls[0]} fill className="object-cover group-hover:scale-110 transition-transform duration-700" alt={p.name} />
+                                                            <Image src={p.images?.[0] || p.imageUrls?.[0] || "/placeholder.jpg"} fill className="object-cover group-hover:scale-110 transition-transform duration-700" alt={p.name} />
                                                         </div>
                                                         <div className="flex flex-col justify-between py-2 flex-1">
                                                             <div className="space-y-1">
@@ -206,7 +206,7 @@ export default function AIStylist() {
                                                             <button 
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
-                                                                    addItem({...p, quantity: 1, image: p.imageUrls[0]});
+                                                                    addItem({...p, quantity: 1, image: p.images?.[0] || p.imageUrls?.[0]});
                                                                     trackEvent(ANALYTICS_EVENTS.AI_STYLIST.OUTFIT_SELECTED, {
                                                                         productId: p.id,
                                                                         productName: p.name

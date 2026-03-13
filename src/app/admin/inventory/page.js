@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { AlertOctagon, ArrowRight, PackageOpen, Boxes } from "lucide-react";
 import Image from "next/image";
+import { parseImages } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -75,7 +76,7 @@ export default async function AdminInventory() {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-4">
                                             <div className="relative w-10 h-10 border border-white/10 rounded overflow-hidden shrink-0">
-                                                <Image src={item.imageUrls[0]} alt={item.name} fill className="object-cover" />
+                                                <Image src={parseImages(item.imageUrls)[0] || "/placeholder.jpg"} alt={item.name} fill className="object-cover" />
                                             </div>
                                             <div>
                                                 <div className="text-white font-medium group-hover:text-[#C6A972] transition-colors">{item.name}</div>

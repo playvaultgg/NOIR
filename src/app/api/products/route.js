@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { parseImages } from "@/lib/utils";
 
 export async function GET(req) {
     try {
@@ -16,12 +17,16 @@ export async function GET(req) {
         });
 
         // Normalize prices for client consumption
-        const normalized = products.map(p => ({
-            ...p,
-            price: `₹${p.price.toLocaleString("en-IN")}`,
-            priceAmount: p.price,
-            image: p.imageUrls[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"
-        }));
+        const normalized = products.map(p => {
+            const images = parseImages(p.imageUrls);
+            return {
+                ...p,
+                price: `₹${p.price.toLocaleString("en-IN")}`,
+                priceAmount: p.price,
+                image: images[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop",
+                imageUrls: images
+            };
+        });
 
         return NextResponse.json(normalized);
     } catch (err) {

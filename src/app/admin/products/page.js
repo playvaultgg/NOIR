@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { Plus, Search, Edit3, Trash2, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
+import { parseImages } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +53,7 @@ export default async function AdminProducts() {
                                         <div className="flex items-center gap-4">
                                             <div className="relative w-12 h-12 bg-white/5 rounded-lg overflow-hidden shrink-0 border border-white/10">
                                                 <Image 
-                                                    src={product.imageUrls[0]} 
+                                                    src={parseImages(product.imageUrls)[0] || "/placeholder.jpg"} 
                                                     alt={product.name}
                                                     fill
                                                     className="object-cover"

@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getUserStyleProfile } from "@/modules/ai/ai.service";
 import { useSession } from "next-auth/react";
+import { parseImages } from "@/lib/utils";
 
 export default function PersonalizedHero() {
     const { data: session } = useSession();
@@ -110,7 +111,7 @@ export default function PersonalizedHero() {
                 >
                     <div className="absolute inset-0 border border-white/5 rounded-3xl overflow-hidden group">
                         <Image
-                            src={spotlightProduct?.images?.[0] || spotlightProduct?.imageUrls?.[0] || "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1000&auto=format&fit=crop"}
+                            src={parseImages(spotlightProduct?.imageUrls || spotlightProduct?.images)[0] || "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1000&auto=format&fit=crop"}
                             alt={spotlightProduct?.name || "Recommended for Your Style"}
                             fill
                             className="object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"

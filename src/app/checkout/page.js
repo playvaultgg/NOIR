@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
+import { parseImages } from "@/lib/utils";
 
 export default function CheckoutPage() {
     const [step, setStep] = useState(1); // 1: Shipping, 2: Delivery, 3: Payment
@@ -289,8 +290,9 @@ export default function CheckoutPage() {
                                 <div key={item.id} className="flex gap-6 items-center">
                                     <div className="w-16 aspect-[3/4] bg-white/5 flex-shrink-0 relative">
                                         <img
-                                            src={item.imageUrls?.[0] || item.images?.[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"}
+                                            src={parseImages(item.imageUrls || item.images)[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"}
                                             className="w-full h-full object-cover grayscale-[30%] opacity-80"
+                                            alt={item.name}
                                         />
                                         <span className="absolute -top-2 -right-2 w-5 h-5 bg-gold text-black text-[9px] font-bold flex items-center justify-center rounded-full">
                                             {item.quantity}

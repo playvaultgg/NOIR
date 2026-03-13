@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Info, ShoppingBag } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
+import { parseImages } from "@/lib/utils";
 
 export default function MuseumArchiveClient({ products }) {
     const targetRef = useRef(null);
@@ -105,7 +106,7 @@ function MuseumProductItem({ product, index }) {
                 {/* Image Container */}
                 <div className="relative flex-1 h-full rounded-2xl overflow-hidden group-hover:shadow-[0_0_80px_rgba(198,169,114,0.15)] transition-all duration-1000">
                     <Image 
-                        src={product.imageUrls?.[0] || 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b'} 
+                        src={parseImages(product.imageUrls || product.images)[0] || 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b'} 
                         fill 
                         className="object-cover scale-110 group-hover:scale-100 transition-transform duration-[2s] ease-out" 
                         alt={product.name}

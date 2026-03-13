@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import Stripe from "stripe";
+import { parseImages } from "@/lib/utils";
 
 // Initialize Stripe (use environment variable in production)
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_mock_secret_key_for_development", {
@@ -98,7 +99,7 @@ export async function POST(req) {
                     currency: "inr", // Switching to INR to match the site's primary currency
                     product_data: {
                         name: item.name,
-                        images: [item.imageUrls?.[0] || item.images?.[0] || item.image || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"],
+                        images: [parseImages(item.imageUrls || item.images)[0] || item.image || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"],
                         metadata: {
                             productId: item.id,
                         }

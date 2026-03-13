@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight } from "lucide-react";
 import { useCart } from "@/store/useCart";
 import Link from "next/link";
+import { parseImages } from "@/lib/utils";
 
 export default function CartDrawer() {
     const { items, isOpen, closeCart, removeItem, updateQuantity, getTotal } = useCart();
@@ -63,7 +64,7 @@ export default function CartDrawer() {
                                         <div key={item.id} className="flex gap-6 group animate-in fade-in slide-in-from-right-4 duration-500">
                                             <div className="w-24 aspect-[3/4] bg-white/5 overflow-hidden flex-shrink-0 border border-white/5">
                                                 <img
-                                                    src={item.imageUrls?.[0] || item.images?.[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"}
+                                                    src={parseImages(item.imageUrls || item.images)[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"}
                                                     alt={item.name}
                                                     className="w-full h-full object-cover grayscale-[20%] group-hover:scale-110 transition-transform duration-700"
                                                 />

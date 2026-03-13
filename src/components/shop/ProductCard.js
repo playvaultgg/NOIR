@@ -5,12 +5,14 @@ import { Plus, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/image";
 import { useCart } from "@/store/useCart";
+import { parseImages } from "@/lib/utils";
 
 export default function ProductCard({ product }) {
     const { addItem } = useCart();
     // Placeholder images for the aesthetic if data isn't full yet
-    const mainImage = product?.imageUrls?.[0] || "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1976&auto=format&fit=crop";
-    const hoverImage = product?.imageUrls?.[1] || "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2040&auto=format&fit=crop";
+    const images = parseImages(product?.imageUrls || product?.images);
+    const mainImage = images[0] || "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1976&auto=format&fit=crop";
+    const hoverImage = images[1] || "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2040&auto=format&fit=crop";
 
     return (
         <motion.div

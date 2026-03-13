@@ -55,7 +55,11 @@ export async function POST(req) {
         console.error("Registration Error Full Object:", err);
         console.error("===============================================================");
         return NextResponse.json(
-            { message: "Security protocol error in account creation." },
+            { 
+                message: "Security protocol error in account creation.",
+                debug_error: err.message,
+                debug_stack: err.stack
+            },
             { status: 500 }
         );
     }

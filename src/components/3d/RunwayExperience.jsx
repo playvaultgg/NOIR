@@ -18,6 +18,7 @@ import {
     Volume2, VolumeX, ShoppingBag, ChevronRight, ChevronLeft,
     Maximize2
 } from "lucide-react";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 /* ─── Curated Look Data ─────────────────────────────────────── */
 const LOOKS = [
@@ -248,7 +249,15 @@ function LookCard({ look, isActive, onClick }) {
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
-                        onClick={(e) => { e.stopPropagation(); window.location.href = `/product/${look.slug}`; }}
+                        onClick={(e) => { 
+                            e.stopPropagation(); 
+                            trackEvent(ANALYTICS_EVENTS.COMMERCE.CHECKOUT_INIT, {
+                                source: "runway_card",
+                                productId: look.id,
+                                productName: look.name
+                            });
+                            window.location.href = `/product/${look.slug}`; 
+                        }}
                         className="w-6 h-6 rounded-full bg-[#C6A972] flex items-center justify-center"
                     >
                         <ShoppingBag size={10} color="#0A0A0A" />
@@ -273,6 +282,9 @@ export default function RunwayExperience() {
 
     /* Auto-advance look every 8s */
     useEffect(() => {
+        trackEvent(ANALYTICS_EVENTS.RUNWAY.VIEW, {
+            initialLook: LOOKS[0].name
+        });
         if (!isPlaying) return;
         const timer = setInterval(() => advanceLook(1), 8000);
         return () => clearInterval(timer);
@@ -288,7 +300,14 @@ export default function RunwayExperience() {
     const advanceLook = useCallback((dir) => {
         setDirection(dir);
         setPrevLookIndex(lookIndex);
-        setLookIndex((prev) => (prev + dir + LOOKS.length) % LOOKS.length);
+        const nextIdx = (lookIndex + dir + LOOKS.length) % LOOKS.length;
+        setLookIndex(nextIdx);
+        
+        trackEvent(ANALYTICS_EVENTS.RUNWAY.LOOK_SWITCH, {
+            from: LOOKS[lookIndex].name,
+            to: LOOKS[nextIdx].name,
+            direction: dir > 0 ? "forward" : "backward"
+        });
     }, [lookIndex]);
 
     const goToLook = useCallback((idx) => {
@@ -401,7 +420,14 @@ export default function RunwayExperience() {
                             {currentLook.price}
                         </p>
                         <motion.button
-                            onClick={() => window.location.href = `/product/${currentLook.slug}`}
+                            onClick={() => {
+                                trackEvent(ANALYTICS_EVENTS.COMMERCE.CHECKOUT_INIT, {
+                                    source: "runway_hero",
+                                    productId: currentLook.id,
+                                    productName: currentLook.name
+                                });
+                                window.location.href = `/product/${currentLook.slug}`;
+                            }}
                             whileHover={{ scale: 1.05, backgroundColor: "#fff" }}
                             whileTap={{ scale: 0.97 }}
                             className="mt-6 inline-flex items-center gap-3 bg-[#C6A972] text-[#0A0A0A] px-8 py-3.5 rounded-xl text-[9px] font-black uppercase tracking-[0.4em] transition-all"

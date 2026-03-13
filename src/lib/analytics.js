@@ -1,29 +1,50 @@
 /**
- * NOIR ULTRA Analytics Layer
- * Centralizes event tracking for business intelligence and high-revenue optimization.
+ * Maison NOIR Deep Behavioral Tracking Service
+ * Captures granular interaction telemetry for Enterprise Intelligence.
  */
 
-export const trackEvent = (eventName, params = {}) => {
-    // 1. Log to console for development transparency
-    if (process.env.NODE_ENV === 'development') {
-        console.log(`[NOIR Analytics] Event: ${eventName}`, params);
-    }
+export const trackEvent = async (eventType, metadata = {}) => {
+    try {
+        // Log to console in development
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`[ANALYTICS] ${eventType}:`, metadata);
+        }
 
-    // 2. Window-level GA4 / Facebook Pixel pushes (standard)
-    if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', eventName, params);
-    }
+        const response = await fetch("/api/analytics/track", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ eventType, metadata }),
+        });
 
-    // 3. PostHog / Mixpanel (future placeholders)
+        if (!response.ok) {
+            throw new Error(`Analytics protocol error: ${response.status}`);
+        }
+    } catch (error) {
+        console.warn("[ANALYTICS FAILSAFE] Telemetry sync interrupted.", error.message);
+    }
 };
 
 export const ANALYTICS_EVENTS = {
-    PRODUCT_VIEW: 'product_view',
-    ADD_TO_CART: 'add_to_cart',
-    CHECKOUT_START: 'begin_checkout',
-    PAYMENT_INFO: 'add_payment_info',
-    PURCHASE: 'purchase',
-    WISHLIST_ADD: 'add_to_wishlist',
-    CART_REMINDER_SHOWN: 'cart_reminder_interaction',
-    EXIT_INTENT: 'exit_intent_detected'
+    AI_STYLIST: {
+        OPEN: "AI_STYLIST_OPEN",
+        QUERY: "AI_STYLIST_QUERY",
+        OUTFIT_SELECTED: "AI_STYLIST_OUTFIT_SELECTED",
+        SENTIMENT_DETECTED: "AI_STYLIST_SENTIMENT",
+    },
+    SHOWROOM: {
+        ENTER: "SHOWROOM_ENTER",
+        PRODUCT_VIEW: "SHOWROOM_PRODUCT_VIEW",
+        ENVIRONMENT_INTERACT: "SHOWROOM_ENVIRONMENT_INTERACT",
+    },
+    RUNWAY: {
+        VIEW: "RUNWAY_VIEW",
+        LOOK_SWITCH: "RUNWAY_LOOK_SWITCH",
+        COMPLETION: "RUNWAY_COMPLETION",
+    },
+    COMMERCE: {
+        CART_ADD: "COMMERCE_CART_ADD",
+        CHECKOUT_INIT: "COMMERCE_CHECKOUT_INIT",
+        CHECKOUT_CONVERSION: "COMMERCE_CHECKOUT_CONVERSION",
+        ABANDONMENT: "COMMERCE_ABANDONMENT", // Logic for this would be in cleanup/interval
+    }
 };

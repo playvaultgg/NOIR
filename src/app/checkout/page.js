@@ -235,7 +235,7 @@ export default function CheckoutPage() {
                                 <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                                     <CreditCard size={80} strokeWidth={1} />
                                 </div>
-                                <div className="relative z-10 space-y-8">
+                                <div className="relative z-10 space-y-6">
                                     <div className="flex justify-between items-center">
                                         <div className="flex gap-4">
                                             <div className="w-12 h-8 bg-white/10 rounded-sm flex items-center justify-center"><span className="text-[8px] font-bold">VISA</span></div>
@@ -245,11 +245,11 @@ export default function CheckoutPage() {
                                         <Lock size={16} className="text-gold/60" />
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-6">
-                                        <Input label="Cardholder Name" placeholder="Alexander Sterling" span={2} />
-                                        <Input label="Card Number" placeholder="••••  ••••  ••••  4821" span={2} />
-                                        <Input label="Expiration Date" placeholder="MM / YY" span={1} />
-                                        <Input label="CVV" placeholder="•••" span={1} />
+                                    <div className="space-y-4">
+                                        <h4 className="text-sm font-playfair italic">Maison Secure Checkout</h4>
+                                        <p className="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">
+                                            You will be redirected to our encrypted gateway to finalize your acquisition. All transactions are protected by AES-256 bit protocol.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -260,7 +260,14 @@ export default function CheckoutPage() {
                                     disabled={isProcessing}
                                     className="w-full h-16 bg-[#C6A972] text-[#0A0A0A] text-sm uppercase font-inter font-semibold tracking-wide rounded-lg flex items-center justify-center gap-4 hover:bg-white hover:text-[#0A0A0A] hover:scale-105 transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {isProcessing ? "Processing..." : "Complete Luxury Order"}
+                                    {isProcessing ? (
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                                            Synchronizing Secure Gateway...
+                                        </div>
+                                    ) : (
+                                        "Initiate Secure Acquisition"
+                                    )}
                                 </button>
                                 <p className="text-[10px] text-center uppercase tracking-widest text-white/30 pt-4 flex items-center justify-center gap-3">
                                     <ShieldCheck size={14} className="text-gold/40" />

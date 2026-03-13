@@ -7,6 +7,7 @@ import { Suspense, useEffect, useState } from "react";
 import confetti from "canvas-confetti";
 import { jsPDF } from "jspdf";
 import { useSearchParams } from "next/navigation";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 function SuccessContent() {
     const searchParams = useSearchParams();
@@ -24,6 +25,13 @@ function SuccessContent() {
                 .then(data => {
                     setOrder(data);
                     setLoading(false);
+                    
+                    // Tracking: Checkout Conversion
+                    trackEvent(ANALYTICS_EVENTS.COMMERCE.CHECKOUT_CONVERSION, {
+                        orderId: data.id,
+                        totalAmount: data.totalAmount,
+                        sessionId: sessionId
+                    });
                 })
                 .catch(err => {
                     console.error("Order fetch error:", err);

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, X, Send, ShoppingBag, MessageSquare } from "lucide-react";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
+import { trackEvent, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 export default function AIStylist() {
     const [isOpen, setIsOpen] = useState(false);
@@ -56,6 +57,13 @@ export default function AIStylist() {
                 setMessages(prev => [...prev, agentMsg]);
                 setLastTelemetry(data.telemetry);
                 setIsTyping(false);
+
+                // Tracking: Sentiment and Query Success
+                trackEvent(ANALYTICS_EVENTS.AI_STYLIST.SENTIMENT_DETECTED, {
+                    sentiment: data.telemetry?.sentiment,
+                    confidence: data.telemetry?.confidence,
+                    query: input
+                });
             }, 1200);
         } catch (error) {
             setMessages(prev => [...prev, { id: Date.now() + 1, type: "agent", text: "Neural link fractured. Archival synchronization in progress." }]);
@@ -79,7 +87,10 @@ export default function AIStylist() {
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 whileHover={{ scale: 1.1, rotate: 5 }}
-                onClick={() => setIsOpen(true)}
+                onClick={() => {
+                    setIsOpen(true);
+                    trackEvent(ANALYTICS_EVENTS.AI_STYLIST.OPEN);
+                }}
                 className="fixed bottom-8 right-8 z-[100] w-16 h-16 bg-[#C6A972] text-black rounded-full shadow-[0_0_50px_rgba(198,169,114,0.4)] flex items-center justify-center hover:bg-white transition-all border-4 border-black/20"
             >
                 <div className="absolute inset-0 rounded-full border border-white/40 animate-ping opacity-20" />
@@ -196,6 +207,10 @@ export default function AIStylist() {
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     addItem({...p, quantity: 1, image: p.imageUrls[0]});
+                                                                    trackEvent(ANALYTICS_EVENTS.AI_STYLIST.OUTFIT_SELECTED, {
+                                                                        productId: p.id,
+                                                                        productName: p.name
+                                                                    });
                                                                 }}
                                                                 className="w-full h-10 bg-white/5 group-hover:bg-[#C6A972] group-hover:text-black rounded-xl text-[9px] font-black uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3 border border-white/5 group-hover:border-transparent"
                                                             >

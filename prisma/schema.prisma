@@ -188,6 +188,7 @@ model user {
   session          session[]
   useravatar       useravatar?
   wishlist         wishlist[]
+  behavioralevent  behavioralevent[]
 }
 
 model useravatar {
@@ -229,6 +230,18 @@ model newslettersubscriber {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model behavioralevent {
+  id        String   @id
+  userId    String?
+  eventType String   // "AI_STYLIST_QUERY", "SHOWROOM_INTERACTION", "RUNWAY_VIEW", "CHECKOUT_CONVERSION"
+  metadata  String?  @db.LongText
+  createdAt DateTime @default(now())
+  user      user?    @relation(fields: [userId], references: [id], onDelete: SetNull, map: "BehavioralEvent_userId_fkey")
+
+  @@index([userId], map: "BehavioralEvent_userId_fkey")
+  @@index([eventType], map: "BehavioralEvent_eventType_idx")
 }
 
 enum orderlog_status {

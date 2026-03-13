@@ -4,6 +4,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useSession } from "next-auth/react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import { useState, useEffect } from "react";
 import {
     ShoppingBag,
     Heart,
@@ -23,12 +24,37 @@ export default function AccountOverview() {
     const { data: session } = useSession();
     const { items: cartItems } = useCartStore();
     const { items: wishlistItems } = useWishlistStore();
+    const [stats, setStats] = useState({
+        orderCount: 0,
+        wishlistCount: 0,
+        lastOrders: [],
+        avatarStatus: "AWAITING_SCAN",
+        loyaltyLevel: "BRONZE"
+    });
+    const [loading, setLoading] = useState(true);
 
-    const STATS = [
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const res = await fetch("/api/user/stats");
+                if (res.ok) {
+                    const data = await res.json();
+                    setStats(data);
+                }
+            } catch (error) {
+                console.error("Failed to synchronize telemetry:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStats();
+    }, []);
+
+    const DISPLAY_STATS = [
         { label: "Active Selection", value: cartItems.length, icon: ShoppingBag, color: "text-noir-gold" },
-        { label: "Wishlist Collection", value: wishlistItems.length, icon: Heart, color: "text-red-500/60" },
-        { label: "Completed Orders", value: 0, icon: Clock, color: "text-white/40" },
-        { label: "Loyalty Level", value: "BRONZE", icon: Target, color: "text-noir-gold" },
+        { label: "Wishlist Collection", value: stats.wishlistCount, icon: Heart, color: "text-red-500/60" },
+        { label: "Completed Orders", value: stats.orderCount, icon: Clock, color: "text-white/40" },
+        { label: "Loyalty Level", value: stats.loyaltyLevel, icon: Target, color: "text-noir-gold" },
     ];
 
     return (
@@ -54,12 +80,14 @@ export default function AccountOverview() {
                         <div className="bg-white/5 border border-white/10 px-8 py-6 rounded-2xl backdrop-blur-xl group hover:border-noir-gold/30 transition-all duration-500">
                             <p className="text-[10px] uppercase tracking-[0.4em] text-white/30 font-bold mb-3">Sovereign Clearance</p>
                             <div className="flex items-center gap-3">
-                                <span className="text-2xl font-playfair text-noir-gold tracking-widest uppercase">Level VI</span>
+                                <span className="text-2xl font-playfair text-noir-gold tracking-widest uppercase">
+                                    {stats.loyaltyLevel === "GOLD" ? "Level IX" : stats.loyaltyLevel === "SILVER" ? "Level VI" : "Level III"}
+                                </span>
                                 <div className="flex gap-1">
-                                    {[1, 2, 3, 4, 5, 6].map(i => (
+                                    {Array.from({ length: stats.loyaltyLevel === "GOLD" ? 9 : stats.loyaltyLevel === "SILVER" ? 6 : 3 }).map((_, i) => (
                                         <div key={i} className="w-1 h-4 bg-noir-gold rounded-full" />
                                     ))}
-                                    {[7, 8].map(i => (
+                                    {Array.from({ length: 9 - (stats.loyaltyLevel === "GOLD" ? 9 : stats.loyaltyLevel === "SILVER" ? 6 : 3) }).map((_, i) => (
                                         <div key={i} className="w-1 h-4 bg-white/10 rounded-full" />
                                     ))}
                                 </div>
@@ -70,7 +98,7 @@ export default function AccountOverview() {
 
                 {/* DYNAMIC METRIC ARRAY */}
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
-                    {STATS.map((stat, i) => (
+                    {DISPLAY_STATS.map((stat, i) => (
                         <motion.div
                             key={stat.label}
                             initial={{ opacity: 0, y: 20 }}
@@ -85,7 +113,9 @@ export default function AccountOverview() {
                                 </div>
                                 <p className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black mb-10">{stat.label}</p>
                                 <div className="flex items-end justify-between">
-                                    <h3 className="text-5xl font-playfair text-white tracking-tighter leading-none">{stat.value}</h3>
+                                    <h3 className="text-5xl font-playfair text-white tracking-tighter leading-none">
+                                        {loading ? "..." : stat.value}
+                                    </h3>
                                     <div className={`p-2 rounded-lg bg-white/5 border border-white/10 ${stat.color}`}>
                                         <stat.icon size={18} />
                                     </div>
@@ -125,7 +155,9 @@ export default function AccountOverview() {
                                     <div className="h-12 w-[2px] bg-noir-gold opacity-40" />
                                     <div>
                                         <p className="text-[10px] uppercase tracking-[0.4em] text-noir-gold font-black mb-1">Status</p>
-                                        <p className="text-[9px] uppercase tracking-widest text-white/60">Awaiting High-Res Scan</p>
+                                        <p className="text-[9px] uppercase tracking-widest text-white/60">
+                                            {stats.avatarStatus === "SYNCHRONIZED" ? "High-Res Scan Verified" : "Awaiting Biometric Scan"}
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="pt-8 flex items-center gap-4 text-white/20 group-hover:text-white transition-colors duration-500">
@@ -147,15 +179,37 @@ export default function AccountOverview() {
                                     <div className="w-1 h-1 rounded-full bg-white/20" />
                                 </div>
                             </div>
-                            <div className="space-y-8 opacity-40 group-hover:opacity-60 transition-opacity">
-                                <div className="flex gap-4 items-center">
-                                    <div className="w-12 h-16 bg-white/5 rounded-lg border border-white/10" />
-                                    <div className="space-y-2">
-                                        <div className="w-24 h-2 bg-white/10 rounded-full" />
-                                        <div className="w-16 h-2 bg-white/5 rounded-full" />
+                            <div className="space-y-6">
+                                {stats.lastOrders.length > 0 ? (
+                                    stats.lastOrders.map(order => (
+                                        <div key={order.id} className="flex gap-4 items-center">
+                                            <div className="w-12 h-16 bg-white/5 rounded-lg border border-white/10 overflow-hidden">
+                                                <img 
+                                                    src={order.orderitem[0]?.product?.imageUrls ? JSON.parse(order.orderitem[0].product.imageUrls)[0] : "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=200&fit=crop"} 
+                                                    className="w-full h-full object-cover opacity-60"
+                                                    alt="Order Item"
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <div className="text-[10px] text-white/80 font-inter font-semibold tracking-tight">MN-{order.id.slice(-6).toUpperCase()}</div>
+                                                <div className="text-[8px] text-white/30 uppercase tracking-widest">
+                                                    {new Date(order.createdAt).toLocaleDateString()} · ₹{order.totalAmount.toLocaleString()}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="space-y-8 opacity-40 group-hover:opacity-60 transition-opacity">
+                                        <div className="flex gap-4 items-center">
+                                            <div className="w-12 h-16 bg-white/5 rounded-lg border border-white/10" />
+                                            <div className="space-y-2">
+                                                <div className="w-24 h-2 bg-white/10 rounded-full" />
+                                                <div className="w-16 h-2 bg-white/5 rounded-full" />
+                                            </div>
+                                        </div>
+                                        <p className="text-[10px] uppercase tracking-widest text-white/30 italic text-center py-4">No Recent Acquisitions Tracked</p>
                                     </div>
-                                </div>
-                                <p className="text-[10px] uppercase tracking-widest text-white/30 italic text-center py-8">No Recent Acquisitions Tracked</p>
+                                )}
                             </div>
                         </div>
                         <Link href="/account/orders" className="pt-8 border-t border-white/5 text-[10px] uppercase tracking-[0.4em] text-white/30 hover:text-white transition-all flex items-center justify-between group/link">

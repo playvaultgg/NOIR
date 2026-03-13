@@ -36,7 +36,7 @@ export async function PATCH(req, { params }) {
         });
 
         // Create Activity Log entry
-        await prisma.orderLog.create({
+        await prisma.orderlog.create({
             data: {
                 orderId: id,
                 status: status,

@@ -41,7 +41,7 @@ export async function POST(req) {
         }
 
         // Check verified purchase
-        const purchased = await prisma.orderItem.findFirst({
+        const purchased = await prisma.orderitem.findFirst({
             where: {
                 productId,
                 order: { userId: session.user.id, status: { in: ["DELIVERED", "SHIPPED"] } }
@@ -63,7 +63,7 @@ export async function POST(req) {
                 include: { user: { select: { name: true, image: true } } },
             });
 
-            await tx.customerActivity.create({
+            await tx.customeractivity.create({
                 data: {
                     userId: session.user.id,
                     action: "SUBMIT_REVIEW",

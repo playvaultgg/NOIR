@@ -4,7 +4,7 @@ import { UserCircle2, AlertTriangle, ScanLine, Search, Trash2 } from "lucide-rea
 export const dynamic = "force-dynamic";
 
 export default async function AdminAvatars() {
-    const avatars = await prisma.userAvatar.findMany({
+    const avatars = await prisma.useravatar.findMany({
         orderBy: { createdAt: 'desc' },
         include: { user: true }
     });

@@ -73,7 +73,7 @@ export async function POST(req) {
             });
 
             // 4. Log Activity
-            await prisma.customerActivity.create({
+            await prisma.customeractivity.create({
                 data: {
                     userId: finalUserId,
                     action: "INIT_CHECKOUT",

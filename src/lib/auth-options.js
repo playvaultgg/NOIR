@@ -67,7 +67,7 @@ export const authOptions = {
     },
     events: {
         async signIn({ user }) {
-            await prisma.customerActivity.create({
+            await prisma.customeractivity.create({
                 data: {
                     userId: user.id,
                     action: "LOGIN",
@@ -77,7 +77,7 @@ export const authOptions = {
         },
         async signOut({ token }) {
             if (token?.id) {
-                await prisma.customerActivity.create({
+                await prisma.customeractivity.create({
                     data: {
                         userId: token.id,
                         action: "LOGOUT"

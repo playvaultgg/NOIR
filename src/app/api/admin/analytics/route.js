@@ -49,7 +49,7 @@ export async function GET(req) {
         });
 
         /* ── Top products by quantity sold ── */
-        const topProductItems = await prisma.orderItem.groupBy({
+        const topProductItems = await prisma.orderitem.groupBy({
             by: ["productId"],
             _sum: { quantity: true },
             orderBy: { _sum: { quantity: "desc" } },

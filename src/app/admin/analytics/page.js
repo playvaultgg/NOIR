@@ -41,7 +41,7 @@ export default async function AdminAnalyticsPage() {
                 by: ["status"],
                 _count: { status: true },
             }),
-            prisma.orderItem.groupBy({
+            prisma.orderitem.groupBy({
                 by: ["productId"],
                 _sum: { quantity: true },
                 orderBy: { _sum: { quantity: "desc" } },
@@ -50,7 +50,7 @@ export default async function AdminAnalyticsPage() {
             prisma.order.count(),
             prisma.user.count(),
             prisma.product.count(),
-            prisma.customerActivity.findMany({
+            prisma.customeractivity.findMany({
                 orderBy: { createdAt: 'desc' },
                 take: 15,
                 include: { user: { select: { name: true, email: true, image: true } } }

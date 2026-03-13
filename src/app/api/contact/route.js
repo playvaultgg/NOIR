@@ -13,7 +13,7 @@ export async function POST(req) {
         }
 
         // 1. Create the contact message in the database
-        const contactMessage = await prisma.contactMessage.create({
+        const contactMessage = await prisma.contactmessage.create({
             data: {
                 name,
                 email,
@@ -26,7 +26,7 @@ export async function POST(req) {
         // 2. Log activity if user is logged in
         const session = await getServerSession(authOptions);
         if (session?.user?.id) {
-            await prisma.customerActivity.create({
+            await prisma.customeractivity.create({
                 data: {
                     userId: session.user.id,
                     action: "CONTACT_FORM_SUBMISSION",

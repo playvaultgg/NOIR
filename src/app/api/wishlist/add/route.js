@@ -28,7 +28,7 @@ export async function POST(req) {
                         productId: productId
                     }
                 }),
-                prisma.customerActivity.create({
+                prisma.customeractivity.create({
                     data: {
                         userId: session.user.id,
                         action: "ADD_TO_WISHLIST",

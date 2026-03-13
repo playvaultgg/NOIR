@@ -36,7 +36,7 @@ export async function POST(req) {
         });
 
         // Log registration activity
-        await prisma.customerActivity.create({
+        await prisma.customeractivity.create({
             data: {
                 userId: user.id,
                 action: "REGISTER",

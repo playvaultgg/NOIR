@@ -14,7 +14,7 @@ export async function POST(req) {
         const data = await req.json();
         const { bodyType, skinTone, modelURL, height, weight } = data;
 
-        const avatar = await prisma.userAvatar.upsert({
+        const avatar = await prisma.useravatar.upsert({
             where: { userId: session.user.id },
             update: {
                 bodyType,
@@ -47,7 +47,7 @@ export async function GET(req) {
             return NextResponse.json({ error: "Authentication Required" }, { status: 401 });
         }
 
-        const avatar = await prisma.userAvatar.findUnique({
+        const avatar = await prisma.useravatar.findUnique({
             where: { userId: session.user.id }
         });
 

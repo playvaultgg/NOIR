@@ -41,7 +41,7 @@ export async function POST(req) {
             });
 
             // Initial activity log
-            await tx.orderLog.create({
+            await tx.orderlog.create({
                 data: {
                     orderId: newOrder.id,
                     status: "PENDING",
@@ -57,7 +57,7 @@ export async function POST(req) {
                 priceAtBuy: item.price
             }));
 
-            await tx.orderItem.createMany({
+            await tx.orderitem.createMany({
                 data: orderItems
             });
 
@@ -70,7 +70,7 @@ export async function POST(req) {
             }
 
             // Log activity
-            await tx.customerActivity.create({
+            await tx.customeractivity.create({
                 data: {
                     userId,
                     action: "PURCHASE",

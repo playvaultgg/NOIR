@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
-    const dbUrl = process.env.DATABASE_URL;
+    // Hardcoding the connection string as a fallback to bypass Railway amnesia
+    const dbUrl = process.env.DATABASE_URL || "mysql://root:vnMfEVqkmpyjkwWmkfGpjeThVefvMHmZ@gondola.proxy.rlwy.net:57086/railway";
 
     if (!dbUrl) {
         // Fallback for Next.js build phase if env vars are missing

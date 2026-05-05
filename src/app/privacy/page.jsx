@@ -1,13 +1,8 @@
-"use client";
-
 import { motion } from "framer-motion";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 
 export default function PrivacyPage() {
     return (
         <main className="min-h-screen bg-noir-black text-white selection:bg-noir-gold selection:text-noir-black">
-            <Navbar />
             
             <section className="pt-48 pb-32 px-6 lg:px-24 max-w-4xl mx-auto">
                 <motion.div 
@@ -56,7 +51,6 @@ export default function PrivacyPage() {
                 </motion.div>
             </section>
 
-            <Footer />
         </main>
     );
 }

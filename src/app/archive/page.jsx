@@ -1,6 +1,5 @@
 import { getProductsByCategory } from "@/modules/products/product.service";
 import MuseumArchiveClient from "@/components/archive/MuseumArchiveClient";
-import Footer from "@/components/layout/Footer";
 
 export default async function ArchivePage() {
     // Fetch consolidated collection data
@@ -11,7 +10,6 @@ export default async function ArchivePage() {
     return (
         <main className="min-h-screen bg-[#050505]">
             <MuseumArchiveClient products={allProducts} />
-            <Footer />
         </main>
     );
 }

@@ -1,13 +1,8 @@
-"use client";
-
 import { motion } from "framer-motion";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 
 export default function AboutPage() {
     return (
         <main className="min-h-screen bg-noir-black text-white selection:bg-noir-gold selection:text-noir-black">
-            <Navbar />
             
             <section className="relative pt-48 pb-32 px-6 lg:px-24 max-w-7xl mx-auto overflow-hidden">
                 {/* Background Text Decor */}
@@ -73,7 +68,6 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            <Footer />
         </main>
     );
 }

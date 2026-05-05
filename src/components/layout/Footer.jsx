@@ -43,10 +43,10 @@ export default function Footer() {
         {
             title: "Concierge",
             links: [
+                { name: "Gundelwaranup119@gmail.com", href: "mailto:Gundelwaranup119@gmail.com" },
+                { name: "+91 92264 08230", href: "tel:9226408230" },
                 { name: "Our Story", href: "/about" },
-                { name: "Support Center", href: "/contact" },
-                { name: "Privacy Protocol", href: "/privacy" },
-                { name: "Terms of Requisition", href: "/terms" }
+                { name: "Support Center", href: "/contact" }
             ]
         }
     ];

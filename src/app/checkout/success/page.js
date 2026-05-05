@@ -16,7 +16,14 @@ function SuccessContent() {
     
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(!!orderId);
-    const orderNumber = order?.id ? `MN-${order.id.slice(-6).toUpperCase()}` : `MN-${Math.floor(100000 + Math.random() * 900000)}`;
+    const [fallbackOrderNumber, setFallbackOrderNumber] = useState("MN-XXXXXX");
+
+    const orderNumber = order?.id ? `MN-${order.id.slice(-6).toUpperCase()}` : fallbackOrderNumber;
+
+    useEffect(() => {
+        // Generate random order number only on client to avoid hydration mismatch
+        setFallbackOrderNumber(`MN-${Math.floor(100000 + Math.random() * 900000)}`);
+    }, []);
 
     useEffect(() => {
         if (orderId) {

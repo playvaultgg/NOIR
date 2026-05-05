@@ -1,12 +1,9 @@
-import { getProductsByCategory } from "@/modules/products/product.service";
+import { getAllProducts } from "@/modules/products/product.service";
 import ProductCard from "@/components/products/ProductCard";
 import CollectionClient from "@/components/products/CollectionClient";
 
 export default async function CollectionsPage() {
-    // Fetch consolidated collection data
-    const mensProducts = await getProductsByCategory("MENS");
-    const womensProducts = await getProductsByCategory("WOMENS");
-    const allProducts = [...mensProducts, ...womensProducts];
+    const allProducts = await getAllProducts();
 
     return (
         <main className="min-h-screen bg-noir-black pt-32 pb-48 px-6 lg:px-24">

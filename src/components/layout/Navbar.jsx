@@ -23,41 +23,41 @@ const NAV_ITEMS = [
 const MEGA_MENU_DATA = {
     categories: [
         {
-            title: "Menswear",
+            title: "The Archive",
             items: [
-                { name: "Outerwear", href: "/collections?category=MENS&type=JACKETS" },
-                { name: "Sartorial", href: "/collections?category=MENS&type=SHIRTS" },
-                { name: "Essentials", href: "/collections?category=MENS&type=PANTS" },
-                { name: "Footwear", href: "/collections?category=MENS&type=SHOES" }
+                { name: "Haute Couture", href: "/collections?category=HAUTE COUTURE" },
+                { name: "Menswear Elite", href: "/collections?category=MENSWEAR" },
+                { name: "Womenswear Atelier", href: "/collections?category=WOMENSWEAR" },
+                { name: "Architectural Pieces", href: "/collections?category=ARCHITECTURE" }
             ],
             image: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?q=80&w=600&auto=format&fit=crop"
         },
         {
-            title: "Womenswear",
+            title: "Objects of Desire",
             items: [
-                { name: "Archive Dresses", href: "/collections?category=WOMENS&type=DRESSES" },
-                { name: "Silken Blouses", href: "/collections?category=WOMENS&type=SHIRTS" },
-                { name: "Tailored Skirts", href: "/collections?category=WOMENS&type=SKIRTS" },
-                { name: "Jewelry", href: "/collections?category=WOMENS&type=ACCESSORIES" }
+                { name: "Fine Horology", href: "/collections?category=HOROLOGY" },
+                { name: "Artisanal Footwear", href: "/collections?category=FOOTWEAR" },
+                { name: "Leather Treasures", href: "/collections?category=LEATHER GOODS" },
+                { name: "Visual Eyewear", href: "/collections?category=EYEWEAR" }
             ],
-            image: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=600&auto=format&fit=crop"
+            image: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?q=80&w=600&auto=format&fit=crop"
         },
         {
-            title: "Archival Series",
+            title: "Maison Concepts",
             items: [
-                { name: "Limited Edition", href: "/collections?tag=LIMITED" },
-                { name: "Runway Drops", href: "/collections?tag=RUNWAY" },
-                { name: "Maison Heritage", href: "/collections?tag=HERITAGE" },
-                { name: "Neural Drops", href: "/collections?tag=AI" }
+                { name: "Virtual Showroom", href: "/showroom" },
+                { name: "Digital Runway", href: "/runway" },
+                { name: "Fragrance Lab", href: "/fragrance-lab" },
+                { name: "Neural Stylist", href: "/styler" }
             ],
             image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=600&auto=format&fit=crop"
         }
     ],
     featured: {
-        title: "Liquid Gold Silhouette",
-        description: "The peak of olfactive and visual synthesis.",
-        image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=600&auto=format&fit=crop",
-        link: "/collections"
+        title: "The Vantablack Chronograph",
+        description: "A convergence of temporal precision and midnight aesthetic.",
+        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop",
+        link: "/collections?category=HOROLOGY"
     }
 };
 

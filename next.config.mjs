@@ -8,6 +8,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
       { protocol: 'https', hostname: 'grainy-gradients.vercel.app' },
       { protocol: 'https', hostname: 'plus.unsplash.com' },
+      { protocol: 'https', hostname: 'loremflickr.com' },
     ],
   },
   compiler: {

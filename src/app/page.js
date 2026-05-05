@@ -1,8 +1,8 @@
 import HomeClient from "./HomeClient";
-import { getProductsByCategory } from "@/modules/products/product.service";
+import { getFeaturedProducts } from "@/modules/products/product.service";
 
 export default async function Home() {
-  const products = await getProductsByCategory("MENS");
+  const products = await getFeaturedProducts();
   
   return <HomeClient products={products} />;
 }

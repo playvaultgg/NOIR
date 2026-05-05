@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import RecommendedForYou from "@/components/ai/RecommendedForYou";
 import CollectionShowcase from "@/components/home/CollectionShowcase";
 import ProductGrid from "@/components/home/ProductGrid";
 import BrandStory from "@/components/home/BrandStory";
@@ -27,12 +26,10 @@ export default function HomeClient({ products }) {
     return (
         <main className="relative w-full overflow-hidden bg-noir-black selection:bg-noir-gold selection:text-noir-black">
             <HeroSection />
-            <RecommendedForYou />
             <CollectionShowcase />
             <ShowroomPreview />
             <RunwayPreview />
             <AvatarTryOnPreview />
-            <ProductGrid products={products} />
             <BrandStory />
             <CustomerReviews />
             <FAQSection />

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { Heart, ShoppingBag, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,6 @@ import { useCartStore } from "@/store/cartStore";
 
 import { useWishlistStore } from "@/store/wishlistStore";
 import ScarcityBadge from "@/components/cro/ScarcityBadge";
-import QuickLook3D from "@/components/3d/QuickLook3D";
 import { useCurrency } from "@/context/CurrencyContext";
 
 export default function ProductCard({
@@ -35,74 +34,25 @@ export default function ProductCard({
     const { toggleWishlist, isInWishlist } = useWishlistStore();
     const wishlisted = isInWishlist(product.id);
 
-    // 3D Tilt Effect Setup (Framer Motion)
-    const x = useMotionValue(0);
-    const y = useMotionValue(0);
-
-    const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15 });
-    const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15 });
-
-    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
-    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
-
-    const handleMouseMove = (e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const width = rect.width;
-        const height = rect.height;
-
-        // Calculate mouse position relative to center of card
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-
-        // Normalize values between -0.5 and 0.5
-        const xPct = mouseX / width - 0.5;
-        const yPct = mouseY / height - 0.5;
-
-        x.set(xPct);
-        y.set(yPct);
-    };
-
     const handleMouseLeave = () => {
-        x.set(0);
-        y.set(0);
         setIsHovered(false);
     };
 
     return (
         <motion.div
-            style={{
-                rotateX,
-                rotateY,
-                transformStyle: "preserve-3d",
-            }}
-            onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={handleMouseLeave}
-            className="relative group w-full flex flex-col cursor-pointer perspective-[1000px] mb-12 transition-all duration-500 hover:scale-[1.02]"
+            className="relative group w-full flex flex-col cursor-pointer mb-12 transition-all duration-500 hover:scale-[1.01]"
         >
             {/* Visual Product Box */}
             <Link href={`/product/${product.id}`} className="block relative aspect-[3/4] overflow-hidden bg-noir-surface rounded-sm shadow-xl transition-all duration-500 hover:shadow-2xl group-hover:shadow-noir-gold/10">
 
-                {/* 3D Quick-Look Transition */}
-                <AnimatePresence>
-                    {isHovered && (
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="absolute inset-0 z-10"
-                        >
-                            <QuickLook3D color="#C6A972" />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                {/* Main Image (Visible when not hovered/3D active) */}
+                {/* Main Image */}
                 <Image
                     src={productImages[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"}
                     alt={product.name}
                     fill
-                    className={`object-cover transition-opacity duration-700 ${isHovered ? "opacity-20" : "opacity-100"}`}
+                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
 
@@ -178,8 +128,8 @@ export default function ProductCard({
                         {/* Prompt 3: Color Variant Preview */}
                         <div className="flex gap-1.5">
                             {["#C6A972", "#FAFAFA", "#000000"].map((color) => (
-                                <div 
-                                    key={color} 
+                                <div
+                                    key={color}
                                     className="w-2.5 h-2.5 rounded-full border border-white/10 hover:border-white transition-colors cursor-crosshair"
                                     style={{ backgroundColor: color }}
                                 />

@@ -9,41 +9,14 @@ import { Environment, Float, MeshReflectorMaterial } from "@react-three/drei";
 
 function ShowroomSilhouette() {
     return (
-        <group>
-            {/* Floor */}
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-                <planeGeometry args={[20, 20]} />
-                <MeshReflectorMaterial
-                    blur={[300, 100]}
-                    resolution={512}
-                    mixBlur={1}
-                    mixStrength={10}
-                    roughness={1}
-                    depthScale={1.2}
-                    minDepthThreshold={0.4}
-                    maxDepthThreshold={1.4}
-                    color="#050505"
-                    metalness={0.5}
-                />
-            </mesh>
-            
-            <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
-                {/* Abstract Monument */}
-                {[[-2, 0, -2], [2, 0, -2], [0, 1, -4]].map((pos, i) => (
-                    <mesh key={i} position={pos}>
-                        <boxGeometry args={[1, 4, 1]} />
-                        <meshStandardMaterial color="#0a0a0a" metalness={1} roughness={0.1} />
-                    </mesh>
-                ))}
-                
-                {/* Glowing Core */}
-                <mesh position={[0, 0.5, -2]}>
-                    <sphereGeometry args={[0.3, 32, 32]} />
-                    <meshBasicMaterial color="#C6A972" />
-                    <pointLight intensity={10} distance={10} color="#C6A972" />
-                </mesh>
-            </Float>
-        </group>
+        <div className="relative w-full h-full">
+            <img 
+                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1200&auto=format&fit=crop" 
+                className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-75 transition-all duration-1000"
+                alt="Luxury Showroom"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60" />
+        </div>
     );
 }
 
@@ -80,14 +53,9 @@ export default function ShowroomPreview() {
                      </Link>
                 </div>
 
-                {/* Live 3D Preview */}
+                {/* Static Preview */}
                 <div className="relative h-[600px] bg-[#050505] rounded-[4rem] border border-white/5 overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.5)]">
-                    <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-                        <Suspense fallback={null}>
-                            <Environment preset="night" />
-                            <ShowroomSilhouette />
-                        </Suspense>
-                    </Canvas>
+                    <ShowroomSilhouette />
 
                     {/* Metadata Overlays */}
                     <div className="absolute top-10 right-10 bg-black/60 backdrop-blur-2xl p-6 border border-white/5 rounded-2xl space-y-4">

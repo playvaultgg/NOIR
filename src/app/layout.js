@@ -28,6 +28,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://maisonoir.com"),
   title: {
     default: "NOIR — Luxury Clothing & Accessories",
     template: "%s | Maison NOIR"
@@ -81,7 +82,7 @@ export default function RootLayout({ children }) {
           `}
         </Script>
       </head>
-      <body className="bg-noir-black text-white">
+      <body className="bg-noir-black text-white" suppressHydrationWarning>
         <AuthProvider>
           <CurrencyProvider>
             <SmoothScrollProvider>

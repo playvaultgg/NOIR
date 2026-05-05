@@ -2,10 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Sparkles, User, Zap, ChevronRight, FlaskConical } from "lucide-react";
-import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
-import PerfumeBottle3D from "@/components/3d/PerfumeBottle3D";
+import { Sparkles, User, Zap, ChevronRight, FlaskConical, Droplets } from "lucide-react";
 
 /**
  * Maison NOIR Avatar / Fragrance Preview
@@ -36,7 +33,7 @@ export default function AvatarTryOnPreview() {
 
                      <div className="space-y-6">
                         {[
-                            { icon: Droplet, text: "Bespoke Accord Synthesis" },
+                            { icon: Droplets, text: "Bespoke Accord Synthesis" },
                             { icon: Sparkles, text: "High-Fidelity Flacon Rendering" },
                             { icon: Zap, text: "Archival Quality Distillation" }
                         ].map((item, i) => (
@@ -77,17 +74,13 @@ export default function AvatarTryOnPreview() {
                         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
                         className="relative aspect-square lg:aspect-[3/4] bg-noir-surface/40 rounded-[4rem] border border-white/5 overflow-hidden backdrop-blur-3xl p-6 flex flex-col items-center justify-center"
                     >
-                        {/* Recursive 3D Preview (Live Canvas) */}
-                        <div className="w-full h-full relative cursor-default pointer-events-none">
-                            <Canvas camera={{ position: [0, 0, 5], fov: 35 }}>
-                                <Suspense fallback={null}>
-                                    <PerfumeBottle3D 
-                                        liquidColor="#C6A972" 
-                                        glassType="clear" 
-                                        labelContent="PREVIEW" 
-                                    />
-                                </Suspense>
-                            </Canvas>
+                        {/* Static Preview Image */}
+                        <div className="w-full h-full relative cursor-default">
+                            <img 
+                                src="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800&auto=format&fit=crop" 
+                                className="w-full h-full object-cover rounded-3xl"
+                                alt="Luxury Perfume"
+                            />
                         </div>
 
                         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-center space-y-4">
@@ -108,22 +101,4 @@ export default function AvatarTryOnPreview() {
     );
 }
 
-function Droplet(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" />
-        </svg>
-    )
-}
 

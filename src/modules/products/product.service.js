@@ -9,8 +9,8 @@ export const MOCK_PRODUCTS = {
             price: "₹85,000",
             priceAmount: 85000,
             images: [
-                "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1000&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?q=80&w=1000&auto=format&fit=crop"
+                "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1000&auto=format&fit=crop"
             ],
             stock: 3,
             isLimitedDrop: true,
@@ -22,8 +22,8 @@ export const MOCK_PRODUCTS = {
             price: "₹45,000",
             priceAmount: 45000,
             images: [
-                "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=1000&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1516762689617-e1cffcef479d?q=80&w=1000&auto=format&fit=crop"
+                "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1000&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop"
             ],
             stock: 12,
             isLimitedDrop: false,
@@ -35,8 +35,8 @@ export const MOCK_PRODUCTS = {
             price: "₹65,000",
             priceAmount: 65000,
             images: [
-                "https://images.unsplash.com/photo-1614144312242-990a886361a8?q=80&w=1000&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1520639889410-1eb419ef5dd0?q=80&w=1000&auto=format&fit=crop"
+                "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop"
             ],
             stock: 4,
             isLimitedDrop: true,
@@ -48,8 +48,8 @@ export const MOCK_PRODUCTS = {
             price: "₹38,000",
             priceAmount: 38000,
             images: [
-                "https://images.unsplash.com/photo-1624373687551-57c9e611ec9a?q=80&w=1000&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1475178626620-a4d074967452?q=80&w=1000&auto=format&fit=crop"
+                "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1000&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1000&auto=format&fit=crop"
             ],
             stock: 8,
             isLimitedDrop: false,
@@ -63,8 +63,8 @@ export const MOCK_PRODUCTS = {
             price: "₹120,000",
             priceAmount: 120000,
             images: [
-                "https://images.unsplash.com/photo-1539008835657-9e8e62f80a4b?q=80&w=1000&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000&auto=format&fit=crop"
+                "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000&auto=format&fit=crop"
             ],
             stock: 2,
             isLimitedDrop: true,
@@ -112,9 +112,6 @@ export const MOCK_PRODUCTS = {
     ]
 };
 
-/**
- * Enterprise Product Fetcher with Failsafe Redundancy
- */
 export async function getProductsByCategory(category) {
     try {
         const products = await prisma.product.findMany({
@@ -127,9 +124,9 @@ export async function getProductsByCategory(category) {
             const images = parseImages(p.imageUrls);
             return {
                 ...p,
-                price: `₹${(p.price || 0).toLocaleString()}`,
-                priceAmount: p.price || 0,
-                images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"]
+                priceAmount: Number(p.price) || 0,
+                price: Number(p.price) || 0,
+                images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop"]
             };
         });
 
@@ -146,6 +143,55 @@ export async function getProductsByCategory(category) {
 }
 
 /**
+ * Enterprise Product Fetcher for the entire Global Catalog
+ */
+export async function getAllProducts() {
+    try {
+        const products = await prisma.product.findMany({
+            orderBy: { createdAt: "desc" }
+        });
+
+        return products.map(p => {
+            const images = parseImages(p.imageUrls);
+            return {
+                ...p,
+                priceAmount: Number(p.price) || 0,
+                price: Number(p.price) || 0,
+                images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop"]
+            };
+        });
+    } catch (error) {
+        console.error(`[Failsafe Mode] Database connection failed for all products. Loading consolidated mock curation.`);
+        return [...MOCK_PRODUCTS.MENS, ...MOCK_PRODUCTS.WOMENS];
+    }
+}
+
+/**
+ * Retrieves curated featured masterpieces
+ */
+export async function getFeaturedProducts() {
+    try {
+        const products = await prisma.product.findMany({
+            where: { isFeatured: true },
+            take: 12,
+            orderBy: { createdAt: "desc" }
+        });
+
+        return products.map(p => {
+            const images = parseImages(p.imageUrls);
+            return {
+                ...p,
+                priceAmount: Number(p.price) || 0,
+                price: Number(p.price) || 0,
+                images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop"]
+            };
+        });
+    } catch (error) {
+        return MOCK_PRODUCTS.MENS.slice(0, 4);
+    }
+}
+
+/**
  * Retrieves a single masterpiece by its identifier or slug.
  */
 export async function getProductById(id) {
@@ -158,9 +204,9 @@ export async function getProductById(id) {
             const images = parseImages(product.imageUrls);
             return {
                 ...product,
-                price: `₹${(product.price || 0).toLocaleString()}`,
-                priceAmount: product.price || 0,
-                images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"]
+                priceAmount: Number(product.price) || 0,
+                price: Number(product.price) || 0,
+                images: images.length > 0 ? images : ["https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop"]
             };
         }
 

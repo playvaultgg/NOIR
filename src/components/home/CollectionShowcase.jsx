@@ -15,24 +15,24 @@ import Image from "next/image";
 export default function CollectionShowcase() {
     const collections = [
         {
-            title: "Menswear",
-            subtitle: "The Noir Silhouette",
-            image: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?q=80&w=1974&auto=format&fit=crop",
-            href: "/collections",
+            title: "Haute Couture",
+            subtitle: "The Masterpiece Silhouette",
+            image: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1974&auto=format&fit=crop",
+            href: "/collections?category=HAUTE COUTURE",
             span: "lg:col-span-1"
         },
         {
-            title: "Womenswear",
-            subtitle: "Eternal Elegance",
-            image: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1974&auto=format&fit=crop",
-            href: "/collections",
+            title: "Fine Horology",
+            subtitle: "Temporal Precision",
+            image: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?q=80&w=1974&auto=format&fit=crop",
+            href: "/collections?category=HOROLOGY",
             span: "lg:col-span-2"
         },
         {
-            title: "Seasonal Drops",
-            subtitle: "Archive AW26",
+            title: "Architectural Archives",
+            subtitle: "Structural Elegance",
             image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop",
-            href: "/collections",
+            href: "/collections?category=ARCHITECTURE",
             span: "lg:col-span-3"
         }
     ];

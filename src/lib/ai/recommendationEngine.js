@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { parseImages } from "@/lib/utils";
 
 /**
  * Maison NOIR AI Recommendation Engine
@@ -10,11 +11,12 @@ import prisma from "@/lib/prisma";
 // Formats DB product for the luxury ProductCard UI
 function formatProduct(dbProduct) {
     if (!dbProduct) return null;
+    const images = parseImages(dbProduct.imageUrls);
     return {
         ...dbProduct,
-        images: dbProduct.imageUrls, // Map for UI compatibility
-        priceAmount: dbProduct.price,
-        price: dbProduct.price, // Keep as number for CurrencyContext to handle
+        images: images,
+        priceAmount: Number(dbProduct.price) || 0,
+        price: Number(dbProduct.price) || 0,
     };
 }
 

@@ -8,23 +8,15 @@ import { Suspense, useRef } from "react";
 import { Float, Environment, ContactShadows } from "@react-three/drei";
 
 function RunwaySilhouette() {
-    const meshRef = useRef();
     return (
-        <group>
-            <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-                <mesh position={[0, -1, 0]} castShadow>
-                    <capsuleGeometry args={[0.4, 1.8, 4, 16]} />
-                    <meshStandardMaterial 
-                        color="#050505" 
-                        roughness={0} 
-                        metalness={1} 
-                        emissive="#C6A972" 
-                        emissiveIntensity={0.2} 
-                    />
-                </mesh>
-            </Float>
-            <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={10} blur={2} far={4.5} />
-        </group>
+        <div className="absolute inset-0 z-0">
+            <img 
+                src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=1600&auto=format&fit=crop" 
+                className="w-full h-full object-cover grayscale brightness-50"
+                alt="Luxury Runway"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
+        </div>
     );
 }
 
@@ -38,18 +30,8 @@ export default function RunwayPreview() {
                 </header>
 
                 <div className="relative aspect-[21/9] w-full bg-[#050505] rounded-[2rem] overflow-hidden group border border-white/5">
-                     {/* 3D Visual Layer */}
-                     <div className="absolute inset-0 z-0">
-                        <Canvas camera={{ position: [0, 0, 5], fov: 40 }} shadows>
-                            <Suspense fallback={null}>
-                                <Environment preset="night" />
-                                <RunwaySilhouette />
-                                <ambientLight intensity={0.5} />
-                                <spotLight position={[5, 10, 5]} angle={0.15} penumbra={1} intensity={2} color="#C6A972" />
-                            </Suspense>
-                        </Canvas>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
-                     </div>
+                     {/* Static Visual Layer */}
+                     <RunwaySilhouette />
 
                      {/* Content Overlay */}
                      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center space-y-8">

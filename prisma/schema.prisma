@@ -1,10 +1,10 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
 }
 
 model account {
@@ -20,10 +20,10 @@ model account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Account_userId_fkey")
+  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
-  @@index([userId], map: "Account_userId_idx")
+  @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model address {
@@ -37,9 +37,9 @@ model address {
   isDefault  Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  user       user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Address_userId_fkey")
+  user       user     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId], map: "Address_userId_idx")
+  @@index([userId])
 }
 
 model contactmessage {
@@ -47,7 +47,7 @@ model contactmessage {
   name      String
   email     String
   subject   String
-  message   String   @db.Text
+  message   String
   status    String   @default("OPEN")
   createdAt DateTime @default(now())
 }
@@ -73,9 +73,9 @@ model customeractivity {
   action    String
   metadata  Json?
   createdAt DateTime @default(now())
-  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "CustomerActivity_userId_fkey")
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId], map: "CustomerActivity_userId_idx")
+  @@index([userId])
 }
 
 model order {
@@ -91,11 +91,11 @@ model order {
   refundId        String?
   trackingNumber  String?
   isSuspect       Boolean      @default(false)
-  user            user         @relation(fields: [userId], references: [id], map: "Order_userId_fkey")
+  user            user         @relation(fields: [userId], references: [id])
   orderitem       orderitem[]
   orderlog        orderlog[]
 
-  @@index([userId], map: "Order_userId_idx")
+  @@index([userId])
 }
 
 model orderitem {
@@ -104,11 +104,11 @@ model orderitem {
   productId  String
   quantity   Int
   priceAtBuy Float
-  order      order   @relation(fields: [orderId], references: [id], map: "OrderItem_orderId_fkey")
-  product    product @relation(fields: [productId], references: [id], map: "OrderItem_productId_fkey")
+  order      order   @relation(fields: [orderId], references: [id])
+  product    product @relation(fields: [productId], references: [id])
 
-  @@index([orderId], map: "OrderItem_orderId_idx")
-  @@index([productId], map: "OrderItem_productId_idx")
+  @@index([orderId])
+  @@index([productId])
 }
 
 model orderlog {
@@ -118,9 +118,9 @@ model orderlog {
   changedBy String
   message   String?
   createdAt DateTime        @default(now())
-  order     order           @relation(fields: [orderId], references: [id], onDelete: Cascade, map: "OrderLog_orderId_fkey")
+  order     order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  @@index([orderId], map: "OrderLog_orderId_idx")
+  @@index([orderId])
 }
 
 model product {
@@ -130,7 +130,7 @@ model product {
   price             Float
   brand             String?
   category          String
-  imageUrls         String      @db.LongText
+  imageUrls         String
   stock             Int         @default(0)
   lowStockThreshold Int         @default(5)
   isFeatured        Boolean     @default(false)
@@ -152,11 +152,11 @@ model review {
   verified  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime
-  product   product  @relation(fields: [productId], references: [id], onDelete: Cascade, map: "Review_productId_fkey")
-  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Review_userId_fkey")
+  product   product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([productId, userId], map: "Review_productId_userId_key")
-  @@index([userId], map: "Review_userId_idx")
+  @@unique([productId, userId])
+  @@index([userId])
 }
 
 model session {
@@ -164,9 +164,9 @@ model session {
   sessionToken String   @unique(map: "Session_sessionToken_key")
   userId       String
   expires      DateTime
-  user         user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Session_userId_fkey")
+  user         user     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId], map: "Session_userId_idx")
+  @@index([userId])
 }
 
 model user {
@@ -201,7 +201,7 @@ model useravatar {
   weight    Float    @default(75)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserAvatar_userId_fkey")
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model verificationtoken {
@@ -209,7 +209,7 @@ model verificationtoken {
   token      String   @unique(map: "VerificationToken_token_key")
   expires    DateTime
 
-  @@unique([identifier, token], map: "VerificationToken_identifier_token_key")
+  @@unique([identifier, token])
 }
 
 model wishlist {
@@ -217,11 +217,11 @@ model wishlist {
   userId    String
   productId String
   createdAt DateTime @default(now())
-  product   product  @relation(fields: [productId], references: [id], onDelete: Cascade, map: "Wishlist_productId_fkey")
-  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Wishlist_userId_fkey")
+  product   product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, productId], map: "Wishlist_userId_productId_key")
-  @@index([productId], map: "Wishlist_productId_idx")
+  @@unique([userId, productId])
+  @@index([productId])
 }
 
 model newslettersubscriber {
@@ -238,10 +238,10 @@ model behavioralevent {
   eventType String   // "AI_STYLIST_QUERY", "SHOWROOM_INTERACTION", "RUNWAY_VIEW", "CHECKOUT_CONVERSION"
   metadata  Json?
   createdAt DateTime @default(now())
-  user      user?    @relation(fields: [userId], references: [id], onDelete: SetNull, map: "BehavioralEvent_userId_fkey")
+  user      user?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 
-  @@index([userId], map: "BehavioralEvent_userId_idx")
-  @@index([eventType], map: "BehavioralEvent_eventType_idx")
+  @@index([userId])
+  @@index([eventType])
 }
 
 enum orderlog_status {

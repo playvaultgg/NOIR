@@ -1,22 +1,11 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "../generated/prisma";
+import { PrismaPg } from "@prisma/adapter-pg";
+import pg from "pg";
 
 const prismaClientSingleton = () => {
-    // Hardcoding the connection string as a fallback to bypass Railway amnesia
-    const dbUrl = process.env.DATABASE_URL || "mysql://root:vnMfEVqkmpyjkwWmkfGpjeThVefvMHmZ@gondola.proxy.rlwy.net:57086/railway";
-
-    if (!dbUrl) {
-        // Fallback for Next.js build phase if env vars are missing
-        console.warn("Prisma initializing without explicit DATABASE_URL. Build environments may ignore this.");
-        return new PrismaClient();
-    }
-
-    return new PrismaClient({
-        datasources: {
-            db: {
-                url: dbUrl,
-            },
-        },
-    });
+    const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+    const adapter = new PrismaPg(pool);
+    return new PrismaClient({ adapter });
 }
 
 const globalForPrisma = globalThis

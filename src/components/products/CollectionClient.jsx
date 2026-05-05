@@ -17,18 +17,24 @@ export default function CollectionClient({ initialProducts }) {
     // Infinite Scroll / Pagination
     const [visibleCount, setVisibleCount] = useState(8);
 
-    const categories = ["ALL", "MENS", "WOMENS"];
+    // Dynamic Categories derived from the actual Global Catalog
+    const categories = useMemo(() => {
+        const uniqueCategories = Array.from(new Set(initialProducts.map(p => p.category)));
+        return ["ALL", ...uniqueCategories.sort()];
+    }, [initialProducts]);
+
     const priceRanges = [
         { label: "ALL", min: 0, max: Infinity },
         { label: "UNDER ₹50,000", min: 0, max: 50000 },
-        { label: "₹50,000 - ₹1,00,000", min: 50000, max: 100000 },
-        { label: "OVER ₹1,00,000", min: 100000, max: Infinity }
+        { label: "₹50,000 - ₹2,50,000", min: 50000, max: 250000 },
+        { label: "₹2,50,000 - ₹7,50,000", min: 250000, max: 750000 },
+        { label: "OVER ₹7,50,000", min: 750000, max: Infinity }
     ];
 
     const sortOptions = [
-        { label: "NEWEST", value: "NEWEST" },
-        { label: "PRICE: LOW TO HIGH", value: "PRICE_ASC" },
-        { label: "PRICE: HIGH TO LOW", value: "PRICE_DESC" }
+        { label: "CURATED NEWEST", value: "NEWEST" },
+        { label: "VALUE: ASCENDING", value: "PRICE_ASC" },
+        { label: "VALUE: DESCENDING", value: "PRICE_DESC" }
     ];
 
     const filteredAndSortedProducts = useMemo(() => {
@@ -41,16 +47,19 @@ export default function CollectionClient({ initialProducts }) {
 
         if (selectedPriceRange !== "ALL") {
             const range = priceRanges.find(r => r.label === selectedPriceRange);
-            result = result.filter(p => p.priceAmount >= range.min && p.priceAmount <= range.max);
+            result = result.filter(p => {
+                const price = p.priceAmount || p.price || 0;
+                return price >= range.min && price <= range.max;
+            });
         }
 
         // 2. Sorting
         switch (sortBy) {
             case "PRICE_ASC":
-                result.sort((a, b) => a.priceAmount - b.priceAmount);
+                result.sort((a, b) => (a.priceAmount || a.price) - (b.priceAmount || b.price));
                 break;
             case "PRICE_DESC":
-                result.sort((a, b) => b.priceAmount - a.priceAmount);
+                result.sort((a, b) => (b.priceAmount || b.price) - (a.priceAmount || a.price));
                 break;
             default:
                 // Newest (Default DB order or mock order)
@@ -58,7 +67,7 @@ export default function CollectionClient({ initialProducts }) {
         }
 
         return result;
-    }, [initialProducts, selectedCategory, selectedPriceRange, sortBy]);
+    }, [initialProducts, selectedCategory, selectedPriceRange, sortBy, priceRanges]);
 
     const displayedProducts = filteredAndSortedProducts.slice(0, visibleCount);
     const hasMore = visibleCount < filteredAndSortedProducts.length;

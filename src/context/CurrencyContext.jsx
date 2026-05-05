@@ -75,9 +75,10 @@ export function CurrencyProvider({ children }) {
     };
 
     const formatPrice = (amount) => {
+        const numericAmount = Number(amount) || 0;
         const { symbol } = CURRENCIES[currency];
         const rate = rates[currency] || 1;
-        const converted = amount * rate;
+        const converted = numericAmount * rate;
         
         return new Intl.NumberFormat("en-IN", {
             style: "currency",

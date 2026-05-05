@@ -57,14 +57,14 @@ export default function ContactSection() {
                         <div className="space-y-8">
                             <div className="space-y-4">
                                 <h4 className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-black">Electronic Mail</h4>
-                                <a href="mailto:concierge@maisonnoir.co" className="text-white font-playfair text-xl italic hover:text-noir-gold transition-colors">
-                                    concierge@maisonnoir.co
+                                <a href="mailto:Gundelwaranup119@gmail.com" className="text-white font-playfair text-xl italic hover:text-noir-gold transition-colors">
+                                    Gundelwaranup119@gmail.com
                                 </a>
                             </div>
                             <div className="space-y-4">
                                 <h4 className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-black">Concierge Direct</h4>
-                                <a href="tel:+912255501234" className="text-white font-playfair text-xl italic hover:text-noir-gold transition-colors">
-                                    +91 22 5550 1234
+                                <a href="tel:9226408230" className="text-white font-playfair text-xl italic hover:text-noir-gold transition-colors">
+                                    9226408230
                                 </a>
                             </div>
                         </div>

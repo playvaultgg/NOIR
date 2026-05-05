@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Instagram, Youtube, Music2, Share2, ArrowUpRight } from "lucide-react";
+import { Instagram, Youtube, Music2, Share2, ArrowUpRight, Twitter } from "lucide-react";
 
 /**
  * Maison NOIR Global Footer
@@ -113,9 +113,10 @@ export default function Footer() {
                 <div className="pt-16 flex flex-col lg:flex-row items-center justify-between gap-12">
                     <div className="flex items-center gap-12">
                         {[
-                            { icon: Instagram, href: "#" },
-                            { icon: Music2, href: "#" },
-                            { icon: Youtube, href: "#" },
+                            { icon: Instagram, href: "https://www.instagram.com/l_l_anup__07/?__pwa=1#" },
+                            { icon: Music2, href: "https://open.spotify.com/playlist/37i9dQZF1DX67S07X99Oto" }, // Noir/Dark Jazz Playlist
+                            { icon: Youtube, href: "https://youtube.com/@core_k3?si=utD0HokNYZHGAJMZ" },
+                            { icon: Twitter, href: "https://x.com/" },
                             { icon: Share2, href: "#" }
                         ].map((social, i) => (
                             <Link 

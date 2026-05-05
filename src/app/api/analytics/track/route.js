@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-options";
 import prisma from "@/lib/prisma";
-import { nanoid } from "nanoid";
 
 export async function POST(req) {
     try {
@@ -15,10 +14,9 @@ export async function POST(req) {
 
         await prisma.behavioralevent.create({
             data: {
-                id: nanoid(),
                 userId: session?.user?.id || null,
                 eventType,
-                metadata: metadata ? JSON.stringify(metadata) : null,
+                metadata: metadata || null,
             },
         });
 

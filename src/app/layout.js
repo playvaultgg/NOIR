@@ -14,7 +14,6 @@ import AIStylist from "@/components/ai/AIStylist";
 import DiscoveryObserver from "@/components/ai/DiscoveryObserver";
 import WishlistSynchronizer from "@/components/wishlist/WishlistSynchronizer";
 import Script from "next/script";
-import CustomCursor from "@/components/layout/CustomCursor";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -84,7 +83,6 @@ export default function RootLayout({ children }) {
         </Script>
       </head>
       <body className="bg-noir-black text-white" suppressHydrationWarning>
-        <CustomCursor />
         <AuthProvider>
           <CurrencyProvider>
             <SmoothScrollProvider>

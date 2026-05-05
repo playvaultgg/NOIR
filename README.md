@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# MAISON NOIR — Archival Excellence
+### Ultra-Premium Architectural Fashion & Custom Horology
 
-## Getting Started
+Maison NOIR is a high-fidelity, luxury e-commerce platform designed for refined individuals. It blends cinematic dark noir aesthetics with state-of-the-art web technology to deliver an uncompromising shopping experience.
 
-First, run the development server:
+---
 
+## 🏛️ The Vision
+Maison NOIR isn't just a store; it's a digital gallery. Every element, from the smooth parallax scrolling to the curated product showcases, is engineered to evoke the feeling of stepping into an exclusive Parisian showroom.
+
+## ✨ Core Features
+- **🤖 AI Stylist & Recommendation Engine**: Personalized luxury guidance powered by advanced discovery algorithms.
+- **👗 Interactive Outfit Builder**: Experiment with archival pieces to create your unique silhouette.
+- **🧴 Bespoke Fragrance Lab**: A dedicated interface for crafting signature scents with custom engraving.
+- **🌍 Global Currency Support**: Dynamic pricing adjustments for an international clientele.
+- **📽️ Cinematic Visuals**: High-performance vertical carousels, horizontal runway previews, and smooth motion transitions.
+- **⚡ Performance-First Architecture**: Built on Next.js 14+ with App Router for instantaneous navigation.
+
+## 🛠️ Technology Stack
+- **Framework**: [Next.js](https://nextjs.org/) (App Router)
+- **Styling**: Vanilla CSS + Framer Motion for high-end animations
+- **Database**: Prisma ORM with PostgreSQL / SQLite support
+- **State Management**: React Context (Currency, Cart)
+- **Icons**: Lucide React
+- **Typography**: Playfair Display & Inter (Google Fonts)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Masterpiece
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/GodlLuffy/NOIR-1.git
+cd NOIR-1
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 3. Initialize Database
+```bash
+npx prisma generate
+npx prisma db push
+npx prisma db seed
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Ignite the Engine
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) to experience the collection.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📧 The Concierge
+For bespoke inquiries, private styling sessions, or technical support:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Electronic Mail**: [Gundelwaranup119@gmail.com](mailto:Gundelwaranup119@gmail.com)
+- **Concierge Direct**: 9226408230
+- **Location**: 42 Archive Blvd, Level 10, Mumbai, MH 400001
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+*© 2024 Maison NOIR. All Rights Reserved.*
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

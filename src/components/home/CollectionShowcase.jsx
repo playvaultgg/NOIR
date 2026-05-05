@@ -24,7 +24,7 @@ export default function CollectionShowcase() {
         {
             title: "Fine Horology",
             subtitle: "Temporal Precision",
-            image: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?q=80&w=1974&auto=format&fit=crop",
+            image: "/images/vintage-horology.png",
             href: "/collections?category=HOROLOGY",
             span: "lg:col-span-2"
         },

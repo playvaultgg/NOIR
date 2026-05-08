@@ -18,13 +18,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import { parseImages } from "@/lib/utils";
+import Script from "next/script";
 
 export default function CheckoutPage() {
     const [step, setStep] = useState(1); // 1: Shipping, 2: Delivery, 3: Payment
     const [isProcessing, setIsProcessing] = useState(false);
     const router = useRouter();
     const { items, getSubtotal, clearCart } = useCartStore();
-    
     // Form States
     const [formData, setFormData] = useState({
         firstName: "",
@@ -75,33 +75,84 @@ export default function CheckoutPage() {
     };
 
     const handleCheckout = async () => {
+        if (!formData.email || !formData.firstName) {
+            alert("Please complete the shipping details first.");
+            setStep(1);
+            return;
+        }
+
         setIsProcessing(true);
         try {
-            const res = await fetch("/api/checkout/create-session", {
+            // 1. Create Internal Order in Prisma
+            const orderRes = await fetch("/api/checkout", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    items, 
+                body: JSON.stringify({
+                    items,
                     totalAmount: total,
-                    couponCode: appliedCoupon?.code,
                     shippingAddress: formData
                 }),
             });
 
-            if (res.ok) {
-                const session = await res.json();
-                if (session.url) {
-                    window.location.href = session.url;
-                } else {
-                    console.error("Invalid Stripe Session ID returned.");
-                    setIsProcessing(false);
-                }
-            } else {
-                console.error("Payment Gateway Initialization Failed");
-                setIsProcessing(false);
-            }
+            const orderData = await orderRes.json();
+            if (!orderRes.ok) throw new Error(orderData.details || orderData.error || "Internal Order Creation Failed");
+
+            // 2. Create Razorpay Order
+            const rzpRes = await fetch("/api/razorpay/order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amount: total }),
+            });
+
+            const rzpOrder = await rzpRes.json();
+            if (!rzpRes.ok) throw new Error(rzpOrder.details || rzpOrder.error || "Razorpay Order Creation Failed");
+
+            // 3. Open Razorpay Modal
+            const options = {
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                amount: rzpOrder.amount,
+                currency: rzpOrder.currency,
+                name: "Maison NOIR",
+                description: "Archival Piece Acquisition",
+                image: "/logo.png", // Ensure you have this or use a valid URL
+                order_id: rzpOrder.id,
+                handler: async function (response) {
+                    // 4. Verify Payment
+                    const verifyRes = await fetch("/api/razorpay/verify", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            orderId: orderData.orderId
+                        }),
+                    });
+
+                    const verifyData = await verifyRes.json();
+                    if (verifyData.success) {
+                        clearCart();
+                        router.push("/checkout/success?orderId=" + orderData.orderId);
+                    } else {
+                        alert("Payment verification failed: " + verifyData.message);
+                    }
+                },
+                prefill: {
+                    name: `${formData.firstName} ${formData.lastName}`,
+                    email: formData.email,
+                },
+                theme: {
+                    color: "#000000",
+                },
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+
         } catch (error) {
-            console.error("Error during checkout:", error);
+            console.error("Checkout Error:", error);
+            alert(`Acquisition Protocol Failure: ${error.message}`);
+        } finally {
             setIsProcessing(false);
         }
     };
@@ -126,6 +177,7 @@ export default function CheckoutPage() {
 
     return (
         <main className="min-h-screen bg-black text-white font-inter selection:bg-gold/30">
+            <Script src="https://checkout.razorpay.com/v1/checkout.js" />
 
             {/* MINIMALIST HEADER */}
             <header className="p-10 lg:px-24 flex items-center justify-between border-b border-white/5 bg-[#050505]/80 backdrop-blur-3xl sticky top-0 z-50">
@@ -213,14 +265,14 @@ export default function CheckoutPage() {
                                     <Sparkles size={14} className="text-noir-gold" />
                                 </div>
                                 <div className="flex gap-4">
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         value={couponCode}
                                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                                        placeholder="ENTER PROTOCOL CODE" 
+                                        placeholder="ENTER PROTOCOL CODE"
                                         className="flex-1 bg-noir-black border border-white/10 px-6 py-4 text-[10px] tracking-widest text-white focus:border-noir-gold outline-none transition-all placeholder:text-white/10 rounded-sm"
                                     />
-                                    <button 
+                                    <button
                                         onClick={handleApplyCoupon}
                                         disabled={couponStatus.loading || !couponCode}
                                         className="px-8 bg-white/5 border border-white/10 text-[9px] uppercase tracking-widest font-black hover:bg-white hover:text-noir-black transition-all rounded-sm disabled:opacity-50"
@@ -290,7 +342,7 @@ export default function CheckoutPage() {
                                 <div key={item.id} className="flex gap-6 items-center">
                                     <div className="w-16 aspect-[3/4] bg-white/5 flex-shrink-0 relative">
                                         <img
-                                            src={parseImages(item.imageUrls || item.images)[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"}
+                                            src={item.image || parseImages(item.imageUrls || item.images)[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"}
                                             className="w-full h-full object-cover grayscale-[30%] opacity-80"
                                             alt={item.name}
                                         />
@@ -302,7 +354,7 @@ export default function CheckoutPage() {
                                         <h5 className="text-[12px] font-playfair text-white">{item.name}</h5>
                                         <p className="text-[9px] uppercase tracking-widest text-white/30 mt-1">{item.brand || "NOIR COLLECTION"}</p>
                                     </div>
-                                    <span className="text-[10px] font-bold text-white italic">₹{(item.priceAmount * item.quantity).toLocaleString()}</span>
+                                    <span className="text-[10px] font-bold text-white italic">₹{((item.priceAmount || item.price || 0) * item.quantity).toLocaleString()}</span>
                                 </div>
                             ))}
                         </div>
@@ -322,7 +374,7 @@ export default function CheckoutPage() {
                                 <span>Logistics</span>
                                 <span className="text-noir-gold">Complimentary</span>
                             </div>
-                            
+
                             <div className="flex justify-between items-center border-t border-white/5 pt-10">
                                 <div className="space-y-1">
                                     <span className="text-[10px] uppercase tracking-[0.5em] text-white/40 font-black">Aggregate Total</span>

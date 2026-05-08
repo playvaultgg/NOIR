@@ -5,6 +5,7 @@ import CollectionShowcase from "@/components/home/CollectionShowcase";
 import ProductGrid from "@/components/home/ProductGrid";
 import BrandStory from "@/components/home/BrandStory";
 import CustomerReviews from "@/components/home/CustomerReviews";
+import RecruitmentSection from "@/components/home/RecruitmentSection";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
 import HeroSection from "@/components/home/HeroSection";
@@ -32,6 +33,7 @@ export default function HomeClient({ products }) {
             <AvatarTryOnPreview />
             <BrandStory />
             <CustomerReviews />
+            <RecruitmentSection />
             <FAQSection />
             <ContactSection />
         </main>

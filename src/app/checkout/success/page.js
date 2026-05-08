@@ -82,82 +82,142 @@ function SuccessContent() {
             format: "a4"
         });
 
-        const goldColor = "#C6A972";
-        const blackColor = "#0A0A0A";
+        const goldColor = [198, 169, 114]; // #C6A972
+        const blackColor = [5, 5, 5];
+        const whiteColor = [255, 255, 255];
+        const dimGray = [60, 60, 60];
 
-        // Background
-        doc.setFillColor(blackColor);
+        // 1. PURE BLACK BACKGROUND
+        doc.setFillColor(blackColor[0], blackColor[1], blackColor[2]);
         doc.rect(0, 0, 210, 297, "F");
 
-        // Border
-        doc.setDrawColor(goldColor);
-        doc.setLineWidth(0.5);
-        doc.rect(10, 10, 190, 277);
-        doc.rect(12, 12, 186, 273);
+        // 2. SUBTLE WATERMARK
+        doc.setTextColor(15, 15, 15);
+        doc.setFontSize(120);
+        doc.setFont("helvetica", "bold");
+        doc.text("NOIR", 105, 160, { align: "center", angle: 45 });
 
-        // Content
-        doc.setTextColor(goldColor);
-        doc.setFontSize(24);
-        doc.text("MAISON NOIR", 105, 40, { align: "center" });
-
-        doc.setTextColor("#FFFFFF");
-        doc.setFontSize(32);
-        doc.text("CERTIFICATE OF AUTHENTICITY", 105, 70, { align: "center" });
-
-        doc.setFontSize(10);
-        doc.setTextColor(goldColor);
-        doc.text("DIGITAL ASSET ARCHIVE / SOVEREIGN TIER", 105, 80, { align: "center" });
-
-        doc.setDrawColor(goldColor);
+        // 3. EXECUTIVE BORDERS (GILDED)
+        doc.setDrawColor(goldColor[0], goldColor[1], goldColor[2]);
+        doc.setLineWidth(0.8);
+        doc.rect(10, 10, 190, 277); // Outer
         doc.setLineWidth(0.2);
-        doc.line(40, 90, 170, 90);
+        doc.rect(13, 13, 184, 271); // Inner accent
 
-        doc.setTextColor("#FFFFFF");
-        doc.setFontSize(14);
-        doc.text("This document certifies the permanent registration of", 105, 110, { align: "center" });
-        
-        doc.setFontSize(18);
-        doc.setTextColor(goldColor);
-        doc.text(orderNumber, 105, 125, { align: "center" });
+        // 4. HEADER SECTION
+        doc.setTextColor(goldColor[0], goldColor[1], goldColor[2]);
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text("PRIVATE REGISTRY ACQUISITION", 105, 30, { align: "center", charSpace: 3 });
 
+        doc.setFontSize(28);
+        doc.setFont("times", "italic");
+        doc.text("Maison NOIR", 105, 45, { align: "center" });
+
+        doc.setDrawColor(goldColor[0], goldColor[1], goldColor[2]);
+        doc.setLineWidth(0.3);
+        doc.line(80, 50, 130, 50);
+
+        // 5. MAIN TITLE
+        doc.setTextColor(whiteColor[0], whiteColor[1], whiteColor[2]);
+        doc.setFontSize(32);
+        doc.setFont("helvetica", "bold");
+        doc.text("CERTIFICATE OF", 105, 75, { align: "center" });
+        doc.text("AUTHENTICITY", 105, 88, { align: "center" });
+
+        doc.setFontSize(9);
+        doc.setTextColor(goldColor[0], goldColor[1], goldColor[2]);
+        doc.setFont("helvetica", "normal");
+        doc.text("Sovereign Tier Archival Registration", 105, 98, { align: "center", charSpace: 1 });
+
+        // 6. CERTIFICATION TEXT
+        doc.setTextColor(whiteColor[0], whiteColor[1], whiteColor[2]);
         doc.setFontSize(12);
-        doc.setTextColor("#FFFFFF");
-        doc.text("within the Maison NOIR Private Registry.", 105, 140, { align: "center" });
+        doc.setFont("times", "italic");
+        doc.text("This serves as formal validation for the permanent registry of", 105, 120, { align: "center" });
 
-        // Metadata
+        doc.setFontSize(24);
+        doc.setTextColor(goldColor[0], goldColor[1], goldColor[2]);
+        doc.setFont("helvetica", "bold");
+        doc.text(orderNumber, 105, 135, { align: "center", charSpace: 2 });
+
+        // 7. TRANSACTION SUMMARY (Itemized if available)
+        doc.setDrawColor(30, 30, 30);
+        doc.line(30, 150, 180, 150);
+
         doc.setFontSize(8);
-        doc.setTextColor(100, 100, 100); // Gray for labels
-        doc.text("REGISTRY TIER:", 40, 170);
-        doc.setTextColor(255, 255, 255);
-        doc.text("ARCHIVAL SOVEREIGN", 170, 170, { align: "right" });
+        doc.setTextColor(dimGray[0], dimGray[1], dimGray[2]);
+        doc.text("ACQUIRED ASSETS", 30, 158);
 
-        doc.setTextColor(100, 100, 100);
-        doc.text("IDENTIFIER:", 40, 180);
-        doc.setTextColor(255, 255, 255);
-        doc.text(sessionId, 170, 180, { align: "right" });
+        if (order?.orderitem) {
+            let yPos = 168;
+            order.orderitem.forEach((item, index) => {
+                doc.setTextColor(whiteColor[0], whiteColor[1], whiteColor[2]);
+                doc.setFontSize(10);
+                doc.text(item.product?.name || "Archival Piece", 30, yPos);
+                doc.text(`x${item.quantity}`, 180, yPos, { align: "right" });
+                yPos += 8;
+            });
+        } else {
+            doc.setTextColor(whiteColor[0], whiteColor[1], whiteColor[2]);
+            doc.setFontSize(10);
+            doc.text("Archival Acquisition Series - Selection Alpha", 30, 168);
+        }
 
-        doc.setTextColor(100, 100, 100);
-        doc.text("ENCRYPTION:", 40, 190);
-        doc.setTextColor(255, 255, 255);
-        doc.text("RSA-4096 / NOIR-NODE-V2", 170, 190, { align: "right" });
-
-        doc.setTextColor(100, 100, 100);
-        doc.text("TIMESTAMP:", 40, 200);
-        doc.setTextColor(255, 255, 255);
-        doc.text(new Date().toLocaleString(), 170, 200, { align: "right" });
-
-        // Footer Seal
-        doc.setDrawColor(goldColor);
-        doc.circle(105, 240, 15);
-        doc.setTextColor(goldColor);
+        // ADD TOTAL PAYMENT
+        const totalY = 195;
+        doc.setDrawColor(30, 30, 30);
+        doc.line(30, totalY - 5, 180, totalY - 5);
+        
         doc.setFontSize(8);
-        doc.text("OFFICIAL SEAL", 105, 241, { align: "center" });
+        doc.setTextColor(dimGray[0], dimGray[1], dimGray[2]);
+        doc.text("AGGREGATE ACQUISITION VALUE", 30, totalY);
+        
+        doc.setFontSize(14);
+        doc.setTextColor(goldColor[0], goldColor[1], goldColor[2]);
+        doc.setFont("times", "bolditalic");
+        const totalText = order?.totalAmount ? `INR ${order.totalAmount.toLocaleString()}` : "Value Encrypted";
+        doc.text(totalText, 180, totalY, { align: "right" });
+
+        // 8. METADATA GRID
+        const gridY = 210;
+        doc.setDrawColor(goldColor[0], goldColor[1], goldColor[2]);
+        doc.setLineWidth(0.1);
+        doc.line(30, gridY - 5, 180, gridY - 5);
+
+        doc.setFontSize(7);
+        doc.setTextColor(dimGray[0], dimGray[1], dimGray[2]);
+        doc.text("REGISTRY HASH", 30, gridY);
+        doc.text("TIMESTAMP", 80, gridY);
+        doc.text("CLEARANCE", 140, gridY);
+
+        doc.setTextColor(whiteColor[0], whiteColor[1], whiteColor[2]);
+        doc.setFontSize(8);
+        doc.text(sessionId.substring(0, 24).toUpperCase(), 30, gridY + 6);
+        doc.text(new Date().toLocaleString(), 80, gridY + 6);
+        doc.text("LEVEL 7 / SOVEREIGN", 140, gridY + 6);
+
+        // 9. SIGNATURE & SEAL
+        doc.setDrawColor(goldColor[0], goldColor[1], goldColor[2]);
+        doc.circle(50, 255, 12);
+        doc.setFontSize(6);
+        doc.setTextColor(goldColor[0], goldColor[1], goldColor[2]);
+        doc.text("OFFICIAL", 50, 254, { align: "center" });
+        doc.text("MAISON SEAL", 50, 257, { align: "center" });
+
+        doc.setDrawColor(dimGray[0], dimGray[1], dimGray[2]);
+        doc.line(120, 260, 180, 260);
+        doc.setFontSize(8);
+        doc.setFont("times", "italic");
+        doc.setTextColor(whiteColor[0], whiteColor[1], whiteColor[2]);
+        doc.text("Senior Concierge Management", 150, 265, { align: "center" });
+        doc.text("Maison NOIR Headquarters, Paris", 150, 270, { align: "center" });
 
         doc.setFontSize(6);
-        doc.setTextColor(80, 80, 80);
-        doc.text("THE ABOVE ASSET IS SECURED BY THE MAISON IDENTITY PROTOCOL.", 105, 270, { align: "center" });
+        doc.setTextColor(dimGray[0], dimGray[1], dimGray[2]);
+        doc.text("This document is cryptographically linked to the Noir Blockchain Registry.", 105, 285, { align: "center" });
 
-        doc.save(`MAISON_NOIR_TOKEN_${orderNumber}.pdf`);
+        doc.save(`MAISON_NOIR_CERTIFICATE_${orderNumber}.pdf`);
     };
 
     return (

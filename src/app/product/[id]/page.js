@@ -36,14 +36,18 @@ export default async function ProductPage({ params }) {
 
     // Log view activity (Fire and forget, don't block render)
     const session = await getServerSession(authOptions);
-    if (session?.user?.id) {
-        prisma.customerActivity.create({
+    const userId = (session?.user?.id && typeof session.user.id === 'string' && session.user.id.trim() !== "") 
+        ? session.user.id 
+        : null;
+
+    if (userId) {
+        prisma.customeractivity.create({
             data: {
-                userId: session.user.id,
+                userId,
                 action: "VIEW_PRODUCT",
                 metadata: { productId: product.id, name: product.name }
             }
-        }).catch(err => console.error("Error logging view activity:", err));
+        }).catch(err => console.error("Error logging view activity [PRISMA P2003]:", err));
     }
 
     // Fetch recommendations from same category

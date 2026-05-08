@@ -1,0 +1,46 @@
+# ── Dependencies ──
+node_modules
+npm-debug.log*
+
+# ── Build output ──
+.next
+out
+
+# ── Version control ──
+.git
+.gitignore
+
+# ── Environment (NEVER ship secrets into images) ──
+.env
+.env.local
+.env.production
+.env.development
+
+# ── IDE & OS ──
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── Documentation (not needed in container) ──
+README.md
+STRUCTURE.md
+INFRASTRUCTURE.md
+SECURITY.md
+CHANGELOG.md
+LICENSE
+
+# ── CI/CD & Config (not needed in container) ──
+.github
+docker-compose*.yml
+vercel.json
+railway.json
+
+# ── Development files ──
+prisma/seed.js
+*.test.js
+*.spec.js
+__tests__
+coverage

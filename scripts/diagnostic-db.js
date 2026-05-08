@@ -10,8 +10,8 @@ async function checkConnection() {
     
     try {
         const productCount = await prisma.product.count();
-        const activityCount = await prisma.customerActivity.count();
-        const contactCount = await prisma.contactMessage.count();
+        const activityCount = await prisma.customeractivity.count();
+        const contactCount = await prisma.contactmessage.count();
         
         console.log("✅ Connection Successful!");
         console.log(`- Product Catalog: ${productCount} items`);

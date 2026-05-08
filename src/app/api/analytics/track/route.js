@@ -12,9 +12,14 @@ export async function POST(req) {
             return NextResponse.json({ error: "Event type required" }, { status: 400 });
         }
 
+        // Robustly determine if we have a valid userId to avoid P2003 Foreign Key errors
+        const userId = (session?.user?.id && typeof session.user.id === 'string' && session.user.id.trim() !== "") 
+            ? session.user.id 
+            : null;
+
         await prisma.behavioralevent.create({
             data: {
-                userId: session?.user?.id || null,
+                userId,
                 eventType,
                 metadata: metadata || null,
             },
@@ -22,7 +27,14 @@ export async function POST(req) {
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error("Analytics tracking failure:", error);
+        // Log the full error metadata for Prisma P2003 debugging
+        console.error("Analytics tracking failure [PRISMA ERROR]:", {
+            message: error.message,
+            code: error.code,
+            meta: error.meta,
+            stack: error.stack
+        });
+        
         return NextResponse.json({ error: "Tracking protocol interruption" }, { status: 500 });
     }
 }

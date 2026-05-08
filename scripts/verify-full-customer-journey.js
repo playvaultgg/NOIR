@@ -21,14 +21,14 @@ async function main() {
                 role: "USER"
             }
         });
-        await prisma.customerActivity.create({
+        await prisma.customeractivity.create({
             data: { userId: user.id, action: "REGISTER", metadata: { email: testEmail } }
         });
         console.log(`✅ User registered with ID: ${user.id}`);
 
         // 2. Simulate LOGIN
         console.log("2. Simulating [LOGIN]...");
-        await prisma.customerActivity.create({
+        await prisma.customeractivity.create({
             data: { userId: user.id, action: "LOGIN", metadata: { method: "credentials" } }
         });
         console.log("✅ Login logged.");
@@ -37,7 +37,7 @@ async function main() {
         console.log("3. Simulating [VIEW_PRODUCT]...");
         const product = await prisma.product.findFirst();
         if (product) {
-            await prisma.customerActivity.create({
+            await prisma.customeractivity.create({
                 data: { userId: user.id, action: "VIEW_PRODUCT", metadata: { productId: product.id, name: product.name } }
             });
             console.log(`✅ Viewed Product: ${product.name}`);
@@ -49,7 +49,7 @@ async function main() {
             await prisma.wishlist.create({
                 data: { userId: user.id, productId: product.id }
             });
-            await prisma.customerActivity.create({
+            await prisma.customeractivity.create({
                 data: { userId: user.id, action: "ADD_TO_WISHLIST", metadata: { productId: product.id } }
             });
             console.log("✅ Wishlist updated.");
@@ -66,10 +66,10 @@ async function main() {
                         status: "PENDING"
                     }
                 });
-                await tx.orderItem.create({
+                await tx.orderitem.create({
                     data: { orderId: newOrder.id, productId: product.id, quantity: 1, priceAtBuy: product.price }
                 });
-                await tx.customerActivity.create({
+                await tx.customeractivity.create({
                     data: { userId: user.id, action: "PURCHASE", metadata: { orderId: newOrder.id, total: product.price } }
                 });
                 return newOrder;
@@ -79,7 +79,7 @@ async function main() {
 
         // --- FINAL RECONCILIATION ---
         console.log("\n--- 🔍 Database Reconciliation (Proof of Work) ---");
-        const activities = await prisma.customerActivity.findMany({
+        const activities = await prisma.customeractivity.findMany({
             where: { userId: user.id },
             orderBy: { createdAt: 'asc' }
         });

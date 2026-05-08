@@ -1,16 +1,108 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Quote, Star } from "lucide-react";
+import { useState } from "react";
 
-/**
- * Maison Customer Reviews
- * Social proof section for elite validation.
- * Features:
- * - Luxury Testimonial Grid
- * - Press Citation Integration
- * - Cinematic Brand Quotes
- */
+function ReviewCard({ item, idx }) {
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    const mouseXSpring = useSpring(x);
+    const mouseYSpring = useSpring(y);
+
+    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+    const handleMouseMove = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        const xPct = mouseX / width - 0.5;
+        const yPct = mouseY / height - 0.5;
+        x.set(xPct);
+        y.set(yPct);
+    };
+
+    const handleMouseLeave = () => {
+        x.set(0);
+        y.set(0);
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.15, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+                rotateX,
+                rotateY,
+                transformStyle: "preserve-3d",
+            }}
+            className="relative whitespace-normal glass-effect bg-white/[0.01] p-12 lg:p-16 rounded-[4rem] border border-white/5 space-y-10 flex flex-col justify-between group hover:border-noir-gold/20 hover:bg-white/[0.03] transition-all duration-1000 perspective-[1500px]"
+        >
+            {/* Grain Overlay */}
+            <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none rounded-[4rem] overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] repeat" />
+            </div>
+
+            <div className="relative z-10 space-y-10" style={{ transform: "translateZ(60px)" }}>
+                <motion.div 
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="text-noir-gold/10 group-hover:text-noir-gold transition-all duration-1000 w-fit"
+                >
+                    <Quote size={56} strokeWidth={0.5} />
+                </motion.div>
+                <p className="text-white font-playfair text-xl md:text-2xl leading-relaxed italic tracking-tight">
+                    "{item.quote}"
+                </p>
+            </div>
+
+            <div className="relative z-10 space-y-8 pt-12 border-t border-white/5" style={{ transform: "translateZ(40px)" }}>
+                <div className="flex gap-2 text-noir-gold">
+                    {[...Array(5)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, scale: 0 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: idx * 0.2 + i * 0.1 }}
+                        >
+                            <Star size={12} fill="currentColor" className="drop-shadow-[0_0_10px_rgba(198,169,114,0.3)]" />
+                        </motion.div>
+                    ))}
+                </div>
+                
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h4 className="text-white text-[12px] uppercase tracking-[0.4em] font-black mb-2">{item.author}</h4>
+                        <div className="flex items-center gap-4">
+                            <span className="text-white/30 text-[9px] uppercase tracking-[0.3em] font-medium">{item.role}</span>
+                            <div className="w-1.5 h-[1px] bg-noir-gold/30" />
+                            <span className="text-noir-gold text-[8px] uppercase tracking-[0.3em] font-black italic">{item.source}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Background Identification Artifact */}
+            <motion.div 
+                style={{ transform: "translateZ(-30px)" }}
+                className="absolute top-12 right-12 text-white/[0.015] font-black text-[12rem] italic group-hover:text-white/[0.04] group-hover:scale-110 transition-all duration-1000 pointer-events-none select-none leading-none"
+            >
+                {idx + 1}
+            </motion.div>
+            
+            {/* Card Glow */}
+            <div className="absolute inset-0 bg-noir-gold/5 opacity-0 group-hover:opacity-100 blur-[120px] transition-opacity duration-1000 rounded-[4rem] pointer-events-none" />
+        </motion.div>
+    );
+}
+
 export default function CustomerReviews() {
     const reviews = [
         {
@@ -34,63 +126,69 @@ export default function CustomerReviews() {
     ];
 
     return (
-        <section className="py-24 lg:py-40 bg-noir-black relative px-6 lg:px-24 overflow-hidden">
-            {/* Visual Depth Decoration */}
-            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-white/5 pointer-events-none" />
+        <section className="py-20 lg:py-28 bg-noir-black relative px-6 lg:px-24 overflow-hidden">
+            {/* Visual Depth Background */}
+            <div className="absolute inset-0 z-0 opacity-20">
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            </div>
             
-            <header className="mb-24 text-center space-y-6">
-                <h4 className="text-noir-gold text-[10px] uppercase tracking-[0.5em] font-black italic">The Maison Legacy</h4>
-                <h3 className="text-4xl md:text-7xl font-playfair text-white tracking-widest italic leading-tight">
+            <header className="mb-20 text-center space-y-4 relative z-10">
+                <motion.h4 
+                    initial={{ opacity: 0, letterSpacing: "1em" }}
+                    whileInView={{ opacity: 1, letterSpacing: "0.6em" }}
+                    className="text-noir-gold text-[10px] uppercase font-black italic"
+                >
+                    The Maison Legacy
+                </motion.h4>
+                <motion.h3 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    className="text-4xl md:text-7xl font-playfair text-white tracking-widest italic leading-tight"
+                >
                     Loved by Collectors <br /> Worldwide
-                </h3>
+                </motion.h3>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
-                {reviews.map((item, idx) => (
-                    <motion.div 
-                        key={item.author}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.2 }}
-                        className="glass-effect bg-noir-surface/20 p-12 rounded-[3rem] border border-white/5 space-y-8 flex flex-col justify-between group hover:border-noir-gold/10 transition-all"
-                    >
-                         <div className="space-y-8">
-                            <div className="text-noir-gold/20 group-hover:text-noir-gold transition-colors duration-700">
-                                <Quote size={48} strokeWidth={1} />
-                            </div>
-                            <p className="text-white font-playfair text-xl md:text-2xl leading-relaxed italic tracking-tight">
-                                "{item.quote}"
-                            </p>
-                         </div>
-
-                         <div className="space-y-4 pt-12 border-t border-white/5">
-                            <div className="flex gap-2 text-noir-gold">
-                                {[...Array(5)].map((_, i) => <Star key={i} size={10} fill="currentColor" />)}
-                            </div>
-                            <div>
-                                <h4 className="text-white text-[11px] uppercase tracking-[0.3em] font-black">{item.author}</h4>
-                                <div className="flex items-center gap-3">
-                                    <span className="text-white/20 text-[9px] uppercase tracking-[0.2em]">{item.role}</span>
-                                    <div className="w-[1px] h-2 bg-white/10" />
-                                    <span className="text-noir-gold text-[8px] uppercase tracking-[0.2em] font-bold italic">{item.source}</span>
-                                </div>
-                            </div>
-                         </div>
-
-                         {/* Background Identification Artifact */}
-                         <div className="absolute top-10 right-10 text-white/[0.02] font-black text-8xl italic group-hover:text-white/[0.04] transition-all">
-                            0{idx + 1}
-                         </div>
-                    </motion.div>
-                ))}
+            <div className="relative z-10 overflow-hidden border-y border-white/5 bg-[#0A0A0A]/30 backdrop-blur-sm py-16">
+                <motion.div
+                    className="flex whitespace-nowrap gap-12 items-center"
+                    animate={{ x: ["0%", "-50%"] }}
+                    transition={{ repeat: Infinity, duration: 80, ease: "linear" }}
+                >
+                    {[...reviews, ...reviews, ...reviews, ...reviews].map((item, idx) => (
+                        <div key={`${item.author}-${idx}`} className="w-[420px] shrink-0">
+                            <ReviewCard item={item} idx={idx % reviews.length} />
+                        </div>
+                    ))}
+                </motion.div>
             </div>
 
-            {/* Press Logotypes (Abstract) */}
-            <div className="mt-32 pt-16 flex flex-wrap items-center justify-center gap-16 lg:gap-32 opacity-20 hover:opacity-40 transition-opacity">
-                {["VOGUE", "ELLE", "GQ", "HYPEBEAST", "BAZAAR"].map(brand => (
-                    <span key={brand} className="text-white font-playfair text-2xl lg:text-3xl tracking-[0.3em] font-black italic">{brand}</span>
-                ))}
+            {/* Upgraded Press Section (Compact) */}
+            <div className="mt-24 pt-16 border-t border-white/5 relative z-10 overflow-hidden">
+                <motion.div
+                    className="flex whitespace-nowrap gap-24 items-center opacity-40 hover:opacity-80 transition-opacity duration-1000"
+                    animate={{ x: ["0%", "-50%"] }}
+                    transition={{ repeat: Infinity, duration: 45, ease: "linear" }}
+                >
+                    {[...Array(2)].map((_, i) => (
+                        <div key={i} className="flex gap-24 items-center">
+                            {["VOGUE", "ELLE", "GQ", "HYPEBEAST", "BAZAAR", "HARPER'S BAZAAR", "ROBB REPORT", "WALLPAPER*"].map((brand) => (
+                                <span 
+                                    key={brand} 
+                                    className="text-white font-playfair text-xl lg:text-3xl tracking-[0.4em] font-black italic cursor-default hover:text-noir-gold transition-colors duration-500 px-12"
+                                >
+                                    {brand}
+                                </span>
+                            ))}
+                        </div>
+                    ))}
+                </motion.div>
             </div>
+
+            {/* Ambient Background Glows */}
+            <div className="absolute top-1/4 -left-1/4 w-[500px] h-[500px] bg-noir-gold/5 blur-[150px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-noir-gold/5 blur-[150px] rounded-full pointer-events-none" />
         </section>
     );
 }

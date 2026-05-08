@@ -1,0 +1,61 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "regions": ["cle1", "sfo1", "iad1", "bom1", "sin1"],
+  "headers": [
+    {
+      "source": "/_next/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/_next/image(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "X-Sovereign-Cloud",
+          "value": "MAISON-NOIR-API"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Sovereign-Cloud",
+          "value": "MAISON-NOIR-EDGE"
+        },
+        {
+          "key": "X-DNS-Prefetch-Control",
+          "value": "on"
+        }
+      ]
+    }
+  ],
+  "images": {
+    "sizes": [256, 384, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    "domains": ["images.unsplash.com", "plus.unsplash.com"],
+    "formats": ["image/avif", "image/webp"],
+    "minimumCacheTTL": 86400
+  }
+}

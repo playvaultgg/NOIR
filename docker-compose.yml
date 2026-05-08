@@ -1,28 +1,98 @@
+# ──────────────────────────────────────────────
+# MAISON NOIR — Sovereign Container Orchestration
+# Senior Standard: Full-stack with networking,
+# profiles, resource limits, and health dependencies
+# ──────────────────────────────────────────────
+
 services:
+  # ── Application Container ──
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: noir-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-noir_db}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
+      - NEXT_PUBLIC_RAZORPAY_KEY_ID=${NEXT_PUBLIC_RAZORPAY_KEY_ID}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - noir-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+
+  # ── Database Container ──
   postgres:
     image: postgres:15-alpine
-    container_name: noir-postgres
+    container_name: noir-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: noir_db
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-noir_db}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - noir-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: noir-pgadmin
+  # ── Cache Container ──
+  redis:
+    image: redis:7-alpine
+    container_name: noir-cache
     restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+    command: redis-server --maxmemory 64mb --maxmemory-policy allkeys-lru
     ports:
-      - "5050:80"
-    depends_on:
-      - postgres
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - noir-network
+    deploy:
+      resources:
+        limits:
+          memory: 128M
 
+# ── Persistent Storage ──
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# ── Isolated Network ──
+networks:
+  noir-network:
+    driver: bridge
+    name: noir-sovereign-net

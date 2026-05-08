@@ -13,6 +13,7 @@ import OutfitBuilder from "@/components/products/OutfitBuilder";
 import AIStylist from "@/components/ai/AIStylist";
 import DiscoveryObserver from "@/components/ai/DiscoveryObserver";
 import WishlistSynchronizer from "@/components/wishlist/WishlistSynchronizer";
+import MonitoringProvider from "@/providers/MonitoringProvider";
 import Script from "next/script";
 
 const inter = Inter({
@@ -28,7 +29,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://maisonoir.com"),
+  metadataBase: new URL("https://noir-1.vercel.app"),
   title: {
     default: "NOIR — Luxury Clothing & Accessories",
     template: "%s | Maison NOIR"
@@ -37,7 +38,7 @@ export const metadata = {
   openGraph: {
     title: "Maison NOIR — Luxury Architectural Fashion",
     description: "Ultra-premium e-commerce for refined individuals. Experience uncompromising luxury.",
-    url: "https://maisonoir.com",
+    url: "https://noir-1.vercel.app",
     siteName: "Maison NOIR",
     images: [
       {
@@ -65,6 +66,8 @@ export const viewport = {
   maximumScale: 1,
 };
 
+import AppContainers from "@/containers/AppContainers";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`}>
@@ -85,20 +88,23 @@ export default function RootLayout({ children }) {
       <body className="bg-noir-black text-white" suppressHydrationWarning>
         <AuthProvider>
           <CurrencyProvider>
-            <SmoothScrollProvider>
-              <Navbar />
-              <PageWrapper>
-                {children}
-              </PageWrapper>
-              <MobileNavbar />
-              <Footer />
-              <CartDrawer />
-              <OutfitBuilder />
-              <CartReminderPopup />
-              <AIStylist />
-              <DiscoveryObserver />
-              <WishlistSynchronizer />
-            </SmoothScrollProvider>
+            <AppContainers>
+              <SmoothScrollProvider>
+                <Navbar />
+                <PageWrapper>
+                  {children}
+                </PageWrapper>
+                <MobileNavbar />
+                <Footer />
+                <CartDrawer />
+                <OutfitBuilder />
+                <CartReminderPopup />
+                <AIStylist />
+                <DiscoveryObserver />
+                <WishlistSynchronizer />
+                <MonitoringProvider />
+              </SmoothScrollProvider>
+            </AppContainers>
           </CurrencyProvider>
         </AuthProvider>
       </body>

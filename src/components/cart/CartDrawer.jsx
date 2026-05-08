@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, ShoppingBag, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useCurrency } from "@/context/CurrencyContext";
 
 export default function CartDrawer() {
@@ -14,7 +14,9 @@ export default function CartDrawer() {
     const [mounted, setMounted] = useState(false);
     const [confirmed, setConfirmed] = useState(false);
     const [recommendations, setRecommendations] = useState([]);
+    const scrollRef = useRef(null);
 
+    // Removed manual sync scroll as it was interfering with internal cart scrolling
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -63,7 +65,8 @@ export default function CartDrawer() {
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}
                         transition={{ type: "spring", damping: 40, stiffness: 200 }}
-                        className="fixed top-0 right-0 bottom-0 w-full max-w-lg bg-noir-surface border-l border-white/5 z-[101] flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.9)] overflow-hidden"
+                        className="fixed top-0 right-0 w-full max-w-lg bg-noir-surface border-l border-white/5 z-[101] flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.9)] overflow-hidden"
+                        style={{ height: '100dvh', maxHeight: '100dvh' }}
                     >
                         {/* Elegant Header with Noise Overlay */}
                         <div className="flex items-center justify-between p-10 border-b border-white/5 relative bg-gradient-to-r from-noir-black to-noir-surface">
@@ -82,7 +85,10 @@ export default function CartDrawer() {
                         </div>
 
                         {/* Cinematic Cart Content list */}
-                        <div className="flex-1 overflow-y-auto no-scrollbar p-10 flex flex-col gap-10">
+                        <div 
+                            ref={scrollRef}
+                            className="flex-1 overflow-y-auto min-h-0 p-10 flex flex-col gap-10 scroll-smooth relative"
+                        >
                             {items.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center h-full text-white/30 space-y-8">
                                     <ShoppingBag size={80} strokeWidth={0.3} className="text-noir-gold/10" />

@@ -16,7 +16,7 @@ async function main() {
     const testUser = await prisma.user.findFirst();
     const userId = testUser ? testUser.id : "system_test_placeholder";
 
-    await prisma.customerActivity.create({
+    await prisma.customeractivity.create({
       data: {
         userId: userId,
         action: "TEST_CONNECTION",

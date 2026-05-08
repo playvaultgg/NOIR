@@ -1,128 +1,259 @@
-# MAISON NOIR — Archival Excellence
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
-[![Tailwind](https://img.shields.io/badge/Vanilla_CSS-Luxury-06B6D4?style=for-the-badge)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![License](https://img.shields.io/badge/License-MIT-gold?style=for-the-badge)](LICENSE)
+<div align="center">
 
-### Ultra-Premium Architectural Fashion & Custom Horology
+# MAISON NOIR
 
-Maison NOIR is a production-grade, high-fidelity luxury e-commerce ecosystem. It leverages modern full-stack patterns to deliver a cinematic user experience while maintaining a robust, scalable backend architecture.
+**Sovereign Luxury Commerce Platform**
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://prisma.io/)
+[![Razorpay](https://img.shields.io/badge/Razorpay-Payments-0C2451?style=for-the-badge&logo=razorpay&logoColor=white)](https://razorpay.com/)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com/)
+[![CI/CD](https://img.shields.io/badge/GitHub_Actions-CI/CD-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/features/actions)
+[![License](https://img.shields.io/badge/License-MIT-C6A972?style=for-the-badge)](LICENSE)
+
+A production-grade, full-stack luxury e-commerce ecosystem built with **13 layers** of modern web architecture — from cinematic frontend animations to containerized infrastructure with automated backup and recovery.
+
+[Live Demo](https://noir-1.vercel.app/) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [Documentation](#-documentation)
+
+</div>
 
 ---
 
-## 📑 Table of Contents
-- [Architecture Overview](#-architecture-overview)
-- [Key Features](#-key-features)
-- [Tech Stack](#-tech-stack)
-- [Performance & Optimization](#-performance--optimization)
-- [Getting Started](#-getting-started)
-- [Environment Configuration](#-environment-configuration)
-- [The Concierge](#-the-concierge)
+## 🏛️ Architecture
 
----
+Maison NOIR implements every layer of the **True Full-Stack** — each built to senior engineering standards.
 
-## 🏛️ Architecture Overview
-Maison NOIR follows a modern decoupled architecture with a centralized service layer for business logic.
-
-```mermaid
-graph TD
-    A[Client - Next.js App Router] --> B[Service Layer - src/modules]
-    B --> C[Data Layer - Prisma ORM]
-    C --> D[(PostgreSQL / SQLite)]
-    A --> E[State Mgmt - React Context]
-    A --> F[Animations - Framer Motion]
-    B --> G[AI Engine - recommendationEngine.js]
 ```
+┌─────────────────────────────────────────────────┐
+│  FRONTEND          Next.js 16 · Framer Motion   │
+├─────────────────────────────────────────────────┤
+│  BACKEND / APIs    API Routes · NextAuth · JWT   │
+├─────────────────────────────────────────────────┤
+│  DATABASE          Supabase PostgreSQL · Prisma  │
+├─────────────────────────────────────────────────┤
+│  SERVERS           Docker Compose · Health API   │
+├─────────────────────────────────────────────────┤
+│  NETWORKING        CSP · HSTS · Proxy Security   │
+├─────────────────────────────────────────────────┤
+│  CLOUD INFRA       Railway · Vercel Edge (5 reg) │
+├─────────────────────────────────────────────────┤
+│  CI / CD           GitHub Actions · 4-stage pipe │
+├─────────────────────────────────────────────────┤
+│  SECURITY          6-layer defense · HMAC-SHA256 │
+├─────────────────────────────────────────────────┤
+│  CONTAINERS        4-stage Dockerfile · Compose  │
+├─────────────────────────────────────────────────┤
+│  CDN               AVIF/WebP · 24hr cache · Edge │
+├─────────────────────────────────────────────────┤
+│  APP CONTAINERS    Notification · Loading · Error│
+├─────────────────────────────────────────────────┤
+│  MONITORING        Structured logs · Web Vitals  │
+├─────────────────────────────────────────────────┤
+│  BACKUP/RECOVERY   pg_dump · Rotation · 3-tier   │
+└─────────────────────────────────────────────────┘
+```
+
+> See [`STRUCTURE.md`](STRUCTURE.md) for the complete layer-by-layer implementation details.
 
 ---
 
 ## ✨ Key Features
 
-### 🤖 Intelligent Personalization
-- **AI Stylist**: A real-time recommendation engine that analyzes user behavior and discovery patterns to suggest archival pieces.
-- **Discovery Observer**: A silent observer component that tracks user engagement without compromising performance.
+### Commerce Engine
+- **Independent Razorpay Integration** — Secure payment flow with HMAC-SHA256 signature verification
+- **Interactive Outfit Builder** — Drag-and-layer garment visualization
+- **Bespoke Fragrance Lab** — Custom scent configuration with bottle engraving
+- **Smart Cart System** — Persistent cart with cross-selling reminders and abandonment recovery
 
-### 👗 Advanced Commerce
-- **Interactive Outfit Builder**: A complex state-managed UI allowing users to layer garments and visualize silhouettes.
-- **Bespoke Fragrance Lab**: A specialized product configuration engine for custom scents and bottle engraving.
-- **Dynamic Cart Logistics**: Features high-fidelity cart drawers with cross-selling reminders and persistence.
+### Intelligent Personalization
+- **AI Stylist** — Real-time recommendation engine analyzing user behavior
+- **Discovery Observer** — Silent engagement tracking for personalized suggestions
+- **Wishlist Sync** — Cross-device wishlist synchronization
 
-### 📽️ Cinematic UI/UX
-- **Smooth Navigation**: Custom `SmoothScrollProvider` for a high-end, tactile feel.
-- **Responsive Mastery**: Fluid layouts that transition seamlessly from desktop showroom to mobile boutique.
+### Cinematic Experience
+- **Smooth Scroll Provider** — Custom scroll behavior for luxury tactile feel
+- **Framer Motion Animations** — Page transitions, reveal effects, micro-interactions
+- **Canvas Confetti** — Golden particle effects on successful acquisitions
+- **PDF Certificate Generator** — Executive-grade Certificate of Authenticity on purchase
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-| :--- | :--- |
-| **Frontend** | Next.js 14 (App Router), React 18, Framer Motion |
-| **Styling** | Vanilla CSS (BEM-inspired), CSS Variables, Lucide Icons |
-| **Backend** | Next.js API Routes, Node.js |
-| **Database** | Prisma ORM (Relational Mapping), PostgreSQL/SQLite |
-| **Auth** | Custom AuthProvider (Extensible to NextAuth) |
-| **Deployment** | Vercel Optimized |
+| Layer | Technology | Purpose |
+|:------|:-----------|:--------|
+| Frontend | Next.js 16, React 19, Framer Motion | App Router, Turbopack, cinematic UI |
+| Styling | Vanilla CSS, CSS Variables | Luxury design tokens (gold/black theme) |
+| Backend | Next.js API Routes, NextAuth.js | Serverless endpoints, JWT auth |
+| Database | Supabase PostgreSQL, Prisma ORM | Managed cloud database, type-safe queries |
+| Payments | Razorpay SDK | Order creation, signature verification |
+| Security | Custom middleware, LRU rate limiter | CSP, HSTS, input sanitization |
+| Containers | Docker, Docker Compose | Multi-stage builds, orchestration |
+| CI/CD | GitHub Actions | 4-stage pipeline, deploy gates |
+| CDN | Vercel Edge, Next.js Image | AVIF/WebP, global caching |
+| Monitoring | Custom logger, Web Vitals | Structured JSON logs, performance tracking |
 
 ---
 
-## ⚡ Performance & Optimization
-- **Image Optimization**: Utilizing `next/image` with custom loaders and Unsplash source verification.
-- **Font Strategy**: Localized Google Fonts via `next/font` to eliminate layout shift (CLS).
-- **Metadata Management**: Dynamic SEO orchestration using the Next.js Metadata API for maximum visibility.
-- **Hydration Safety**: Custom `suppressHydrationWarning` strategies for third-party integrations.
-
----
-
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18.x or higher
+- Node.js 20.x+
+- PostgreSQL 15+
 - Git
 
 ### Installation
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/GodlLuffy/NOIR-1.git
-   cd NOIR-1
-   ```
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-3. **Database Setup:**
-   Configure your `.env` (see below) and run:
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   npx prisma seed
-   ```
-4. **Run Development Server:**
-   ```bash
-   npm run dev
-   ```
 
----
+```bash
+# Clone
+git clone https://github.com/GodlLuffy/NOIR-1.git
+cd NOIR-1
 
-## 🔑 Environment Configuration
-Create a `.env` file in the root directory:
-```env
-DATABASE_URL="file:./dev.db" # Or your PostgreSQL string
-NEXTAUTH_SECRET="your-secret-here"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
+# Install dependencies
+npm install
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your database URL and API keys
+
+# Initialize database
+npx prisma generate
+npx prisma db push
+npx prisma db seed
+
+# Start development server
+npm run dev
+```
+
+The application will be available at `http://localhost:3000`
+
+### Docker Deployment
+
+```bash
+# Full-stack deployment (App + PostgreSQL + Redis)
+docker compose up -d
+
+# View logs
+docker compose logs -f noir-app
 ```
 
 ---
 
-## 📧 The Concierge
-For technical deep-dives or bespoke inquiries:
+## 🔑 Environment Variables
 
-- **Electronic Mail**: [Gundelwaranup119@gmail.com](mailto:Gundelwaranup119@gmail.com)
-- **Concierge Direct**: 9226408230
-- **Studio**: 42 Archive Blvd, Level 10, Mumbai, MH 400001
+```env
+# Database
+DATABASE_URL="postgresql://user:pass@host:5432/noir_db"
+
+# Authentication
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="generate-a-secure-random-string"
+
+# Razorpay Payment Gateway
+RAZORPAY_KEY_ID="rzp_test_..."
+RAZORPAY_KEY_SECRET="secret_..."
+NEXT_PUBLIC_RAZORPAY_KEY_ID="rzp_test_..."
+
+# Logging
+LOG_LEVEL="info"
+```
+
+> See [`.env.example`](.env.example) for the complete configuration template.
 
 ---
 
-*© 2024 Maison NOIR. Designed with precision. Built with passion.*
+## 📂 Project Structure
 
+```
+NOIR-1/
+├── .github/workflows/     # CI/CD pipelines
+│   ├── ci.yml              # 4-stage build pipeline
+│   └── deploy.yml          # Auto-deployment workflow
+├── prisma/
+│   ├── schema.prisma       # Database schema
+│   └── seed.js             # Data seeding
+├── scripts/
+│   └── backup.mjs          # Backup & recovery CLI
+├── src/
+│   ├── app/                # Next.js App Router pages
+│   │   ├── api/            # Backend API routes
+│   │   │   ├── checkout/   # Order creation
+│   │   │   ├── health/     # Infrastructure health
+│   │   │   ├── monitor/    # API metrics dashboard
+│   │   │   └── razorpay/   # Payment processing
+│   │   └── checkout/       # Checkout + success pages
+│   ├── components/         # React components
+│   ├── containers/         # App-level containers
+│   │   ├── AppContainers.jsx
+│   │   ├── NotificationContainer.jsx
+│   │   ├── LoadingContainer.jsx
+│   │   └── ErrorBoundaryContainer.jsx
+│   ├── context/            # React context providers
+│   ├── lib/                # Core utilities
+│   │   ├── api-guard.js    # API security wrapper
+│   │   ├── cdn.js          # CDN optimization
+│   │   ├── logger.js       # Structured logging
+│   │   ├── network.js      # Resilient fetch client
+│   │   ├── performance.js  # Web Vitals monitoring
+│   │   ├── prisma.js       # Database client (pooled)
+│   │   ├── rate-limit.js   # LRU-based rate limiter
+│   │   └── security.js     # Input sanitization
+│   ├── providers/          # Client providers
+│   └── proxy.js            # Network security proxy
+├── Dockerfile              # 4-stage production build
+├── docker-compose.yml      # Full-stack orchestration
+├── railway.json            # Cloud provisioning
+├── vercel.json             # Edge deployment config
+├── STRUCTURE.md            # 13-layer architecture map
+├── SECURITY.md             # Security policy
+├── INFRASTRUCTURE.md       # Cloud topology
+└── BACKUP.md               # Recovery procedures
+```
 
+---
+
+## 📖 Documentation
+
+| Document | Description |
+|:---------|:------------|
+| [`STRUCTURE.md`](STRUCTURE.md) | Complete 13-layer architecture breakdown |
+| [`SECURITY.md`](SECURITY.md) | Multi-layered defense strategy & vulnerability disclosure |
+| [`INFRASTRUCTURE.md`](INFRASTRUCTURE.md) | Cloud topology, deployment strategy, disaster recovery |
+| [`BACKUP.md`](BACKUP.md) | Backup commands, rotation policy, recovery tiers |
+
+---
+
+## 🔧 Available Commands
+
+| Command | Description |
+|:--------|:------------|
+| `npm run dev` | Start development server (Turbopack) |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npx prisma studio` | Open database GUI |
+| `npx prisma db seed` | Seed database with sample data |
+| `node scripts/backup.mjs` | Create database backup |
+| `node scripts/backup.mjs --list` | List available backups |
+| `node scripts/backup.mjs --restore latest` | Restore latest backup |
+| `docker compose up -d` | Deploy full stack with Docker |
+
+---
+
+## 📬 Contact
+
+**Anup Gundelwar** — Full-Stack Developer
+
+- **Email**: [Gundelwaranup119@gmail.com](mailto:Gundelwaranup119@gmail.com)
+- **GitHub**: [@GodlLuffy](https://github.com/GodlLuffy)
+- **Phone**: 9226408230
+
+---
+
+<div align="center">
+
+*Designed with precision. Engineered with discipline. Built at Senior standard.*
+
+**© 2026 Maison NOIR. All rights reserved.**
+
+</div>

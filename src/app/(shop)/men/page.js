@@ -11,6 +11,7 @@ export default async function MensPage() {
             {/* COLLECTION HEADER BANNER */}
             <section className="relative h-[50vh] flex flex-col items-center justify-center text-center px-6 overflow-hidden">
                 <div className="absolute inset-0 z-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src="https://images.unsplash.com/photo-1550246140-5119ae4790b8?q=80&w=2070&auto=format&fit=crop"
                         alt="Mens Luxury Banner"
@@ -23,7 +24,7 @@ export default async function MensPage() {
                         Curated Menswear
                     </h2>
                     <h1 className="text-5xl md:text-7xl font-playfair tracking-tight">
-                        The Gentlemen's Edit
+                        The Gentlemen&apos;s Edit
                     </h1>
                     <p className="max-w-md mx-auto text-[11px] text-white/40 uppercase tracking-widest font-light leading-relaxed">
                         Crafted for the modern visionary who defines luxury

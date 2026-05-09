@@ -148,7 +148,7 @@ export default function AccountOverview() {
                                 <div className="space-y-4">
                                     <h3 className="text-4xl md:text-6xl font-playfair text-white italic tracking-tight">Identity Synthesis</h3>
                                     <p className="text-white/40 text-[11px] uppercase tracking-[0.3em] leading-relaxed max-w-lg">
-                                        Synchronize your physical silhouette with the digital void. Your virtual twin enables high-fidelity try-ons and personalized fit predictions within the Maison's private atelier.
+                                        Synchronize your physical silhouette with the digital void. Your virtual twin enables high-fidelity try-ons and personalized fit predictions within the Maison&apos;s private atelier.
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-6">
@@ -184,6 +184,7 @@ export default function AccountOverview() {
                                     stats.lastOrders.map(order => (
                                         <div key={order.id} className="flex gap-4 items-center">
                                             <div className="w-12 h-16 bg-white/5 rounded-lg border border-white/10 overflow-hidden">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img 
                                                     src={order.orderitem[0]?.product?.imageUrls ? JSON.parse(order.orderitem[0].product.imageUrls)[0] : "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=200&fit=crop"} 
                                                     className="w-full h-full object-cover opacity-60"

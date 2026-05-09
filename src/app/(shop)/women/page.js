@@ -11,6 +11,7 @@ export default async function WomensPage() {
             {/* COLLECTION HEADER BANNER */}
             <section className="relative h-[50vh] flex flex-col items-center justify-center text-center px-6 overflow-hidden">
                 <div className="absolute inset-0 z-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2069&auto=format&fit=crop"
                         alt="Womens Luxury Banner"

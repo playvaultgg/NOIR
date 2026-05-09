@@ -27,7 +27,7 @@ const MOCK_ORDERS = [
                             <span className="italic text-white/90">Registry</span>
                         </h1>
                         <p className="text-[10px] text-white/30 uppercase tracking-[0.4em] font-black max-w-md leading-relaxed">
-                            A historical ledger of your acquired artifacts, permanently synchronized with the Maison's private archive.
+                            A historical ledger of your acquired artifacts, permanently synchronized with the Maison&apos;s private archive.
                         </p>
                     </div>
                     

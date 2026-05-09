@@ -149,7 +149,7 @@ export default function LoginPage() {
                     </button>
 
                     <p className="mt-10 text-center text-sm text-white/40">
-                        Don't have an account?{" "}
+                        Don&apos;t have an account?{" "}
                         <Link href="/register" className="text-white hover:text-[#C6A972] transition-colors font-medium">
                             Sign up
                         </Link>
@@ -177,7 +177,7 @@ export default function LoginPage() {
                         <Sparkles className="text-[#C6A972] mb-6 w-8 h-8" />
                         
                         <p className="text-2xl font-playfair text-white leading-relaxed mb-8 italic">
-                            "Maison NOIR has completely redefined my understanding of luxury fashion. The curated selections and the seamless digital experience are truly unparalleled."
+                            &ldquo;Maison NOIR has completely redefined my understanding of luxury fashion. The curated selections and the seamless digital experience are truly unparalleled.&rdquo;
                         </p>
                         
                         <div className="flex items-center gap-4">

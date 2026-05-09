@@ -288,7 +288,7 @@ export default function RunwayExperience() {
         if (!isPlaying) return;
         const timer = setInterval(() => advanceLook(1), 8000);
         return () => clearInterval(timer);
-    }, [isPlaying, lookIndex]);
+    }, [isPlaying, lookIndex, advanceLook]);
 
     /* Scroll active card into view */
     useEffect(() => {

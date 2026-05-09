@@ -32,6 +32,7 @@ export default function AdminHeader() {
                     </div>
                     <div className="w-10 h-10 bg-noir-gold/10 rounded-full flex items-center justify-center border border-noir-gold/20 text-noir-gold shadow-lg shadow-noir-gold/10 overflow-hidden">
                         {session?.user?.image ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
                             <img src={session.user.image} alt="Admin" className="w-full h-full object-cover" />
                         ) : (
                             <User size={20} strokeWidth={1.5} />

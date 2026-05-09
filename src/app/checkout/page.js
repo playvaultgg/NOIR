@@ -341,6 +341,7 @@ export default function CheckoutPage() {
                             {items.map((item) => (
                                 <div key={item.id} className="flex gap-6 items-center">
                                     <div className="w-16 aspect-[3/4] bg-white/5 flex-shrink-0 relative">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img
                                             src={item.image || parseImages(item.imageUrls || item.images)[0] || "https://images.unsplash.com/photo-1594932224011-041d83b1d9bc?q=80&w=2080&auto=format&fit=crop"}
                                             className="w-full h-full object-cover grayscale-[30%] opacity-80"

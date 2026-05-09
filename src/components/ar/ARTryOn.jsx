@@ -39,6 +39,7 @@ export default function ARTryOn({ product, onClose }) {
                 stream.getTracks().forEach(track => track.stop());
             }
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

@@ -49,7 +49,7 @@ export default function FragranceLabPage() {
                 {/* ── Left Side: The 3D Viewport ── */}
                 <div className="w-full lg:w-1/2 h-[50vh] lg:h-screen relative p-8 lg:p-24 bg-[radial-gradient(circle_at_center,rgba(198,169,114,0.05)_0%,transparent_70%)]">
                     <div className="absolute top-24 left-12 lg:left-24 z-10 opacity-30 select-none">
-                        <span className="text-[10px] uppercase tracking-[0.6em] text-white font-black block mb-4">L'Atelier Noir / Node 04</span>
+                        <span className="text-[10px] uppercase tracking-[0.6em] text-white font-black block mb-4">L&apos;Atelier Noir / Node 04</span>
                         <div className="w-px h-24 bg-gradient-to-b from-white to-transparent" />
                     </div>
 

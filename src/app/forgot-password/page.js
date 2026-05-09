@@ -145,7 +145,7 @@ export default function ForgotPasswordPage() {
                         <Sparkles className="text-[#C6A972] mb-6 w-8 h-8" />
                         
                         <p className="text-2xl font-playfair text-white leading-relaxed mb-8 italic">
-                            "Secure access is the bedrock of digital sovereignty. We ensure your heritage remains protected within the Maison NOIR vault."
+                            &ldquo;Secure access is the bedrock of digital sovereignty. We ensure your heritage remains protected within the Maison NOIR vault.&rdquo;
                         </p>
                         
                         <div className="flex items-center gap-4">

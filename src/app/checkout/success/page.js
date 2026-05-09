@@ -45,7 +45,7 @@ function SuccessContent() {
                     setLoading(false);
                 });
         }
-    }, [orderId]);
+    }, [orderId, sessionId]);
 
     useEffect(() => {
         // Subtle golden confetti for a luxury feel

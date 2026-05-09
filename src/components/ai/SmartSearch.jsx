@@ -80,7 +80,8 @@ export default function SmartSearch({ isOpen, onClose }) {
                                         >
                                             <div className="flex items-center gap-6">
                                                 <div className="w-12 h-16 bg-white/5 rounded overflow-hidden">
-                                                    <img src={product.images[0]} className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img src={product.images[0]} className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" alt={product.name} />
                                                 </div>
                                                 <span className="text-xl font-playfair text-white italic group-hover:text-noir-gold transition-colors">{product.name}</span>
                                             </div>

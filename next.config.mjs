@@ -55,12 +55,42 @@ const nextConfig = {
         ],
       },
       {
-        // API routes — never cache
+        // API routes — never cache + security headers
         source: '/api/:path*',
         headers: [
           {
             key: 'Cache-Control',
             value: 'no-store, no-cache, must-revalidate',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+        ],
+      },
+      {
+        // Global security headers for all pages
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
           },
         ],
       },

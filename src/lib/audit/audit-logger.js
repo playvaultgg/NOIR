@@ -137,7 +137,17 @@ export async function auditLog({
 }) {
   try {
     const ip = ipAddress || (request ? getClientIp(request) : null);
-    const userAgent = request?.headers?.get("user-agent")?.substring(0, 500) || null;
+    
+    // Support both standard Headers object and plain object headers
+    let userAgent = null;
+    if (request?.headers) {
+      if (typeof request.headers.get === "function") {
+        userAgent = request.headers.get("user-agent");
+      } else {
+        userAgent = request.headers["user-agent"];
+      }
+    }
+    userAgent = userAgent?.substring(0, 500) || null;
     const resolvedSeverity = severity || SEVERITY_MAP[action] || "INFO";
 
     await prisma.auditlog.create({

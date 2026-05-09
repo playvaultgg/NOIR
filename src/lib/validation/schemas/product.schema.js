@@ -151,3 +151,10 @@ export const ProductQuerySchema = z.object({
   page: z.coerce.number().int().min(1).optional().default(1),
   limit: z.coerce.number().int().min(1).max(100).optional().default(24),
 });
+
+// ── Route Parameter Validation ───────────────────────────────
+
+export const ProductParamsSchema = z.object({
+  productId: z.string().uuid("Invalid product ID"),
+});
+

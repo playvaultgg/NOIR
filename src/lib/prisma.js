@@ -1,6 +1,7 @@
 import { PrismaClient } from "../generated/prisma";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
+import { encryptionExtension } from "./crypto/prisma-encryption-middleware";
 
 /**
  * Senior Developer Standard: Professional Prisma Client with Connection Pooling
@@ -10,7 +11,7 @@ const prismaClientSingleton = () => {
         connectionString: process.env.DATABASE_URL,
         max: 20,              // High-performance pool size
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 2000,
+        connectionTimeoutMillis: 10000, // Increased to 10s for remote DB stability
     });
 
     pool.on('error', (err) => {
@@ -18,10 +19,13 @@ const prismaClientSingleton = () => {
     });
 
     const adapter = new PrismaPg(pool);
-    return new PrismaClient({ 
+    const client = new PrismaClient({ 
         adapter,
         log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
     });
+
+    // Apply security extension (Field-level encryption + Soft delete functionality)
+    return client.$extends(encryptionExtension);
 }
 
 const globalForPrisma = globalThis

@@ -22,56 +22,49 @@ A production-grade, full-stack luxury e-commerce ecosystem built with **13 layer
 
 ## 🏛️ Architecture
 
-Maison NOIR implements every layer of the **True Full-Stack** — each built to senior engineering standards.
+Maison NOIR implements every layer of the **13-Layer Sovereign Security Architecture** — each built to enterprise engineering standards.
 
 ```mermaid
 graph TD
-    subgraph "1. User Access Layer"
-        User((User/Client)) --> CDN[Global Edge CDN<br/>AVIF/WebP Optim]
+    subgraph "Sovereign Security Stack"
+        Proxy[1. Security Proxy<br/>CSP/HSTS/Headers] --> Auth[2. Hardened Auth<br/>Lockout/Tracking]
+        Auth --> Guard[3. API Gatekeeper<br/>RBAC/Zod Validation]
+        Guard --> Shield[4. Shield Layer<br/>Redis Rate Limiting]
+        Shield --> Audit[5. Audit Ledger<br/>Immutable Logging]
     end
 
-    subgraph "2. Security & Networking"
-        CDN --> Proxy[Security Proxy<br/>CSP/HSTS/Auth]
-        Proxy --> Guard[API Guard<br/>Rate Limit/Sanitize]
+    subgraph "Core Application (Next.js)"
+        Audit --> UI[6. Cinematic UI<br/>Framer Motion]
+        Audit --> API[7. Secure Business Logic<br/>Checkout/Payments]
+        API --> Assets[8. Asset Protection<br/>S3 Signed URLs]
     end
 
-    subgraph "3. Application Logic (Next.js)"
-        Guard --> UI[Cinematic UI<br/>Framer Motion]
-        Guard --> API[Secure API Routes<br/>Checkout/Payments]
-        UI --> Containers[App Containers<br/>Notify/Loading/Error]
+    subgraph "Data & Persistence"
+        API --> Prisma[9. Prisma Extensions<br/>AES-256-GCM Encryption]
+        Prisma --> DB[(10. Supabase PostgreSQL<br/>RLS/Data Isolation)]
     end
 
-    subgraph "4. Data & Persistence"
-        API --> Prisma[Prisma ORM<br/>Type-safe Query]
-        Prisma --> DB[(Supabase PostgreSQL)]
+    subgraph "Infrastructure & Resilience"
+        DB --> Backup[11. Shadow Backup<br/>pg_dump/Rotation]
+        CI[12. CI/CD Pipeline<br/>Security Audits] --> Deploy[13. Sovereign Deployment<br/>Railway/Vercel]
     end
 
-    subgraph "5. Operations & Resilience"
-        DB --> Backup[Backup Script<br/>pg_dump/Rotation]
-        API --> Logging[Structured Logging<br/>JSON/Metrics]
-        Logging --> Monitor[Live Monitor<br/>Web Vitals]
-    end
-
-    subgraph "6. Infrastructure (DevOps)"
-        CI[GitHub Actions<br/>4-Stage Pipe] --> Deploy[Production Deploy<br/>Vercel/Railway]
-        Docker[Docker Compose<br/>Multi-stage Build] --> Deploy
-    end
-
-    style User fill:#C6A972,stroke:#000,color:#000
-    style DB fill:#3FCF8E,stroke:#000,color:#000
-    style Deploy fill:#2088FF,stroke:#000,color:#fff
-    style Guard fill:#f44,stroke:#000,color:#fff
+    style Proxy fill:#C6A972,stroke:#000,color:#000
+    style Audit fill:#f44,stroke:#000,color:#fff
+    style Prisma fill:#3FCF8E,stroke:#000,color:#000
+    style CI fill:#2088FF,stroke:#000,color:#fff
 ```
 
 ### 🌊 The Sovereign Flow
-Maison NOIR operates on a **Request-to-Recovery** lifecycle:
-1.  **Edge Entry**: Traffic hits the closest of 5 global edge regions for sub-50ms latency.
-2.  **Defensive Routing**: Requests pass through a 6-layer security stack before hitting logic.
-3.  **Atomic Persistence**: Data changes are handled via type-safe Prisma transactions.
-4.  **Shadow Monitoring**: Every interaction is logged and performance-tracked in real-time.
-5.  **Automated Safety**: Nightly backups and CI/CD gates ensure the system is self-healing.
+Maison NOIR operates on a **Request-to-Recovery** security lifecycle:
+1.  **Networking Layer**: Traffic is filtered by a custom Proxy injecting Sovereign Security Headers.
+2.  **Identity Layer**: NextAuth is hardened with account lockout and device fingerprinting.
+3.  **Validation Layer**: Every request is sanitized via Zod and governed by Role-Based Access Control.
+4.  **Data Layer**: Sensitive PII is encrypted at the field-level using AES-256-GCM before hitting disk.
+5.  **Audit Layer**: An immutable logging system tracks every security-relevant action for forensics.
+6.  **Asset Layer**: High-fidelity 3D models are protected via time-limited S3 Signed URLs.
 
-> See [`STRUCTURE.md`](STRUCTURE.md) for the complete 13-layer technical breakdown.
+> See [`STRUCTURE.md`](STRUCTURE.md) for the complete technical breakdown of all 13 layers.
 
 ---
 

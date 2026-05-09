@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Briefcase, Cpu, Globe, Palette, Send, Zap, ChevronRight, Star, ShieldCheck, Layers, Sparkles } from "lucide-react";
 

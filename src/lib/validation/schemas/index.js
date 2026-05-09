@@ -31,6 +31,7 @@ export {
   Product3DAssetSchema,
   ProductReviewSchema,
   ProductQuerySchema,
+  ProductParamsSchema,
 } from "./product.schema";
 
 export {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useGLTF, Html, Float, MeshTransmissionMaterial } from "@react-three/drei";
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";

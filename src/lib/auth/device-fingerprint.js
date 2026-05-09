@@ -4,15 +4,6 @@ import prisma from "@/lib/prisma";
 /**
  * MAISON NOIR — Device Fingerprinting System
  * Detects new/unknown devices on login and triggers security alerts.
- *
- * Captures: IP, User-Agent, timezone, Accept-Language
- * Hashes into a stable SHA-256 fingerprint for comparison.
- *
- * Flow:
- *   1. On login, generate fingerprint from request headers
- *   2. Check if fingerprint exists for this user
- *   3. If NEW → log as WARNING, flag for alert email
- *   4. If KNOWN → update lastSeenAt
  */
 
 // ── User-Agent Parser (Lightweight) ──────────────────────────
@@ -23,14 +14,12 @@ function parseDeviceName(userAgent) {
   let browser = "Unknown Browser";
   let os = "Unknown OS";
 
-  // Browser detection
   if (userAgent.includes("Edg/")) browser = "Edge";
   else if (userAgent.includes("Chrome/")) browser = "Chrome";
   else if (userAgent.includes("Firefox/")) browser = "Firefox";
   else if (userAgent.includes("Safari/") && !userAgent.includes("Chrome")) browser = "Safari";
   else if (userAgent.includes("Opera") || userAgent.includes("OPR/")) browser = "Opera";
 
-  // OS detection
   if (userAgent.includes("Windows NT 10")) os = "Windows 10/11";
   else if (userAgent.includes("Windows")) os = "Windows";
   else if (userAgent.includes("Mac OS X")) os = "macOS";
@@ -42,25 +31,47 @@ function parseDeviceName(userAgent) {
   return `${browser} on ${os}`;
 }
 
-// ── Fingerprint Generator ────────────────────────────────────
+// ── IP Extraction ────────────────────────────────────────────
 
 /**
- * Generate a deterministic fingerprint hash from request attributes.
- * The hash is stable across repeated requests from the same device.
+ * Extract IP address from request headers, handling standard and non-standard objects.
  */
+export function getClientIp(request) {
+  if (!request?.headers) return "unknown";
+
+  const getHeader = (name) => {
+    if (typeof request.headers.get === "function") return request.headers.get(name);
+    return request.headers[name] || request.headers[name.toLowerCase()];
+  };
+
+  const forwarded = getHeader("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+
+  const cfIp = getHeader("cf-connecting-ip");
+  if (cfIp) return cfIp;
+
+  const realIp = getHeader("x-real-ip");
+  if (realIp) return realIp;
+
+  return "unknown";
+}
+
+// ── Fingerprint Generator ────────────────────────────────────
+
 export function generateFingerprint(request) {
   const ip = getClientIp(request);
-  const userAgent = request.headers.get("user-agent") || "";
-  const acceptLang = request.headers.get("accept-language") || "";
-  const acceptEncoding = request.headers.get("accept-encoding") || "";
+  
+  const getHeader = (name) => {
+    if (!request?.headers) return "";
+    if (typeof request.headers.get === "function") return request.headers.get(name) || "";
+    return request.headers[name] || request.headers[name.toLowerCase()] || "";
+  };
 
-  // Combine stable attributes into a canonical string
-  const raw = [
-    ip,
-    userAgent,
-    acceptLang,
-    acceptEncoding,
-  ].join("|");
+  const userAgent = getHeader("user-agent");
+  const acceptLang = getHeader("accept-language");
+  const acceptEncoding = getHeader("accept-encoding");
+
+  const raw = [ip, userAgent, acceptLang, acceptEncoding].join("|");
 
   const hash = crypto
     .createHash("sha256")
@@ -75,37 +86,12 @@ export function generateFingerprint(request) {
   };
 }
 
-// ── IP Extraction ────────────────────────────────────────────
-
-export function getClientIp(request) {
-  // Vercel uses x-forwarded-for, Cloudflare uses cf-connecting-ip
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0].trim();
-
-  const cfIp = request.headers.get("cf-connecting-ip");
-  if (cfIp) return cfIp;
-
-  const realIp = request.headers.get("x-real-ip");
-  if (realIp) return realIp;
-
-  return "unknown";
-}
-
 // ── Device Check & Registration ──────────────────────────────
 
-/**
- * Check if the current device is known for this user.
- * If new, register it and return { isNewDevice: true }.
- *
- * @param {string} userId   - The authenticated user's ID
- * @param {Request} request - The incoming HTTP request
- * @returns {{ isNewDevice: boolean, deviceName: string, fingerprint: object }}
- */
 export async function checkDevice(userId, request) {
   const fingerprint = generateFingerprint(request);
 
   try {
-    // Check if this fingerprint is already known for this user
     const existing = await prisma.devicefingerprint.findUnique({
       where: {
         userId_fingerprintHash: {
@@ -116,7 +102,6 @@ export async function checkDevice(userId, request) {
     });
 
     if (existing) {
-      // Known device — update lastSeenAt
       await prisma.devicefingerprint.update({
         where: { id: existing.id },
         data: {
@@ -133,7 +118,6 @@ export async function checkDevice(userId, request) {
       };
     }
 
-    // New device — register it
     const newDevice = await prisma.devicefingerprint.create({
       data: {
         userId,
@@ -151,7 +135,6 @@ export async function checkDevice(userId, request) {
       deviceId: newDevice.id,
     };
   } catch (error) {
-    // Don't break login flow if fingerprinting fails
     console.error("[DEVICE-FP] Error checking device:", error.message);
     return {
       isNewDevice: false,
@@ -162,11 +145,6 @@ export async function checkDevice(userId, request) {
   }
 }
 
-// ── Get User's Known Devices ─────────────────────────────────
-
-/**
- * List all known devices for a user (for account settings page).
- */
 export async function getUserDevices(userId) {
   return prisma.devicefingerprint.findMany({
     where: { userId },
@@ -175,8 +153,6 @@ export async function getUserDevices(userId) {
       id: true,
       deviceName: true,
       ipAddress: true,
-      city: true,
-      country: true,
       isTrusted: true,
       lastSeenAt: true,
       createdAt: true,
@@ -184,17 +160,11 @@ export async function getUserDevices(userId) {
   });
 }
 
-// ── Revoke a Device ──────────────────────────────────────────
-
-/**
- * Remove a device from the known devices list.
- * This will trigger a security alert on next login from that device.
- */
 export async function revokeDevice(userId, deviceId) {
   return prisma.devicefingerprint.deleteMany({
     where: {
       id: deviceId,
-      userId, // Ensure ownership
+      userId,
     },
   });
 }

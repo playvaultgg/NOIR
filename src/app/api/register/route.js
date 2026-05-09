@@ -1,41 +1,62 @@
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
+import { withValidation } from "@/middleware/withValidation";
+import { withRateLimit } from "@/lib/rateLimit/redis-limiter";
+import { auditLog, AUDIT_ACTIONS } from "@/lib/audit/audit-logger";
+import { RegisterSchema } from "@/lib/validation/schemas";
 
-export async function POST(req) {
+/**
+ * MAISON NOIR — Hardened Registration API
+ * Upgraded with Module 2 (Validation) and Module 3 (Rate Limiting + Audit Logging).
+ */
+
+async function registerHandler(req) {
     try {
         const { name, email, password } = await req.json();
 
-        if (!name || !email || !password) {
-            return NextResponse.json(
-                { message: "Incomplete application details." },
-                { status: 400 }
-            );
-        }
-
-        // Check if user exists
+        // 1. Check if user exists (Pre-check to avoid unnecessary hashing)
         const existingUser = await prisma.user.findUnique({
             where: { email },
         });
 
         if (existingUser) {
+            await auditLog({
+                action: AUDIT_ACTIONS.VALIDATION_REJECTED,
+                metadata: { email, reason: "Email already exists" },
+                severity: "INFO",
+                request: req
+            });
+
             return NextResponse.json(
                 { message: "This email is already associated with an account." },
                 { status: 400 }
             );
         }
 
+        // 2. Securely Hash Password
         const hashedPassword = await bcrypt.hash(password, 12);
 
+        // 3. Create User
         const user = await prisma.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
+                role: "USER", // Default role
             },
         });
 
-        // Log registration activity
+        // 4. Comprehensive Audit Log
+        await auditLog({
+            action: AUDIT_ACTIONS.REGISTER,
+            userId: user.id,
+            metadata: { email: user.email },
+            severity: "INFO",
+            request: req
+        });
+
+        // 5. Legacy activity log
         await prisma.customeractivity.create({
             data: {
                 userId: user.id,
@@ -49,18 +70,23 @@ export async function POST(req) {
             { status: 201 }
         );
     } catch (err) {
-        console.error("================ REGISTRATION CRITICAL FAILURE ================");
-        console.error("Registration Error Message:", err.message);
-        console.error("Registration Error Stack:", err.stack);
-        console.error("Registration Error Full Object:", err);
-        console.error("===============================================================");
+        console.error("[REGISTRATION_ERROR]", err);
+        
+        await auditLog({
+            action: AUDIT_ACTIONS.SUSPICIOUS_ACTIVITY,
+            metadata: { error: err.message, stack: err.stack },
+            severity: "CRITICAL",
+            request: req
+        });
+
         return NextResponse.json(
-            { 
-                message: "Security protocol error in account creation.",
-                debug_error: err.message,
-                debug_stack: err.stack
-            },
+            { message: "Security protocol error in account creation." },
             { status: 500 }
         );
     }
 }
+
+// Chain: Rate Limit (SIGNUP) -> Validation (RegisterSchema) -> Handler
+export const POST = withRateLimit("SIGNUP")(
+    withValidation(RegisterSchema)(registerHandler)
+);

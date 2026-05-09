@@ -75,7 +75,7 @@ jobs:
         run: npx prisma generate
 
       - name: Run Database Migrations
-        run: npx prisma db push --skip-generate
+        run: npx prisma db push 
 
       - name: Build Application
         run: npm run build

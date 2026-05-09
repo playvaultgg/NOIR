@@ -8,7 +8,7 @@ This document defines the high-availability cloud architecture for the NOIR plat
 - **Data Layer**: Supabase-managed PostgreSQL with automated backups and connection pooling.
 - **Caching Layer**: Redis instance for session persistence and rapid API responses.
 
-## 2. Infrastructure as Code (IaC)
+## 2. Infrastructure as Code (IaC)~~
 We use standardized manifests to ensure environment parity:
 - `railway.json`: Provisions the back-end services, database, and caching.
 - `vercel.json`: Controls edge routing and image optimization delivery.

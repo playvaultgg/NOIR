@@ -1,9 +1,39 @@
 # Maison NOIR — 13-Layer Sovereign Security Architecture
 
-**Lead Architect**: Gundelwaran  
 **Technical Standard**: Senior Sovereign Protocol (Phase 8.0)
 
 This document provides a senior-level technical decomposition of the **Maison NOIR Sovereign Security Stack**. It details the specific files, logic, and infrastructure gates that protect the platform.
+
+```mermaid
+graph TD
+    subgraph "Sovereign Security Stack"
+        Proxy[1. Security Proxy<br/>CSP/HSTS/Headers] --> Auth[2. Hardened Auth<br/>Lockout/Tracking]
+        Auth --> Guard[3. API Gatekeeper<br/>RBAC/Zod Validation]
+        Guard --> Shield[4. Shield Layer<br/>Redis Rate Limiting]
+        Shield --> Audit[5. Audit Ledger<br/>Immutable Logging]
+    end
+
+    subgraph "Core Application (Next.js)"
+        Audit --> UI[6. Cinematic UI<br/>Framer Motion]
+        Audit --> API[7. Secure Business Logic<br/>Checkout/Payments]
+        API --> Assets[8. Asset Protection<br/>S3 Signed URLs]
+    end
+
+    subgraph "Data & Persistence"
+        API --> Prisma[9. Prisma Extensions<br/>AES-256-GCM Encryption]
+        Prisma --> DB[(10. Supabase PostgreSQL<br/>RLS/Data Isolation)]
+    end
+
+    subgraph "Infrastructure & Resilience"
+        DB --> Backup[11. Shadow Backup<br/>pg_dump/Rotation]
+        CI[12. CI/CD Pipeline<br/>Security Audits] --> Deploy[13. Sovereign Deployment<br/>Railway/Vercel]
+    end
+
+    style Proxy fill:#C6A972,stroke:#000,color:#000
+    style Audit fill:#f44,stroke:#000,color:#fff
+    style Prisma fill:#3FCF8E,stroke:#000,color:#000
+    style CI fill:#2088FF,stroke:#000,color:#fff
+```
 
 ---
 
@@ -142,6 +172,4 @@ c:\Users\gunde\OneDrive\Desktop\NOIR-1\
 
 ---
 
-**Architecture Status**: ✅ FULLY OPERATIONAL  
-**Lead Architect**: Gundelwaran  
 **Standard**: Senior Sovereign Architecture (Phase 8.0)

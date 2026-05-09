@@ -2,8 +2,7 @@
 
 # MAISON NOIR
 
-**Sovereign Luxury Commerce Platform**  
-*Lead Architect: Gundelwaran*
+**Sovereign Luxury Commerce Platform**
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)

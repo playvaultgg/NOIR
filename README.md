@@ -24,37 +24,54 @@ A production-grade, full-stack luxury e-commerce ecosystem built with **13 layer
 
 Maison NOIR implements every layer of the **True Full-Stack** — each built to senior engineering standards.
 
-```
-┌─────────────────────────────────────────────────┐
-│  FRONTEND          Next.js 16 · Framer Motion   │
-├─────────────────────────────────────────────────┤
-│  BACKEND / APIs    API Routes · NextAuth · JWT   │
-├─────────────────────────────────────────────────┤
-│  DATABASE          Supabase PostgreSQL · Prisma  │
-├─────────────────────────────────────────────────┤
-│  SERVERS           Docker Compose · Health API   │
-├─────────────────────────────────────────────────┤
-│  NETWORKING        CSP · HSTS · Proxy Security   │
-├─────────────────────────────────────────────────┤
-│  CLOUD INFRA       Railway · Vercel Edge (5 reg) │
-├─────────────────────────────────────────────────┤
-│  CI / CD           GitHub Actions · 4-stage pipe │
-├─────────────────────────────────────────────────┤
-│  SECURITY          6-layer defense · HMAC-SHA256 │
-├─────────────────────────────────────────────────┤
-│  CONTAINERS        4-stage Dockerfile · Compose  │
-├─────────────────────────────────────────────────┤
-│  CDN               AVIF/WebP · 24hr cache · Edge │
-├─────────────────────────────────────────────────┤
-│  APP CONTAINERS    Notification · Loading · Error│
-├─────────────────────────────────────────────────┤
-│  MONITORING        Structured logs · Web Vitals  │
-├─────────────────────────────────────────────────┤
-│  BACKUP/RECOVERY   pg_dump · Rotation · 3-tier   │
-└─────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph "1. User Access Layer"
+        User((User/Client)) --> CDN[Global Edge CDN<br/>AVIF/WebP Optim]
+    end
+
+    subgraph "2. Security & Networking"
+        CDN --> Proxy[Security Proxy<br/>CSP/HSTS/Auth]
+        Proxy --> Guard[API Guard<br/>Rate Limit/Sanitize]
+    end
+
+    subgraph "3. Application Logic (Next.js)"
+        Guard --> UI[Cinematic UI<br/>Framer Motion]
+        Guard --> API[Secure API Routes<br/>Checkout/Payments]
+        UI --> Containers[App Containers<br/>Notify/Loading/Error]
+    end
+
+    subgraph "4. Data & Persistence"
+        API --> Prisma[Prisma ORM<br/>Type-safe Query]
+        Prisma --> DB[(Supabase PostgreSQL)]
+    end
+
+    subgraph "5. Operations & Resilience"
+        DB --> Backup[Backup Script<br/>pg_dump/Rotation]
+        API --> Logging[Structured Logging<br/>JSON/Metrics]
+        Logging --> Monitor[Live Monitor<br/>Web Vitals]
+    end
+
+    subgraph "6. Infrastructure (DevOps)"
+        CI[GitHub Actions<br/>4-Stage Pipe] --> Deploy[Production Deploy<br/>Vercel/Railway]
+        Docker[Docker Compose<br/>Multi-stage Build] --> Deploy
+    end
+
+    style User fill:#C6A972,stroke:#000,color:#000
+    style DB fill:#3FCF8E,stroke:#000,color:#000
+    style Deploy fill:#2088FF,stroke:#000,color:#fff
+    style Guard fill:#f44,stroke:#000,color:#fff
 ```
 
-> See [`STRUCTURE.md`](STRUCTURE.md) for the complete layer-by-layer implementation details.
+### 🌊 The Sovereign Flow
+Maison NOIR operates on a **Request-to-Recovery** lifecycle:
+1.  **Edge Entry**: Traffic hits the closest of 5 global edge regions for sub-50ms latency.
+2.  **Defensive Routing**: Requests pass through a 6-layer security stack before hitting logic.
+3.  **Atomic Persistence**: Data changes are handled via type-safe Prisma transactions.
+4.  **Shadow Monitoring**: Every interaction is logged and performance-tracked in real-time.
+5.  **Automated Safety**: Nightly backups and CI/CD gates ensure the system is self-healing.
+
+> See [`STRUCTURE.md`](STRUCTURE.md) for the complete 13-layer technical breakdown.
 
 ---
 

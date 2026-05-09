@@ -22,7 +22,10 @@ function SuccessContent() {
 
     useEffect(() => {
         // Generate random order number only on client to avoid hydration mismatch
-        setFallbackOrderNumber(`MN-${Math.floor(100000 + Math.random() * 900000)}`);
+        const timer = setTimeout(() => {
+            setFallbackOrderNumber(`MN-${Math.floor(100000 + Math.random() * 900000)}`);
+        }, 0);
+        return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {

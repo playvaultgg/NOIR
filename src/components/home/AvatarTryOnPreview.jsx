@@ -28,7 +28,7 @@ export default function AvatarTryOnPreview() {
                      </header>
 
                      <p className="text-white/40 text-lg lg:text-xl font-inter italic leading-relaxed max-w-lg">
-                        Beyond the visual. Synthesize a 1:1 olfactive identity with Maison NOIR's neural fragrance engine. Personalize your vessel, your scent, and your story.
+                        Beyond the visual. Synthesize a 1:1 olfactive identity with Maison NOIR&apos;s neural fragrance engine. Personalize your vessel, your scent, and your story.
                      </p>
 
                      <div className="space-y-6">

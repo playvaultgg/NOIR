@@ -37,7 +37,7 @@ function JobCard({ role, delay }) {
                         <div className="flex items-center gap-4 mt-2">
                             <span className="text-white/20 text-[9px] uppercase tracking-[0.3em] font-medium">{role.type}</span>
                             <div className="w-1 h-1 rounded-full bg-noir-gold/30" />
-                            <span className="text-noir-gold/40 text-[8px] uppercase tracking-[0.3em] font-bold italic">Ref: MN-{Math.floor(Math.random() * 9000) + 1000}</span>
+                            <span className="text-noir-gold/40 text-[8px] uppercase tracking-[0.3em] font-bold italic">Ref: MN-{role.refId}</span>
                         </div>
                     </div>
                 </div>
@@ -87,6 +87,22 @@ export default function CareersPage() {
         }
     ];
 
+    const [roles, setRoles] = useState([]);
+
+    useEffect(() => {
+        // Hydrate roles with stable random IDs on client
+        const timer = setTimeout(() => {
+            setRoles(openRoles.map(section => ({
+                ...section,
+                roles: section.roles.map(r => ({
+                    ...r,
+                    refId: Math.floor(Math.random() * 9000) + 1000
+                }))
+            })));
+        }, 0);
+        return () => clearTimeout(timer);
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus({ loading: true, success: false });
@@ -132,7 +148,7 @@ export default function CareersPage() {
                         className="max-w-2xl mx-auto space-y-8"
                     >
                         <p className="text-white/40 text-xl md:text-2xl font-playfair italic leading-relaxed">
-                            Maison NOIR is a collective of visionaries at the intersection of haute couture and hyper-tech. We don't hire; we recruit legends.
+                            Maison NOIR is a collective of visionaries at the intersection of haute couture and hyper-tech. We don&apos;t hire; we recruit legends.
                         </p>
                         <div className="flex justify-center gap-12 pt-8 opacity-30">
                             {["Visions", "Craft", "Legacy"].map(word => (
@@ -145,7 +161,7 @@ export default function CareersPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-24 lg:gap-32 mt-24">
                     {/* Listings */}
                     <div className="lg:col-span-7 space-y-24">
-                        {openRoles.map((section, sIdx) => (
+                        {roles.map((section, sIdx) => (
                             <div key={section.category} className="space-y-10">
                                 <div className="flex items-center gap-6">
                                     <div className="w-12 h-[1px] bg-noir-gold/30" />

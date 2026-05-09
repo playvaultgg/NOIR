@@ -19,7 +19,7 @@ export default function AIStylistChat() {
             id: 1,
             role: "assistant",
             content: "Welcome to Maison NOIR. I am your personal digital stylist. How may I assist your style discovery today?",
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            time: "" // Hydrated on client
         }
     ]);
     const [inputValue, setInputValue] = useState("");
@@ -27,10 +27,29 @@ export default function AIStylistChat() {
     const scrollRef = useRef(null);
 
     useEffect(() => {
+        // Hydrate initial message time on client
+        const timer = setTimeout(() => {
+            setMessages(prev => prev.map(m => m.id === 1 ? { 
+                ...m, 
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+            } : m));
+        }, 0);
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [messages, isTyping]);
+
+    const generateStylistResponse = (query) => {
+        const q = query.toLowerCase();
+        if (q.includes("black")) return "Exquisite choice. Our Onyx Silk collection features hand-tailored silhouettes designed for midnight elegance. Would you like to view the Silk Trench?";
+        if (q.includes("outfit") || q.includes("evening")) return "For a prestigious evening, I recommend our tailored velvet gown paired with the Argent Pearl blouse. It creates a silhouette of unparalleled sophistication.";
+        if (q.includes("price") || q.includes("cost")) return "Maison NOIR pieces are investment-grade masterpieces. I can provide the exact acquisition values for specific collection items if you wish.";
+        return "Of course. I am analyzing our late-winter archives to find the perfect coordination for your aesthetic profile.";
+    };
 
     const handleSend = async () => {
         if (!inputValue.trim()) return;
@@ -58,14 +77,6 @@ export default function AIStylistChat() {
             setMessages(prev => [...prev, botMsg]);
             setIsTyping(false);
         }, 1500);
-    };
-
-    const generateStylistResponse = (query) => {
-        const q = query.toLowerCase();
-        if (q.includes("black")) return "Exquisite choice. Our Onyx Silk collection features hand-tailored silhouettes designed for midnight elegance. Would you like to view the Silk Trench?";
-        if (q.includes("outfit") || q.includes("evening")) return "For a prestigious evening, I recommend our tailored velvet gown paired with the Argent Pearl blouse. It creates a silhouette of unparalleled sophistication.";
-        if (q.includes("price") || q.includes("cost")) return "Maison NOIR pieces are investment-grade masterpieces. I can provide the exact acquisition values for specific collection items if you wish.";
-        return "Of course. I am analyzing our late-winter archives to find the perfect coordination for your aesthetic profile.";
     };
 
     return (

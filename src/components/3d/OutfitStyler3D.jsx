@@ -175,7 +175,7 @@ export default function OutfitStyler3D() {
                             </div>
                             
                             <p className="text-white font-playfair text-lg italic tracking-tighter leading-tight">
-                                "The metallic mesh highlights create a cinematic tension with the silk base."
+                                &ldquo;The metallic mesh highlights create a cinematic tension with the silk base.&rdquo;
                             </p>
 
                             <button className="w-full bg-white text-noir-black py-4 rounded-lg font-bold text-[9px] uppercase tracking-[0.4em] hover:bg-noir-gold transition-colors flex items-center justify-center gap-2">

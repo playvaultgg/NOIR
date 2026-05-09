@@ -228,7 +228,7 @@ export default function PerfumeBuilder() {
                         <div className="p-8 border border-white/10 bg-white/[0.02] rounded-[2rem] space-y-6">
                             <div className="space-y-1">
                                 <p className="text-white/20 text-[8px] uppercase tracking-[0.5em] font-black">Manifesto</p>
-                                <h3 className="text-white font-playfair italic text-3xl">"{engraving || "UNTITLED NOIR"}"</h3>
+                                <h3 className="text-white font-playfair italic text-3xl">&ldquo;{engraving || "UNTITLED NOIR"}&rdquo;</h3>
                             </div>
                             <div className="grid grid-cols-2 gap-8 pt-6 border-t border-white/5">
                                 <div className="space-y-4">

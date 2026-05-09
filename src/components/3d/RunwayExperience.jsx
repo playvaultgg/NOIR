@@ -35,12 +35,8 @@ const LOOKS = [
 /* ─── 3D: Runway Model Silhouette ─────────────────────────────── */
 function RunwayModel({ isActive, lookIndex }) {
     const group = useRef();
-    const [color, setColor] = useState("#050505");
-
-    useEffect(() => {
-        const look = LOOKS[lookIndex % LOOKS.length];
-        setColor(look.accent);
-    }, [lookIndex]);
+    const look = LOOKS[lookIndex % LOOKS.length];
+    const color = look.accent;
     
     useFrame((state) => {
         if (!group.current) return;
@@ -280,23 +276,6 @@ export default function RunwayExperience() {
 
     const currentLook = LOOKS[lookIndex];
 
-    /* Auto-advance look every 8s */
-    useEffect(() => {
-        trackEvent(ANALYTICS_EVENTS.RUNWAY.VIEW, {
-            initialLook: LOOKS[0].name
-        });
-        if (!isPlaying) return;
-        const timer = setInterval(() => advanceLook(1), 8000);
-        return () => clearInterval(timer);
-    }, [isPlaying, lookIndex, advanceLook]);
-
-    /* Scroll active card into view */
-    useEffect(() => {
-        if (!cardsRef.current) return;
-        const card = cardsRef.current.children[lookIndex];
-        if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-    }, [lookIndex]);
-
     const advanceLook = useCallback((dir) => {
         setDirection(dir);
         setPrevLookIndex(lookIndex);
@@ -314,6 +293,23 @@ export default function RunwayExperience() {
         setDirection(idx > lookIndex ? 1 : -1);
         setPrevLookIndex(lookIndex);
         setLookIndex(idx);
+    }, [lookIndex]);
+
+    /* Auto-advance look every 8s */
+    useEffect(() => {
+        trackEvent(ANALYTICS_EVENTS.RUNWAY.VIEW, {
+            initialLook: LOOKS[0].name
+        });
+        if (!isPlaying) return;
+        const timer = setInterval(() => advanceLook(1), 8000);
+        return () => clearInterval(timer);
+    }, [isPlaying, lookIndex, advanceLook]);
+
+    /* Scroll active card into view */
+    useEffect(() => {
+        if (!cardsRef.current) return;
+        const card = cardsRef.current.children[lookIndex];
+        if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     }, [lookIndex]);
 
     const toggleMute = () => {
@@ -449,7 +445,7 @@ export default function RunwayExperience() {
                         </div>
                         <span className="text-white/40 text-[8px] uppercase tracking-widest font-black">Spatial Audio</span>
                     </div>
-                    <span className="text-white text-[9px] uppercase tracking-widest font-bold italic text-noir-gold">"Echoes of Noir" — Official Soundtrack</span>
+                    <span className="text-white text-[9px] uppercase tracking-widest font-bold italic text-noir-gold">&ldquo;Echoes of Noir&rdquo; — Official Soundtrack</span>
                 </div>
                 
                 <button

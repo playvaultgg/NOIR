@@ -11,6 +11,7 @@ import {
     Stars,
 } from "@react-three/drei";
 import * as THREE from "three";
+import { motion } from "framer-motion";
 import Player from "./Player";
 import Architecture from "./Architecture";
 import ProductDisplay from "./ProductDisplay";

@@ -17,6 +17,14 @@ export default function ProductDisplay({ position, rotation = [0, 0, 0], product
     const [isNear, setIsNear] = useState(false);
     const groupRef = useRef();
     const { camera } = useThree();
+    const [masterpieceNo, setMasterpieceNo] = useState(0);
+    
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setMasterpieceNo(Math.floor(Math.random() * 100));
+        }, 0);
+        return () => clearTimeout(timer);
+    }, []);
 
     // Interaction & Proximity Logic
     useFrame((state, delta) => {
@@ -103,7 +111,7 @@ export default function ProductDisplay({ position, rotation = [0, 0, 0], product
                                 </header>
 
                                 <p className="text-white/30 text-[9px] uppercase tracking-widest leading-relaxed">
-                                    Digital Craftsmanship / Masterpiece No. {Math.floor(Math.random() * 100)} <br />
+                                    Digital Craftsmanship / Masterpiece No. {masterpieceNo} <br />
                                     Archival quality finish.
                                 </p>
 

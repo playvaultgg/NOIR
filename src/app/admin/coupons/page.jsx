@@ -30,7 +30,12 @@ export default function AdminCouponsPage() {
         setLoading(false);
     };
 
-    useEffect(() => { fetchCoupons(); }, []);
+    useEffect(() => { 
+        const timer = setTimeout(() => {
+            fetchCoupons(); 
+        }, 0);
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleCreate = async (e) => {
         e.preventDefault();

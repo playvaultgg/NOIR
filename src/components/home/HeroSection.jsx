@@ -71,6 +71,7 @@ export default function HeroSection() {
                             <img 
                                 src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1920&auto=format&fit=crop" 
                                 className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                                alt="Elite Trench Silhouette"
                             />
                         </div>
                         <div className="space-y-2">

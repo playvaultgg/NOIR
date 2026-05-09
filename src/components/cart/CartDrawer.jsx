@@ -18,7 +18,10 @@ export default function CartDrawer() {
 
     // Removed manual sync scroll as it was interfering with internal cart scrolling
     useEffect(() => {
-        setMounted(true);
+        const timer = setTimeout(() => {
+            setMounted(true);
+        }, 0);
+        return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {

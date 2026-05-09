@@ -14,6 +14,8 @@ export default function PersonalizedHero() {
     const [profile, setProfile] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
+    const [spotlightProduct, setSpotlightProduct] = useState(null);
+
     useEffect(() => {
         async function fetchPersonalization() {
             // 1. Fetch Identity Profile
@@ -39,8 +41,6 @@ export default function PersonalizedHero() {
         }
         fetchPersonalization();
     }, [session?.user?.id]);
-
-    const [spotlightProduct, setSpotlightProduct] = useState(null);
 
     if (!isLoaded || !profile) return null;
 

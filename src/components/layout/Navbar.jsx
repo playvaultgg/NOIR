@@ -90,12 +90,17 @@ export default function Navbar() {
     const tweenRef  = useRef(null);
 
     useEffect(() => { 
-        setMounted(true); 
+        const timer = setTimeout(() => {
+            setMounted(true); 
+        }, 0);
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
         };
         window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            clearTimeout(timer);
+        };
     }, []);
 
     const totalItemsCount = mounted ? getTotalItems() : 0;
@@ -141,9 +146,12 @@ export default function Navbar() {
         if (!mounted) return;
         if (activeIndex >= 0 && itemRefs.current[activeIndex]) {
             movePillTo(itemRefs.current[activeIndex], true);
-            setTextColors(NAV_ITEMS.map((_, i) =>
-                i === activeIndex ? PILL_TEXT_COLOR : IDLE_TEXT_COLOR
-            ));
+            const timer = setTimeout(() => {
+                setTextColors(NAV_ITEMS.map((_, i) =>
+                    i === activeIndex ? PILL_TEXT_COLOR : IDLE_TEXT_COLOR
+                ));
+            }, 0);
+            return () => clearTimeout(timer);
         }
     }, [mounted, activeIndex, movePillTo]);
 

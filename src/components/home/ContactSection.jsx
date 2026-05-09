@@ -114,7 +114,7 @@ export default function ContactSection() {
                          <div className="absolute inset-0 flex flex-col animate-vertical-marquee gap-4 p-4">
                             {[...carouselImages, ...carouselImages].map((img, i) => (
                                 <div key={i} className="flex-shrink-0 w-full h-[60%] lg:h-[70%] rounded-[3rem] overflow-hidden">
-                                     <img src={img} className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000" />
+                                     <img src={img} alt="Maison Noir Collection" className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000" />
                                 </div>
                             ))}
                          </div>

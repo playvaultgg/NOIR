@@ -51,7 +51,14 @@ export default function ProductReviews({ productId }) {
         setLoading(false);
     };
 
-    useEffect(() => { if (productId) fetchReviews(); }, [productId]);
+    useEffect(() => { 
+        if (productId) {
+            const timer = setTimeout(() => {
+                fetchReviews(); 
+            }, 0);
+            return () => clearTimeout(timer);
+        }
+    }, [productId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

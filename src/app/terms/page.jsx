@@ -40,7 +40,7 @@ export default function TermsPage() {
                         <section className="space-y-6">
                             <h2 className="text-xl font-playfair italic text-white">3. Returns & Exchanges</h2>
                             <p>
-                                Due to the bespoke nature of our assembly and biometric tailoring, we offer a 14-day consultation period for all returns. Items must be returned in "Vault Original" condition with all digital tags intact.
+                                Due to the bespoke nature of our assembly and biometric tailoring, we offer a 14-day consultation period for all returns. Items must be returned in &ldquo;Vault Original&rdquo; condition with all digital tags intact.
                             </p>
                         </section>
                     </div>

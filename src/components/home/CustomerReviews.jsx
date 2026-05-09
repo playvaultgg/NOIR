@@ -59,7 +59,7 @@ function ReviewCard({ item, idx }) {
                     <Quote size={56} strokeWidth={0.5} />
                 </motion.div>
                 <p className="text-white font-playfair text-xl md:text-2xl leading-relaxed italic tracking-tight">
-                    "{item.quote}"
+                    &ldquo;{item.quote}&rdquo;
                 </p>
             </div>
 

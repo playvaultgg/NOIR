@@ -12,7 +12,10 @@ export default function CartReminderPopup() {
     const [hasDismissed, setHasDismissed] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
+        const timer = setTimeout(() => {
+            setMounted(true);
+        }, 0);
+        return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {
@@ -78,7 +81,7 @@ export default function CartReminderPopup() {
                         </h3>
 
                         <p className="text-sm font-inter text-white/50 mb-8 max-w-sm">
-                            We've reserved the <span className="text-noir-gold font-semibold">{items.length} pieces</span> in your bag. They are almost gone—secure yours before another collector takes them.
+                            We&apos;ve reserved the <span className="text-noir-gold font-semibold">{items.length} pieces</span> in your bag. They are almost gone—secure yours before another collector takes them.
                         </p>
 
                         <button

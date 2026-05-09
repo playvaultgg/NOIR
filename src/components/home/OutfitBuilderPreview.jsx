@@ -90,7 +90,7 @@ export default function OutfitBuilderPreview() {
                                  <span className="text-[10px] uppercase tracking-[0.3em] font-black text-white/60">AI Sync</span>
                              </div>
                              <p className="text-[9px] uppercase tracking-[0.2em] text-white/30 leading-relaxed italic">
-                                "Composition synergy detected at 98.4%. Suggest adding Onyx Silk Trench for silhouette depth."
+                                &ldquo;Composition synergy detected at 98.4%. Suggest adding Onyx Silk Trench for silhouette depth.&rdquo;
                              </p>
                          </div>
                     </div>

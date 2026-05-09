@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Send, Sparkles, User, Bot, ShoppingBag, BookOpen, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { useCallback } from "react";
 
 /**
  * Maison NOIR AI Concierge (The Archivist)
@@ -16,7 +18,7 @@ export default function ConciergeChat() {
             id: 1,
             role: "assistant",
             content: "Greetings. I am the Maison Archivist. I hold the keys to our seasonal repositories and archival history. How may I facilitate your discovery within the Maison today?",
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            time: "" // Hydrated on client
         }
     ]);
     const [inputValue, setInputValue] = useState("");
@@ -24,12 +26,36 @@ export default function ConciergeChat() {
     const scrollRef = useRef(null);
 
     useEffect(() => {
+        // Hydrate initial message time
+        const timer = setTimeout(() => {
+            setMessages(prev => prev.map(m => m.id === 1 ? { 
+                ...m, 
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+            } : m));
+        }, 0);
+
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
-    }, [messages, isTyping]);
+        return () => clearTimeout(timer);
+    }, [isTyping]); // Reduced dependency to avoid infinite loop with setMessages inside same effect
 
-    const handleSend = async () => {
+    const shouldShowAction = (query) => {
+        const q = query.toLowerCase();
+        return q.includes("collection") || q.includes("show") || q.includes("products") || q.includes("buy");
+    };
+
+    const generateArchivistResponse = (query) => {
+        const q = query.toLowerCase();
+        if (q.includes("hi") || q.includes("hello")) return "A pleasure to see you in the archives. I am at your disposal for any inquiry regarding our collections or virtual exhibits.";
+        if (q.includes("runway") || q.includes("show")) return "The Midnight Symphony AW26 is our current flagship exhibition. It represents the pinnacle of our neural projection technology. Shall I guide you to the VIP viewing area?";
+        if (q.includes("showroom") || q.includes("boutique")) return "Our Virtual Showroom is currently holding our most prestigious garments in a vacuum of digital silence. It is a museum-grade experience for the discerning collector.";
+        if (q.includes("fragrance") || q.includes("perfume") || q.includes("avatar")) return "L'Atelier Noir is where we synthesize olfactive identities. You can design your personal flacon and scent there. It is a highly personalized ritual.";
+        if (q.includes("black")) return "Our 'Obsidian' series is a study in the depth of silence. Each piece is hand-spun from dead-stock silk. The texture is designed to absorb light rather than reflect it.";
+        return "I have cross-referenced our archives with your inquiry. While that specific data point is currently being indexed, I can offer you a private tour of our latest seasonal drops.";
+    };
+
+    const handleSend = useCallback(async () => {
         if (!inputValue.trim()) return;
 
         const userMsg = {
@@ -55,22 +81,7 @@ export default function ConciergeChat() {
             setMessages(prev => [...prev, botMsg]);
             setIsTyping(false);
         }, 1200);
-    };
-
-    const shouldShowAction = (query) => {
-        const q = query.toLowerCase();
-        return q.includes("collection") || q.includes("show") || q.includes("products") || q.includes("buy");
-    };
-
-    const generateArchivistResponse = (query) => {
-        const q = query.toLowerCase();
-        if (q.includes("hi") || q.includes("hello")) return "A pleasure to see you in the archives. I am at your disposal for any inquiry regarding our collections or virtual exhibits.";
-        if (q.includes("runway") || q.includes("show")) return "The Midnight Symphony AW26 is our current flagship exhibition. It represents the pinnacle of our neural projection technology. Shall I guide you to the VIP viewing area?";
-        if (q.includes("showroom") || q.includes("boutique")) return "Our Virtual Showroom is currently holding our most prestigious garments in a vacuum of digital silence. It is a museum-grade experience for the discerning collector.";
-        if (q.includes("fragrance") || q.includes("perfume") || q.includes("avatar")) return "L'Atelier Noir is where we synthesize olfactive identities. You can design your personal flacon and scent there. It is a highly personalized ritual.";
-        if (q.includes("black")) return "Our 'Obsidian' series is a study in the depth of silence. Each piece is hand-spun from dead-stock silk. The texture is designed to absorb light rather than reflect it.";
-        return "I have cross-referenced our archives with your inquiry. While that specific data point is currently being indexed, I can offer you a private tour of our latest seasonal drops.";
-    };
+    }, [inputValue]);
 
     return (
         <div className="fixed bottom-8 right-8 lg:bottom-12 lg:right-12 z-[150] pointer-events-none">
@@ -136,11 +147,10 @@ export default function ConciergeChat() {
                                     className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                                 >
                                     <div className={`max-w-[88%] space-y-2 ${msg.role === "user" ? "text-right" : "text-left"}`}>
-                                        <div className={`p-6 rounded-3xl text-[13px] font-inter leading-relaxed tracking-wide ${
-                                            msg.role === "user" 
-                                            ? "bg-white text-black font-semibold rounded-br-none" 
-                                            : "bg-[#0A0A0A]/80 text-white/80 border border-white/5 rounded-bl-none shadow-2xl"
-                                        }`}>
+                                        <div className={`p-6 rounded-3xl text-[13px] font-inter leading-relaxed tracking-wide ${msg.role === "user"
+                                                ? "bg-white text-black font-semibold rounded-br-none"
+                                                : "bg-[#0A0A0A]/80 text-white/80 border border-white/5 rounded-bl-none shadow-2xl"
+                                            }`}>
                                             {msg.content}
                                             {msg.action === "CATALOGUE" && (
                                                 <div className="mt-6 pt-6 border-t border-white/5 space-y-3">

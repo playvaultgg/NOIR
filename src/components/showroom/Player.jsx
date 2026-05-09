@@ -25,9 +25,10 @@ export default function Player() {
             window.removeEventListener("keydown", onKeyDown);
             window.removeEventListener("keyup", onKeyUp);
         };
-    }, []);
+    }, [keys]);
 
-    useFrame(() => {
+    useFrame((state) => {
+        const { camera } = state;
         const direction = new THREE.Vector3();
         camera.getWorldDirection(direction);
         const right = new THREE.Vector3().crossVectors(camera.up, direction).normalize();

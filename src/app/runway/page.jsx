@@ -1,6 +1,15 @@
 "use client";
 
-import RunwayExperience from "@/components/3d/RunwayExperience";
+import dynamic from "next/dynamic";
+
+const RunwayExperience = dynamic(() => import("@/components/3d/RunwayExperience"), {
+    ssr: false,
+    loading: () => (
+        <div className="h-screen w-full bg-black flex items-center justify-center">
+            <div className="w-12 h-12 border-2 border-[#C6A972] border-t-transparent rounded-full animate-spin" />
+        </div>
+    )
+});
 
 export default function RunwayPage() {
     return (

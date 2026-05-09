@@ -19,12 +19,14 @@ export function CurrencyProvider({ children }) {
     });
 
     useEffect(() => {
-        try {
-            const saved = localStorage.getItem("noir_currency");
-            if (saved && CURRENCIES[saved]) setCurrency(saved);
-        } catch (e) {
-            console.error("LocalStorage access blocked or failed:", e);
-        }
+        const syncState = () => {
+            try {
+                const saved = localStorage.getItem("noir_currency");
+                if (saved && CURRENCIES[saved]) setCurrency(saved);
+            } catch (e) {
+                console.error("LocalStorage access blocked or failed:", e);
+            }
+        };
 
         const fetchRates = async () => {
             try {
@@ -64,7 +66,13 @@ export function CurrencyProvider({ children }) {
             }
         };
 
-        fetchRates();
+        // Delay to avoid synchronous setState warning
+        const timer = setTimeout(() => {
+            syncState();
+            fetchRates();
+        }, 0);
+
+        return () => clearTimeout(timer);
     }, []);
 
     const changeCurrency = (code) => {

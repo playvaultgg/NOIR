@@ -170,25 +170,34 @@ model session {
 }
 
 model user {
-  id               String             @id @default(uuid())
-  name             String?
-  email            String?            @unique(map: "User_email_key")
-  emailVerified    DateTime?
-  password         String?
-  image            String?
-  role             user_role          @default(USER)
-  marketingOptIn   Boolean            @default(false)
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  account          account[]
-  address          address[]
-  customeractivity customeractivity[]
-  order            order[]
-  review           review[]
-  session          session[]
-  useravatar       useravatar?
-  wishlist         wishlist[]
-  behavioralevent  behavioralevent[]
+  id                String              @id @default(uuid())
+  name              String?
+  email             String?             @unique(map: "User_email_key")
+  emailVerified     DateTime?
+  password          String?
+  image             String?
+  role              user_role           @default(USER)
+  marketingOptIn    Boolean             @default(false)
+  mfaEnabled        Boolean             @default(false)
+  mfaSecret         String?             // Encrypted TOTP secret
+  failedLoginCount  Int                 @default(0)
+  lockedUntil       DateTime?
+  lastLoginAt       DateTime?
+  lastLoginIp       String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  account           account[]
+  address           address[]
+  customeractivity  customeractivity[]
+  order             order[]
+  review            review[]
+  session           session[]
+  useravatar        useravatar?
+  wishlist          wishlist[]
+  behavioralevent   behavioralevent[]
+  auditlog          auditlog[]
+  devicefingerprint devicefingerprint[]
+  mfabackupcode     mfabackupcode[]
 }
 
 model useravatar {
@@ -263,6 +272,63 @@ enum order_status {
 }
 
 enum user_role {
+  GUEST
   USER
+  SELLER
   ADMIN
+  SUPER_ADMIN
+}
+
+// ── MODULE 3: Shield Layer ─────────────────────────────────
+
+/// Immutable audit log — INSERT-only by application design.
+/// Records every security-relevant action in the system.
+/// No UPDATE or DELETE operations should ever be performed on this table.
+model auditlog {
+  id                String   @id @default(uuid())
+  userId            String?
+  action            String   // LOGIN, LOGOUT, LOGIN_FAILED, PASSWORD_CHANGE, ORDER_PLACED, ADMIN_ACTION, MFA_ENABLED, etc.
+  ipAddress         String?
+  deviceFingerprint String?
+  userAgent         String?
+  metadata          Json?    // Arbitrary JSON: { reason, targetUserId, orderId, etc. }
+  severity          String   @default("INFO") // INFO, WARNING, CRITICAL
+  createdAt         DateTime @default(now())
+  user              user?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@index([severity])
+}
+
+/// Known devices per user — for detecting new/unknown login sources.
+model devicefingerprint {
+  id             String   @id @default(uuid())
+  userId         String
+  fingerprintHash String  // SHA-256 hash of device attributes
+  deviceName     String?  // "Chrome on Windows 10", "Safari on iPhone 15"
+  ipAddress      String?
+  city           String?
+  country        String?
+  isTrusted      Boolean  @default(false) // User has confirmed this device
+  lastSeenAt     DateTime @default(now())
+  createdAt      DateTime @default(now())
+  user           user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fingerprintHash])
+  @@index([userId])
+}
+
+/// MFA backup codes — one-time use recovery codes, bcrypt-hashed.
+model mfabackupcode {
+  id        String   @id @default(uuid())
+  userId    String
+  codeHash  String   // bcrypt hash of the backup code
+  isUsed    Boolean  @default(false)
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

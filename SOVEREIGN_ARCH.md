@@ -128,48 +128,69 @@ graph TD
 
 ---
 
+## 🏗️ Technical Implementation (6 Enterprise Modules)
+
+The following modules represent the core engineering effort for the Maison NOIR Enterprise Security System:
+
+### Module 1: Schema Resilience
+*   **Implementation**: `prisma/schema.prisma`
+*   **Features**: Role Enums, MFA Hashed Codes, Session Tracking, Immutable Audit Ledger.
+
+### Module 2: Crypto Core
+*   **Files**: `src/lib/crypto/encryption.js`, `src/lib/crypto/tokens.js`
+*   **Features**: AES-256-GCM for PII, SHA-256 Device Fingerprinting, JWT (jose) Access Tokens.
+
+### Module 3: Distributed Shield
+*   **File**: `src/lib/rateLimit/limiter.js`
+*   **Features**: Upstash Redis integration, Sliding-window limiting for Login/Signup/Checkout.
+
+### Module 4: Identity Orchestration
+*   **Files**: `src/lib/auth/session.js`, `src/lib/auth/mfa.js`, `src/lib/auth/audit.js`
+*   **Features**: Refresh Token Rotation, TOTP/Backup Codes, Non-blocking Audit Logging.
+
+### Module 5: Central Gatekeeper
+*   **Files**: `middleware.js`, `src/middleware/withAuth.js`, `src/middleware/withRoles.js`
+*   **Features**: Multi-layer Edge Middleware, RBAC enforcement, Global Rate Limit validation.
+
+### Module 6: Asset Vault & Schemas
+*   **Files**: `src/app/api/showroom/[productId]/route.js`, `src/schemas/auth.schema.js`
+*   **Features**: Cloudinary Signed URL generation (15m window), Strict Zod Schema validation.
+
 ---
 
 ## 📂 Sovereign Directory Structure
 
-The following structure represents the physical implementation of the 13-layer architecture within the codebase:
-
 ```text
 c:\Users\gunde\OneDrive\Desktop\NOIR-1\
 ├── .github/workflows/
-│   ├── ci.yml                     # General CI/CD
-│   └── security-audit.yml         # Layer 12: Security Audits
+│   ├── security.yml               # Automated CI/CD Audits
 ├── prisma/
-│   ├── schema.prisma              # Layer 13: Soft-Delete Models
-│   └── migrations/
-│       └── rls_policies.sql       # Layer 9: Row-Level Security
+│   ├── schema.prisma              # Sovereign Security Models
 ├── src/
-│   ├── proxy.js                   # Layer 1: Security Proxy & Headers
+│   ├── proxy.js                   # Header Injection Proxy
+│   ├── middleware.js              # Central Edge Gatekeeper
 │   ├── middleware/
-│   │   ├── withRoles.js           # Layer 2: Role-Based Access (RBAC)
-│   │   └── withValidation.js      # Layer 3: Zod Schema Gatekeeper
+│   │   ├── withAuth.js            # Auth Wrapper
+│   │   ├── withRoles.js           # RBAC Wrapper
+│   │   └── withValidation.js      # Zod Wrapper
 │   ├── lib/
 │   │   ├── auth/
-│   │   │   ├── device-fingerprint.js # Layer 5: Device Fingerprinting
-│   │   │   └── signed-url.js      # Layer 10: S3 Asset Protection
+│   │   │   ├── session.js         # Session Rotation Logic
+│   │   │   ├── mfa.js             # TOTP & Backup System
+│   │   │   └── audit.js           # Audit Logger Core
 │   │   ├── crypto/
-│   │   │   ├── field-encryption.js # Layer 7: AES-256-GCM Core
-│   │   │   └── prisma-encryption-middleware.js # Layer 8: ORM Extension
-│   │   ├── audit/
-│   │   │   └── audit-logger.js    # Layer 6: Immutable Audit Ledger
+│   │   │   ├── encryption.js      # AES-256-GCM & Fingerprinting
+│   │   │   └── tokens.js          # JWT & Hashing Engine
 │   │   ├── rateLimit/
-│   │   │   └── redis-limiter.js   # Layer 4: Redis Shield/Shield Layer
-│   │   ├── validation/
-│   │   │   └── schemas/           # Layer 3: Schema Registry
-│   │   ├── auth-options.js        # Layer 4 & 11: Hardened NextAuth
-│   │   └── prisma.js              # Layer 8: Encrypted Client Singleton
-│   └── app/
-│       └── api/
-│           └── admin/
-│               └── security/
-│                   └── health/    # Sovereign Health Monitoring
+│   │   │   └── limiter.js         # Upstash Redis Shield
+│   │   └── prisma.js              # Hardened Prisma Client
+│   └── schemas/
+│       ├── auth.schema.js         # Strict Identity Schemas
+│       └── user.schema.js         # PII Validation Schemas
 ```
 
 ---
 
-**Standard**: Senior Sovereign Architecture (Phase 8.0)
+**Architecture Status**: ✅ FULLY OPERATIONAL  
+**Standard**: Senior Sovereign Architecture (Phase 8.5 - Enterprise Hardened)
+

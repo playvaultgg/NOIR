@@ -98,6 +98,50 @@ This document provides a senior-level technical decomposition of the **Maison NO
 
 ---
 
+---
+
+## 📂 Sovereign Directory Structure
+
+The following structure represents the physical implementation of the 13-layer architecture within the codebase:
+
+```text
+c:\Users\gunde\OneDrive\Desktop\NOIR-1\
+├── .github/workflows/
+│   ├── ci.yml                     # General CI/CD
+│   └── security-audit.yml         # Layer 12: Security Audits
+├── prisma/
+│   ├── schema.prisma              # Layer 13: Soft-Delete Models
+│   └── migrations/
+│       └── rls_policies.sql       # Layer 9: Row-Level Security
+├── src/
+│   ├── proxy.js                   # Layer 1: Security Proxy & Headers
+│   ├── middleware/
+│   │   ├── withRoles.js           # Layer 2: Role-Based Access (RBAC)
+│   │   └── withValidation.js      # Layer 3: Zod Schema Gatekeeper
+│   ├── lib/
+│   │   ├── auth/
+│   │   │   ├── device-fingerprint.js # Layer 5: Device Fingerprinting
+│   │   │   └── signed-url.js      # Layer 10: S3 Asset Protection
+│   │   ├── crypto/
+│   │   │   ├── field-encryption.js # Layer 7: AES-256-GCM Core
+│   │   │   └── prisma-encryption-middleware.js # Layer 8: ORM Extension
+│   │   ├── audit/
+│   │   │   └── audit-logger.js    # Layer 6: Immutable Audit Ledger
+│   │   ├── rateLimit/
+│   │   │   └── redis-limiter.js   # Layer 4: Redis Shield/Shield Layer
+│   │   ├── validation/
+│   │   │   └── schemas/           # Layer 3: Schema Registry
+│   │   ├── auth-options.js        # Layer 4 & 11: Hardened NextAuth
+│   │   └── prisma.js              # Layer 8: Encrypted Client Singleton
+│   └── app/
+│       └── api/
+│           └── admin/
+│               └── security/
+│                   └── health/    # Sovereign Health Monitoring
+```
+
+---
+
 **Architecture Status**: ✅ FULLY OPERATIONAL  
-**Standard**: Senior Sovereign Architecture (Phase 8.0)  
-**Security Owner**: Maison NOIR Engineering
+**Lead Architect**: Gundelwaran  
+**Standard**: Senior Sovereign Architecture (Phase 8.0)

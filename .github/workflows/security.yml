@@ -1,0 +1,38 @@
+name: Sovereign Security Audit
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  security_audit:
+    name: Critical Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # 1. Dependency Audit (Layer 12)
+    - name: Run NPM Audit
+      run: npm audit --audit-level=high
+
+    # 2. Secret Scanning (Layer 12)
+    - name: Secret Scanning (TruffleHog)
+      uses: trufflesecurity/trufflehog@main
+      with:
+        path: ./
+        base: ${{ github.event.repository.default_branch }}
+        head: HEAD
+        extra_args: --debug --only-verified
+
+    # 3. Security Linting (Layer 12)
+    - name: Install Dependencies
+      run: npm install --ignore-scripts
+
+    - name: Run ESLint with Security Plugin
+      run: npx eslint . --ext .js,.jsx

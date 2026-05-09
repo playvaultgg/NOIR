@@ -1,67 +1,87 @@
 import { NextResponse } from "next/server";
-import { withAuth } from "@/middleware/withAuth";
-import { withValidation } from "@/middleware/withValidation";
-import { ProductParamsSchema } from "@/lib/validation/schemas";
-import { generateSignedAssetUrl } from "@/lib/auth/signed-url";
+import { v2 as cloudinary } from "cloudinary";
+import { verifyAccessToken } from "@/lib/crypto/tokens";
+import { apiLimiter, getIp } from "@/lib/rateLimit/limiter";
+import { logAction } from "@/lib/auth/audit";
 import prisma from "@/lib/prisma";
-import { inlineRateLimit } from "@/lib/rateLimit/redis-limiter";
 
 /**
- * MAISON NOIR — Showroom Asset API
- * Provides secured, time-limited URLs for 3D product models.
- * 
- * Logic:
- * 1. Validate productId
- * 2. Authenticate user
- * 3. Rate limit access (prevent bulk scraping of 3D assets)
- * 4. Fetch asset metadata from DB
- * 5. Generate signed URL
+ * MAISON NOIR — Protected 3D Asset Server
+ * Serves time-limited signed URLs for high-end boutique assets.
  */
 
-async function showroomHandler(request, { params, session }) {
-    const { productId } = params;
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
+});
 
-    // 1. Rate Limiting (Protected from scraping)
-    const { limited, response } = await inlineRateLimit(request, "API", session.user.id);
-    if (limited) return response;
+export async function GET(req, { params }) {
+    const { productId } = params;
+    const token = req.cookies.get("access_token")?.value;
 
     try {
-        // 2. Fetch Product 3D Metadata
-        // Note: Assuming there's a field or relation for 3D models.
-        // If not, we'll search the product record.
+        // 1. Verify user session & Identity
+        if (!token) throw new Error("Unauthorized");
+        const userPayload = await verifyAccessToken(token);
+
+        // 2. Role-Based Access Check
+        // Ensure user is authenticated (roles like USER, ADMIN, etc.)
+        const allowedRoles = ["USER", "SELLER", "ADMIN", "SUPER_ADMIN"];
+        if (!allowedRoles.includes(userPayload.role)) {
+            return NextResponse.json({ error: "Insufficient permissions" }, { status: 403 });
+        }
+
+        // 3. Application-Level Rate Limiting
+        const ip = getIp(req);
+        const { success } = await apiLimiter.limit(`showroom:${userPayload.userId}`);
+        if (!success) {
+            return NextResponse.json({ error: "Too many asset requests" }, { status: 429 });
+        }
+
+        // 4. Fetch the private asset identifier from DB
         const product = await prisma.product.findUnique({
             where: { id: productId },
-            select: { 
-                id: true, 
-                name: true,
-                // In a real implementation, we'd have a specific field for the 3D key
-                // For now, we'll assume the imageUrls contains a 3D key or we use a placeholder
-            }
+            select: { slug: true, category: true }
         });
 
         if (!product) {
-            return NextResponse.json({ error: "Product not found" }, { status: 404 });
+            return NextResponse.json({ error: "Product asset not found" }, { status: 404 });
         }
 
-        // 3. Generate Signed URL
-        // Placeholder key: product-assets/[productId]/model.glb
-        const s3Key = `product-assets/${productId}/model.glb`;
-        const signedUrl = await generateSignedAssetUrl(s3Key);
+        // 5. Generate Cloudinary Signed URL (15 min expiry)
+        // Note: 'public_id' should point to the private 3D asset in Cloudinary
+        const publicId = `showroom/models/${product.slug || productId}`;
+        
+        const signedUrl = cloudinary.utils.private_download_url(publicId, "glb", {
+            expires_at: Math.floor(Date.now() / 1000) + (15 * 60), // 15 minutes
+        });
 
-        return NextResponse.json({
-            productId: product.id,
-            name: product.name,
-            assetUrl: signedUrl,
-            expiresIn: 900, // 15 minutes
+        // 6. Log access in AuditLog
+        await logAction({
+            userId: userPayload.userId,
+            action: "ADMIN_ACTION", // Using ADMIN_ACTION or a custom action like ASSET_ACCESS if defined
+            req,
+            metadata: { 
+                productId, 
+                assetType: "3D_MODEL",
+                reason: "Signed URL generation for showroom"
+            }
+        });
+
+        // 7. Return signed URL — NEVER the raw asset URL
+        return NextResponse.json({ 
+            url: signedUrl,
+            expiresIn: "15m",
+            type: "GLB"
         });
 
     } catch (error) {
-        console.error("[SHOWROOM_API] Error:", error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        console.error("[SHOWROOM-API] Error:", error.message);
+        return NextResponse.json(
+            { error: error.message === "Unauthorized" ? "Authentication required" : "Internal server error" }, 
+            { status: error.message === "Unauthorized" ? 401 : 500 }
+        );
     }
 }
-
-// Chain: Validation (Params) -> Auth -> Handler
-export const GET = withValidation(null, null, ProductParamsSchema)(
-    withAuth(showroomHandler)
-);

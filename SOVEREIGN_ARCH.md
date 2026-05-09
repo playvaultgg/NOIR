@@ -1,5 +1,8 @@
 # Maison NOIR — 13-Layer Sovereign Security Architecture
 
+**Lead Architect**: Gundelwaran  
+**Technical Standard**: Senior Sovereign Protocol (Phase 8.0)
+
 This document provides a senior-level technical decomposition of the **Maison NOIR Sovereign Security Stack**. It details the specific files, logic, and infrastructure gates that protect the platform.
 
 ---

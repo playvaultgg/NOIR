@@ -26,8 +26,7 @@ jobs:
         run: npm ci
 
       - name: Run Linter
-        run: npx next lint --max-warnings 0
-        continue-on-error: true
+        run: npx next lint
 
   # ──────────────────────────────────────────────
   # STAGE 2: BUILD & DATABASE VALIDATION
@@ -108,11 +107,6 @@ jobs:
 
       - name: Dependency Audit
         run: npm audit --audit-level=high
-        continue-on-error: true
-
-      - name: Check for Known Vulnerabilities
-        run: npx auditjs ossi --type npm
-        continue-on-error: true
 
   # ──────────────────────────────────────────────
   # STAGE 4: DEPLOYMENT GATE
